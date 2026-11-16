@@ -22,6 +22,13 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ inputs.release_tag || github.ref }}
+      - name: Locate chart sources
+        run: |
+          chart_dir=./charts/kang
+          if [ ! -f "$chart_dir/Chart.yaml" ]; then
+            chart_dir=./chart/kang
+          fi
+          echo "CHART_DIR=$chart_dir" >> "$GITHUB_ENV"
       - uses: azure/setup-helm@v4.3.1
         with:
           version: v3.19.0
@@ -30,17 +37,17 @@ jobs:
           RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
         run: |
           set -euo pipefail
-          version="$(helm show chart ./chart/kang | awk '/^version:/ {print $2}')"
+          version="$(helm show chart "$CHART_DIR" | awk '/^version:/ {print $2}')"
           test "$RELEASE_TAG" = "v$version"
           helm repo add cloudnative-pg https://cloudnative-pg.github.io/charts
-          helm dependency build ./chart/kang
-          helm lint ./chart/kang --set backend.secret.existingName=validation-secret
-          helm template kang ./chart/kang --set backend.secret.existingName=validation-secret > /tmp/kang-rendered.yaml
+          helm dependency build "$CHART_DIR"
+          helm lint "$CHART_DIR" --set backend.secret.existingName=validation-secret
+          helm template kang "$CHART_DIR" --set backend.secret.existingName=validation-secret > /tmp/kang-rendered.yaml
           JWT_SECRET=validation-only POSTGRES_PASSWORD=validation-only docker compose -f compose/compose.yaml --env-file compose/.env.example config --no-env-resolution --quiet
       - name: Package artifacts
         run: |
           mkdir -p dist
-          helm package ./chart/kang --destination dist
+          helm package "$CHART_DIR" --destination dist
           tar -czf dist/kang-compose.tar.gz compose
           cp kubernetes/kang.yaml dist/kang.yaml
           cp kubernetes/README.md dist/kubernetes-README.md

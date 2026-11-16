@@ -51,7 +51,7 @@ kubectl -n kang port-forward svc/kang-backend 8080:8080
 kubectl -n kang port-forward svc/kang-frontend 3000:3000
 ```
 
-See the [chart guide](chart/kang/README.md) for external databases, storage, HTTPS, Ingress, Gateway API, and custom values. A [standalone Kubernetes manifest](kubernetes/README.md) is also available.
+See the [chart guide](charts/kang/README.md) for external databases, storage, HTTPS, Ingress, Gateway API, and custom values. A [standalone Kubernetes manifest](kubernetes/README.md) is also available.
 
 ## Releases
 
@@ -74,20 +74,20 @@ The release badge uses an explicit version so it also works while this repositor
 
 ## Contributing
 
-Application source code lives in [kang-frontend](https://github.com/zaidanm16/kang-frontend) and [kang-backend](https://github.com/zaidanm16/kang-backend). This repository contains deployment configuration; chart sources live in `chart/kang`.
+Application source code lives in [kang-frontend](https://github.com/zaidanm16/kang-frontend) and [kang-backend](https://github.com/zaidanm16/kang-backend). This repository contains deployment configuration; chart sources live in `charts/kang`.
 
 Validate source changes before publishing:
 
 ```sh
-helm dependency build ./chart/kang
-helm lint ./chart/kang --set backend.secret.existingName=validation-secret
-helm template kang ./chart/kang --set backend.secret.existingName=validation-secret
+helm dependency build ./charts/kang
+helm lint ./charts/kang --set backend.secret.existingName=validation-secret
+helm template kang ./charts/kang --set backend.secret.existingName=validation-secret
 JWT_SECRET=validation-only POSTGRES_PASSWORD=validation-only \
   docker compose -f compose/compose.yaml --env-file compose/.env.example \
   config --no-env-resolution --quiet
 ```
 
-Update `chart/kang/Chart.yaml` and the documented release version together, commit and push, then create the matching tag. The workflow packages the artifacts, pushes the OCI chart, and creates the GitHub Release:
+Update `charts/kang/Chart.yaml` and the documented release version together, commit and push, then create the matching tag. The workflow packages the artifacts, pushes the OCI chart, and creates the GitHub Release:
 
 ```sh
 git tag v3.0.0
