@@ -4,7 +4,7 @@ Run the published frontend and backend images with PostgreSQL stored in a named 
 
 ## Start
 
-From the repository root:
+The fastest start is in the [Getting started guide](../README.md#getting-started). The release archive contains this `compose` directory; use the commands below from the extracted release directory or a repository clone.
 
 ```sh
 cd compose
@@ -33,7 +33,7 @@ For HTTPS behind a reverse proxy, route frontend requests to port 3000 and API r
 
 For external PostgreSQL or MySQL, set `DB_DRIVER` in `backend.env`, replace `backend.environment.DATABASE_DSN` in `compose.yaml`, remove its PostgreSQL dependency, and remove the bundled PostgreSQL service. For Redis-backed rate limiting, set `RATE_LIMIT_STORE=redis` and `RATE_LIMIT_REDIS_URL`. Set `PROMETHEUS_URL` for an existing Prometheus-compatible query API. `localhost` inside a container refers to that container; use a reachable hostname or a service on a shared Docker network. PostgreSQL is started by this Compose file; Redis and metrics services are external. Without a metrics URL, the backend uses its own default `http://prometheus:9090`.
 
-Signed Kang licenses and public verification keys can be provided through `backend.env`, or install a license in the application's Kang License page. Never deploy a signing private key. License state and PostgreSQL data persist in the backend volume.
+Signed Kang licenses and public verification keys can be provided through `backend.env`, or install a license in the application's Kang License page. Never deploy a signing private key. License state and application data persist in the PostgreSQL named volume.
 
 ## Update, logs and data
 
