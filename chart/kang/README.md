@@ -32,6 +32,8 @@ The CNPG dependency can install the operator when `cnpg.operator.enabled=true`. 
 
 ## Quick start: Helm with PostgreSQL
 
+Install the published OCI chart; cloning this repository is not required.
+
 Create a namespace and a Secret outside Helm. Keeping credentials outside Helm values avoids writing them into a values file or the Helm release record.
 
 ```sh
@@ -42,7 +44,8 @@ openssl rand -hex 32 > "$secret_file"
 kubectl -n kang create secret generic kang-backend-secrets \
   --from-file=JWT_SECRET="$secret_file"
 
-helm upgrade --install kang ./helm/kang \
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+  --version 3.0.0 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
   --set backend.env.AUTH_COOKIE_SECURE=false
@@ -106,7 +109,7 @@ The backend supports the `sqlite`, `postgres`, and `mysql` drivers.
 
 | Mode | Values | Storage / scaling |
 | --- | --- | --- |
-| SQLite (optional) | Disable `cnpg.cluster.enabled` and `cnpg.operator.enabled`, set `backend.database.driver: postgres`; `backend.database.dsn` defaults to `/data/data.db` | Keep backend at one replica. PVC recommended; `emptyDir` is possible but loses DB data when the pod is replaced. |
+| SQLite (optional) | Disable `cnpg.cluster.enabled` and `cnpg.operator.enabled`, set `backend.database.driver: sqlite` and `backend.database.dsn: /data/data.db` | Keep backend at one replica. PVC recommended; `emptyDir` is possible but loses DB data when the pod is replaced. |
 | External PostgreSQL | `backend.database.driver: postgres`; set `backend.database.dsnSecret.name/key` | DSN is read from an existing Secret. Set backend replicas according to your DB capacity and rollout strategy. |
 | External MySQL | `backend.database.driver: mysql`; set `backend.database.dsnSecret.name/key` | Same Secret approach; DSN syntax is defined by the backend's MySQL driver. |
 | CNPG managed PostgreSQL (default) | `cnpg.cluster.enabled: true` and `cnpg.operator.enabled: true` (unless the operator is already managed elsewhere) | CNPG creates its own PVCs and `<cluster>-app` Secret; backend reads the `uri` key. Configure storage on `cnpg.cluster.storage`. |
@@ -294,7 +297,8 @@ For custom public API origins, set `networking.publicApiUrl` to the browser-faci
 Create `kang-values.yaml` outside the repository or in a private deployment repository, then install:
 
 ```sh
-helm upgrade --install kang ./helm/kang \
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+  --version 3.0.0 \
   --namespace kang --create-namespace \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets
@@ -303,9 +307,8 @@ helm upgrade --install kang ./helm/kang \
 Render before applying and review the manifests for your cluster:
 
 ```sh
-helm lint ./helm/kang \
-  --set backend.secret.existingName=kang-backend-secrets
-helm template kang ./helm/kang \
+helm template kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+  --version 3.0.0 \
   --namespace kang \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets

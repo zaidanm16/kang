@@ -2,119 +2,96 @@
 
 [![Release](https://img.shields.io/github/v/release/zaidanm16/kang-deploy)](https://github.com/zaidanm16/kang-deploy/releases)
 [![Release workflow](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml/badge.svg)](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml)
-![Kubernetes](https://img.shields.io/badge/Kubernetes-326CE5?logo=kubernetes&logoColor=white)
-![Helm](https://img.shields.io/badge/Helm-0F1689?logo=helm&logoColor=white)
-![Docker Compose](https://img.shields.io/badge/Docker_Compose-2496ED?logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/License-Proprietary-lightgrey)
 
-KANG is a management application for Kong API Gateway. This repository contains deployment configuration and installation instructions. Application source code lives in [kang-frontend](https://github.com/zaidanm16/kang-frontend) and [kang-backend](https://github.com/zaidanm16/kang-backend).
-
-PostgreSQL is the default database for every deployment method. Kong Gateway itself is managed separately.
+Deploy [Kang](https://github.com/zaidanm16/kang-frontend), a management application for Kong API Gateway, with Docker Compose or Kubernetes. Kong Gateway runs separately.
 
 ## Getting started
 
-Choose the deployment that fits your environment:
-
-| Method | Included database | Instructions |
-| --- | --- | --- |
-| Helm | CloudNativePG operator and PostgreSQL cluster by default; external DB supported | [Helm README](helm/kang/README.md) |
-| Docker Compose | PostgreSQL container with a named volume | [Compose README](compose/README.md) |
-| Kubernetes manifest | Single PostgreSQL StatefulSet with persistent storage | [Kubernetes README](kubernetes/README.md) |
-
-Clone this repository:
+The quickest way to try Kang is with **Docker Compose**. You need Docker with the Compose plugin, `git`, and `openssl`.
 
 ```sh
-git clone https://github.com/zaidanm16/kang-deploy.git
-cd kang-deploy
-```
-
-All commands in the method-specific guides assume this repository root unless they explicitly change directories. Create your own secrets before installation. Example files contain placeholders; actual `.env` and `backend.env` files are ignored by Git.
-
-## Installation
-
-For Docker Compose, copy the environment examples, set independent JWT and database secrets, and start the stack:
-
-```sh
-cd compose
-cp .env.example .env
+git clone --depth 1 --branch v3.0.0 https://github.com/zaidanm16/kang-deploy.git
+cd kang-deploy/compose
 cp backend.env.example backend.env
-# Set JWT_SECRET and POSTGRES_PASSWORD in .env using independent openssl rand -hex 32 values.
+(umask 077; printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 32)" > .env)
 docker compose up -d
 ```
 
-Open http://localhost:3000. See the Compose guide for public URLs, HTTPS and external services.
+If the repository or images are private, authenticate Git and Docker with an account that has access before starting.
 
-For Helm, follow the Helm guide to create the namespace and backend Secret, then install the chart:
+Open **http://localhost:3000**. Get the one-time setup token with `docker compose logs backend`, then follow the setup screen to create your administrator and connect an existing Kong Admin API. The Admin API must be reachable from the backend container; `localhost` inside a container refers to that container.
+
+This starts the frontend, backend, and PostgreSQL with persistent storage. Kang starts on the Free plan; no license key is required. To stop it, run `docker compose down` from the same directory. Your database is retained.
+
+For public URLs, HTTPS, external services, and updates, see the [Compose guide](compose/README.md).
+
+## Kubernetes
+
+Use the **published Helm chart** with an existing Kubernetes cluster and a default StorageClass. The default chart also installs the CloudNativePG operator, which requires cluster-scoped permissions.
 
 ```sh
-helm upgrade --install kang ./helm/kang \
+kubectl create namespace kang
+secret_file="$(mktemp)"
+openssl rand -hex 32 > "$secret_file"
+kubectl -n kang create secret generic kang-backend-secrets \
+  --from-file=JWT_SECRET="$secret_file"
+rm -f "$secret_file"
+
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+  --version 3.0.0 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
-  -f your-values.yaml
+  --set backend.env.AUTH_COOKIE_SECURE=false
 ```
 
-The default chart installs CNPG and requires cluster-scoped permissions. Configure storage and networking for your cluster before installing.
-
-For the standalone Kubernetes manifest, replace the JWT and matching database password placeholders in `kubernetes/kang.yaml`, then apply:
+For local access, run these in separate terminals, then open http://localhost:3000:
 
 ```sh
-kubectl apply -f kubernetes/kang.yaml
+kubectl -n kang port-forward svc/kang-backend 8080:8080
+kubectl -n kang port-forward svc/kang-frontend 3000:3000
 ```
 
-Each deployment guide documents its configuration, storage, updates and operational limits.
+See the [chart guide](chart/kang/README.md) for external databases, storage, HTTPS, Ingress, Gateway API, and custom values. A [standalone Kubernetes manifest](kubernetes/README.md) is also available.
 
 ## Releases
 
-The [release workflow](.github/workflows/release.yaml) runs when a `v*` tag is pushed. The tag must match the chart version: chart `2.0.0` requires tag `v2.0.0`.
+Release **v3.0.0** includes the chart and frontend version `3.0.0`. Backend images are pinned independently; the current default is `ghcr.io/zaidanm16/kang-backend:v1.0.0`.
 
-It validates and packages the chart, publishes it as an OCI artifact, and creates a GitHub Release containing:
+The [release workflow](.github/workflows/release.yaml) publishes these artifacts when a matching `v*` tag is pushed:
 
-- `kang-VERSION.tgz`: packaged Helm chart, including the pinned CNPG dependency.
-- `kang-compose.tar.gz`: Compose configuration, examples and instructions.
-- `kang.yaml` and `kubernetes-README.md`: standalone manifest and instructions.
-- `SHA256SUMS`: checksums for the deployment artifacts.
+| Artifact | Use |
+| --- | --- |
+| `oci://ghcr.io/zaidanm16/kang-deploy/kang:3.0.0` | Install with Helm using `--version 3.0.0` |
+| `kang-3.0.0.tgz` | Packaged chart with its pinned CloudNativePG dependency |
+| `kang-compose.tar.gz` | Docker Compose stack, environment examples, and guide |
+| `kang.yaml`, `kubernetes-README.md` | Standalone Kubernetes deployment |
+| `SHA256SUMS` | Checksums for the downloadable files |
 
-The chart is published at `oci://ghcr.io/zaidanm16/kang-deploy/kang`. After a release has been published:
-
-```sh
-helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
-  --version 2.0.0 \
-  --namespace kang \
-  --set backend.secret.existingName=kang-backend-secrets \
-  -f your-values.yaml
-```
-
-The workflow uses GitHub's built-in `GITHUB_TOKEN` with contents and packages write permissions. Repository Actions policy must allow those permissions. Set the GHCR package visibility to public if anonymous chart downloads are intended; private packages require registry login.
-
-To publish, update `helm/kang/Chart.yaml`, review image pins and documentation, commit the changes, then push a matching tag:
-
-```sh
-git tag v2.0.0
-git push origin v2.0.0
-```
-
-## Versioning
-
-Deployment releases use semantic versions independently from the app repositories. The chart `version` is the deployment version and must match the release tag without its `v` prefix. `appVersion` records the frontend application version; backend and frontend image tags are pinned separately in each deployment configuration.
-
-Use a major deployment version for incompatible configuration changes, a minor version for compatible deployment options, and a patch version for fixes. Chart OCI tags follow the chart's semantic version (`2.0.0`); GitHub release tags use `v2.0.0`. Application image tags retain their upstream `v` prefix.
+Chart `version` must match the release tag without `v`. `appVersion` records the frontend version. Application image tags retain the upstream `v` prefix. Registry packages must be public for anonymous downloads; private packages require registry authentication.
 
 ## Contributing
 
-Open an issue describing the deployment environment and the problem, or submit a focused pull request. Update the relevant guide and example values when changing configuration. Never include credentials, signed license keys, production endpoints or local agent configuration.
+Application source code lives in [kang-frontend](https://github.com/zaidanm16/kang-frontend) and [kang-backend](https://github.com/zaidanm16/kang-backend). This repository contains deployment configuration; chart sources live in `chart/kang`.
 
-Before submitting changes:
+Validate source changes before publishing:
 
 ```sh
-helm dependency build ./helm/kang
-helm lint ./helm/kang --set backend.secret.existingName=validation-secret
-helm template kang ./helm/kang --set backend.secret.existingName=validation-secret
+helm dependency build ./chart/kang
+helm lint ./chart/kang --set backend.secret.existingName=validation-secret
+helm template kang ./chart/kang --set backend.secret.existingName=validation-secret
 JWT_SECRET=validation-only POSTGRES_PASSWORD=validation-only \
   docker compose -f compose/compose.yaml --env-file compose/.env.example \
   config --no-env-resolution --quiet
 ```
 
-Rendering validates configuration generation; a real deployment also depends on the cluster's controllers, storage and network setup. Report the environment used for runtime checks in your pull request.
+Update `chart/kang/Chart.yaml` and the documented release version together, commit and push, then create the matching tag. The workflow packages the artifacts, pushes the OCI chart, and creates the GitHub Release:
+
+```sh
+git tag v3.0.0
+git push origin v3.0.0
+```
+
+Never commit credentials, signing keys, signed license keys, or local environment files. Rendering validates generated configuration; runtime deployment also depends on storage, controllers, and network reachability.
 
 ## License
 

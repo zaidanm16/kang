@@ -21,16 +21,16 @@ jobs:
           RELEASE_TAG: ${{ github.ref_name }}
         run: |
           set -euo pipefail
-          version="$(helm show chart ./helm/kang | awk '/^version:/ {print $2}')"
+          version="$(helm show chart ./chart/kang | awk '/^version:/ {print $2}')"
           test "$RELEASE_TAG" = "v$version"
-          helm dependency build ./helm/kang
-          helm lint ./helm/kang --set backend.secret.existingName=validation-secret
-          helm template kang ./helm/kang --set backend.secret.existingName=validation-secret > /tmp/kang-rendered.yaml
+          helm dependency build ./chart/kang
+          helm lint ./chart/kang --set backend.secret.existingName=validation-secret
+          helm template kang ./chart/kang --set backend.secret.existingName=validation-secret > /tmp/kang-rendered.yaml
           JWT_SECRET=validation-only POSTGRES_PASSWORD=validation-only docker compose -f compose/compose.yaml --env-file compose/.env.example config --no-env-resolution --quiet
       - name: Package artifacts
         run: |
           mkdir -p dist
-          helm package ./helm/kang --destination dist
+          helm package ./chart/kang --destination dist
           tar -czf dist/kang-compose.tar.gz compose
           cp kubernetes/kang.yaml dist/kang.yaml
           cp kubernetes/README.md dist/kubernetes-README.md
