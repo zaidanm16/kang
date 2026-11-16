@@ -1,10 +1,13 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import mermaid from 'astro-mermaid';
 
 export default defineConfig({
   site: 'https://zaidanm16.github.io',
   base: '/kang-deploy',
-  integrations: [starlight({
+  integrations: [
+    mermaid({ autoTheme: true }), // must come before starlight
+    starlight({
     title: 'Kang',
     favicon: '/kang-logo.svg',
     locales: { root: { label: 'English', lang: 'en' }, id: { label: 'Bahasa Indonesia', lang: 'id' } },

@@ -5,19 +5,15 @@ description: How Kang's frontend, backend, database, and Kong Admin API fit toge
 
 Kang has two application components that run next to each other: a **Next.js frontend** and a **Go backend**. The backend owns all Kang data and all communication with Kong.
 
-```text
-Browser
-  │  HTTPS
-  ▼
-Kang frontend (Next.js, port 3000)
-  │  /api/v1 requests, HttpOnly session cookie + CSRF header
-  ▼
-Kang backend (Go, port 8080)
-  │                          │                    │
-  ▼                          ▼                    ▼
-Kong Admin API          Kang database       Optional services
-(your Kong instance)    (users, teams,      Prometheus/VictoriaMetrics,
-                        snapshots, audit)   Redis/DragonflyDB, migration worker
+```mermaid
+flowchart TD
+    U["Browser"] -->|"HTTPS"| FE["Kang frontend<br/>Next.js · port 3000"]
+    FE -->|"/api/v1 requests<br/>HttpOnly session cookie + CSRF header"| BE["Kang backend<br/>Go · port 8080"]
+    BE -->|"Kong Admin API proxy<br/>/api/v1/kong-proxy/*<br/>encrypted stored credentials"| KONG["Kong Admin API<br/>your Kong instance"]
+    BE --> DB[("Kang database<br/>PostgreSQL / MySQL / SQLite<br/>users, teams, snapshots, audit")]
+    BE -.-> PROM["Prometheus /<br/>VictoriaMetrics"]
+    BE -.-> REDIS["Redis /<br/>DragonflyDB caches"]
+    BE -.-> MW["Database<br/>migration worker"]
 ```
 
 ## Components
