@@ -2,27 +2,37 @@ name: Release deployment artifacts
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: Existing release tag to publish
+        required: true
+        type: string
+        default: v3.0.0
 permissions:
   contents: write
   packages: write
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.release_tag || github.ref }}
   cancel-in-progress: false
 jobs:
   release:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.release_tag || github.ref }}
       - uses: azure/setup-helm@v4.3.1
         with:
           version: v3.19.0
       - name: Validate release version and manifests
         env:
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
         run: |
           set -euo pipefail
           version="$(helm show chart ./chart/kang | awk '/^version:/ {print $2}')"
           test "$RELEASE_TAG" = "v$version"
+          helm repo add cloudnative-pg https://cloudnative-pg.github.io/charts
           helm dependency build ./chart/kang
           helm lint ./chart/kang --set backend.secret.existingName=validation-secret
           helm template kang ./chart/kang --set backend.secret.existingName=validation-secret > /tmp/kang-rendered.yaml
@@ -47,5 +57,5 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
         run: gh release create "$RELEASE_TAG" dist/* --verify-tag --title "$RELEASE_TAG" --generate-notes
