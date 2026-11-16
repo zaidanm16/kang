@@ -1,22 +1,35 @@
+# -- String to partially override the chart name used for resource naming.
 nameOverride: ""
+# -- String to fully override the generated resource names.
 fullnameOverride: ""
 
 global:
+  # -- Names of existing image pull Secrets to attach to application pods.
   imagePullSecrets: []
+  # -- Annotations added to frontend and backend pod templates.
   podAnnotations: {}
+  # -- Labels added to all chart resources.
   commonLabels: {}
 
 backend:
+  # -- Number of backend replicas.
   replicaCount: 1
   image:
+    # -- Backend application image repository.
     repository: ghcr.io/zaidanm16/kang-backend
+    # -- Backend application image tag. Prefer immutable release or SHA tags.
     tag: v1.0.0
+    # -- Image pull policy.
     pullPolicy: IfNotPresent
   service:
+    # -- Port exposed by the backend Service.
     port: 8080
+  # -- Resource requests and limits for the backend container.
   resources: {}
+  # -- Pod-level security context for backend pods (fsGroup for volume ownership).
   podSecurityContext:
     fsGroup: 1000
+  # -- Container-level security context for the backend.
   securityContext:
     runAsNonRoot: true
     runAsUser: 1000
@@ -25,92 +38,169 @@ backend:
     capabilities:
       drop: [ALL]
   persistence:
+    # -- Create and mount a PVC for backend-local data such as a SQLite database. Not used in external DB or CNPG modes.
     enabled: true
+    # -- Mount an existing PVC instead of creating one.
     existingClaim: ""
+    # -- Size of the created PVC.
     size: 5Gi
+    # -- StorageClass of the created PVC. Unset (null) uses the cluster default; "" requests no StorageClass.
     storageClassName: null
+    # -- Access modes of the created PVC.
     accessModes:
       - ReadWriteOnce
+    # -- Annotations for the created PVC.
     annotations: {}
+    # -- Labels for the created PVC.
     labels: {}
+    # -- Selector for matching statically provisioned PVs.
     selector: {}
   secret:
+    # -- Name of an existing Secret containing the backend JWT_SECRET and other backend-only secret variables. Required in production.
     existingName: ""
+    # -- Secret key that holds the JWT secret.
     jwtSecretKey: JWT_SECRET
   database:
-    driver: postgres
+    # -- Database driver: sqlite, postgres, or mysql.    driver: postgres
+    # -- DSN used only for the sqlite driver (file path on the mounted PVC).
     dsn: /data/data.db
     dsnSecret:
+      # -- Name of an existing Secret containing the DSN for external PostgreSQL/MySQL. Disables the built-in CNPG database when set.
       name: ""
+      # -- Secret key that holds the database DSN.
       key: DATABASE_DSN
   env:
+    # -- Maximum open database connections.
     DB_MAX_OPEN_CONNS: "100"
+    # -- Maximum idle database connections.
     DB_MAX_IDLE_CONNS: "10"
+    # -- Maximum lifetime of a database connection.
     DB_CONN_MAX_LIFETIME: 1h
+    # -- Timeout for Prometheus-compatible metrics queries.
     PROMETHEUS_TIMEOUT: 30s
+    # -- Enable the Redis-backed metrics dashboard cache.
     PROMETHEUS_CACHE_ENABLED: "false"
+    # -- Redis key prefix for the metrics dashboard cache.
     PROMETHEUS_CACHE_PREFIX: kang:prometheus-dashboard
+    # -- Time-to-live of fresh dashboard cache entries.
     PROMETHEUS_CACHE_FRESH_TTL: 1m
+    # -- Time-to-live served for stale dashboard cache entries.
     PROMETHEUS_CACHE_STALE_TTL: 5m
+    # -- Access token lifetime for login sessions.
     ACCESS_TOKEN_TTL: 15m
+    # -- Refresh token lifetime.
     REFRESH_TOKEN_TTL: 168h
+    # -- Refresh token lifetime when "remember me" is selected at login.
     REMEMBER_ME_REFRESH_TOKEN_TTL: 720h
+    # -- Maximum concurrent sessions per user.
     MAX_SESSIONS: "5"
+    # -- Minimum password length enforced by the password policy.
     PASSWORD_MIN_LENGTH: "8"
+    # -- Require an uppercase character in passwords.
     PASSWORD_REQUIRE_UPPER: "true"
+    # -- Require a number in passwords.
     PASSWORD_REQUIRE_NUMBER: "true"
+    # -- Require a special character in passwords.
     PASSWORD_REQUIRE_SPECIAL: "true"
-    MAX_LOGIN_ATTEMPTS: "5"
-    LOGIN_LOCKOUT_DURATION: 15m
+    # -- bcrypt hashing cost for password storage.
     BCRYPT_COST: "12"
+    # -- Failed login attempts allowed before account lockout.
+    MAX_LOGIN_ATTEMPTS: "5"
+    # -- Account lockout duration after repeated failed logins.
+    LOGIN_LOCKOUT_DURATION: 15m
+    # -- Gin framework mode. Keep release in production.
     GIN_MODE: release
+    # -- Backend log verbosity.
     LOG_LEVEL: info
+    # -- Access log verbosity: all, important, or off.
     ACCESS_LOG_MODE: important
+    # -- JWT issuer claim.
     JWT_ISSUER: kang
+    # -- JWT audience claim.
     JWT_AUDIENCE: kang-api
+    # -- Session cookie name. Must match frontend AUTH_COOKIE_NAME.
     AUTH_COOKIE_NAME: kang_session
+    # -- Set true for HTTPS traffic; keep false only for non-TLS local testing.
     AUTH_COOKIE_SECURE: "true"
+    # -- Session cookie SameSite policy.
     AUTH_COOKIE_SAMESITE: lax
+    # -- Enable CSRF protection for state-changing requests.
     CSRF_ENABLED: "true"
+    # -- Allow credentialed CORS responses. The backend rejects a wildcard origin with credentials.
     CORS_ALLOW_CREDENTIALS: "true"
+    # -- Comma-separated CORS methods.
     CORS_METHODS: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    # -- Comma-separated CORS request headers.
     CORS_HEADERS: Origin,Content-Type,Accept,Authorization,X-Skip-Audit,X-CSRF-Token,X-Kong-Instance-ID
+    # -- Comma-separated CORS exposed headers.
     CORS_EXPOSE_HEADERS: Content-Length
+    # -- Rate limit store: memory, redis, or empty for automatic selection.
     RATE_LIMIT_STORE: ""
+    # -- General API rate limit requests per window.
     RATE_LIMIT_REQUESTS: "120"
+    # -- General API rate limit window.
     RATE_LIMIT_WINDOW: 1m
+    # -- Authentication endpoint rate limit requests per window.
     AUTH_RATE_LIMIT_REQUESTS: "10"
+    # -- Authentication endpoint rate limit window.
     AUTH_RATE_LIMIT_WINDOW: 1m
+    # -- Run database migrations on backend startup.
     MIGRATE_ON_START: "true"
+    # -- Timeout for proxied Kong Admin API requests.
     PROXY_REQUEST_TIMEOUT: 60s
+    # -- Enable the Redis-backed recursive Kong list cache.
     KONG_RECURSIVE_CACHE_ENABLED: "true"
+    # -- In-process time-to-live for the recursive Kong list cache.
     KONG_RECURSIVE_CACHE_TTL_MS: 30s
+    # -- Redis key prefix for the recursive Kong list cache.
     KONG_RECURSIVE_CACHE_REDIS_PREFIX: kang:kong-list
+    # -- Redis time-to-live for the recursive Kong list cache.
     KONG_RECURSIVE_CACHE_REDIS_TTL: 5m
+    # -- Enable the Redis-backed Kong compatibility cache.
     KONG_COMPATIBILITY_CACHE_ENABLED: "false"
+    # -- Redis key prefix for the Kong compatibility cache.
     KONG_COMPATIBILITY_CACHE_PREFIX: kang:compatibility
+    # -- Time-to-live of the Kong compatibility cache.
     KONG_COMPATIBILITY_CACHE_TTL: 6h
+    # -- Time-to-live of cached Kong compatibility errors.
     KONG_COMPATIBILITY_ERROR_CACHE_TTL: 1m
+    # -- Enable the Redis-backed overview cache.
     KONG_OVERVIEW_CACHE_ENABLED: "false"
+    # -- Redis key prefix for the overview cache.
     KONG_OVERVIEW_CACHE_PREFIX: kang:overview
+    # -- Time-to-live of the overview cache.
     KONG_OVERVIEW_CACHE_TTL: 5m
+    # -- Enable OpenTelemetry tracing export.
     OTEL_TRACING_ENABLED: "false"
+    # -- OpenTelemetry service name.
     OTEL_SERVICE_NAME: kang-backend
+    # -- OpenTelemetry OTLP/gRPC collector endpoint.
     OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317
+    # -- Audit log retention period. Older audit entries are removed.
     AUDIT_LOG_RETENTION_PERIOD: 2160h
+    # -- Interval between audit retention cleanup runs.
     AUDIT_LOG_RETENTION_INTERVAL: 24h
+  # -- Extra backend environment entries as standard Kubernetes env items, including valueFrom Secret references.
   extraEnv: []
+  # -- Extra backend envFrom references, such as an additional Secret or ConfigMap.
   extraEnvFrom: []
 
 frontend:
+  # -- Number of frontend replicas.
   replicaCount: 1
   image:
+    # -- Frontend application image repository.
     repository: ghcr.io/zaidanm16/kang-frontend
+    # -- Frontend application image tag. Prefer immutable release or SHA tags.
     tag: v3.0.0
+    # -- Image pull policy.
     pullPolicy: IfNotPresent
   service:
+    # -- Port exposed by the frontend Service.
     port: 3000
+  # -- Resource requests and limits for the frontend container.
   resources: {}
+  # -- Container-level security context for the frontend.
   securityContext:
     runAsNonRoot: true
     runAsUser: 1001
@@ -119,126 +209,218 @@ frontend:
     capabilities:
       drop: [ALL]
   env:
+    # -- Server-to-server backend URL used by Next.js server components. Empty derives from the chart's networking values.
     API_URL: ""
+    # -- Session cookie name. Must match backend AUTH_COOKIE_NAME.
     AUTH_COOKIE_NAME: kang_session
+    # -- Refresh cookie name. Must match the backend's refresh cookie.
     AUTH_REFRESH_COOKIE_NAME: kang_refresh
+    # -- Browser-facing backend API base URL. Empty derives from the chart's networking values.
     NEXT_PUBLIC_API_URL: ""
+    # -- Base URL used for Kong developer documentation links.
     NEXT_PUBLIC_KONG_DEVELOPER_DOCS_BASE_URL: https://developer.konghq.com
+    # -- Browser API request timeout in milliseconds.
     NEXT_PUBLIC_API_TIMEOUT_MS: "10000"
+    # -- Kong proxy request timeout in milliseconds.
     NEXT_PUBLIC_KONG_PROXY_TIMEOUT_MS: "5000"
+    # -- Overview request timeout in milliseconds.
     NEXT_PUBLIC_KONG_OVERVIEW_REQUEST_TIMEOUT_MS: "30000"
+    # -- How long overview data stays fresh in milliseconds.
     NEXT_PUBLIC_KONG_OVERVIEW_STALE_MS: "30000"
+    # -- Gateway status refresh interval in milliseconds.
     NEXT_PUBLIC_KONG_STATUS_REFRESH_MS: "10000"
+    # -- Metrics refresh interval in milliseconds.
     NEXT_PUBLIC_METRICS_REFRESH_MS: "60000"
+    # -- Maximum audit log page size requested by the browser.
     NEXT_PUBLIC_AUDIT_LOG_MAX_LIMIT: "100"
+    # -- Optional browser error reporting endpoint.
     NEXT_PUBLIC_ERROR_REPORTING_ENDPOINT: ""
+    # -- Show the full database migration UI.
     NEXT_PUBLIC_FULL_MIGRATION_ENABLED: "false"
+    # -- Application version shown in the interface.
     NEXT_PUBLIC_APP_VERSION: ""
+  # -- Extra frontend environment entries as standard Kubernetes env items, including valueFrom Secret references.
   extraEnv: []
+  # -- Extra frontend envFrom references, such as a Secret with REVALIDATE_SECRET.
   extraEnvFrom: []
 
 redis:
+  # -- Deploy an in-chart DragonflyDB (Redis-compatible) instance.
   enabled: false
+  # -- Use an external Redis/DragonflyDB URL instead of an in-chart instance.
   externalUrl: ""
   existingSecret:
+    # -- Secret holding the external Redis/DragonflyDB URL, for URLs that contain credentials.
     name: ""
+    # -- Secret key that holds the Redis URL.
     key: RATE_LIMIT_REDIS_URL
   service:
+    # -- Port exposed by the in-chart Redis-compatible Service.
     port: 6379
   image:
+    # -- DragonflyDB image repository.
     repository: docker.dragonflydb.io/dragonflydb/dragonfly
+    # -- DragonflyDB image tag.
     tag: v1.37.0
+    # -- Image pull policy.
     pullPolicy: IfNotPresent
+  # -- Command arguments for the DragonflyDB container.
   args:
     - --bind=0.0.0.0
     - --port=6379
   persistence:
+    # -- Create and mount a PVC for DragonflyDB snapshot files.
     enabled: false
+    # -- Mount an existing PVC instead of creating one.
     existingClaim: ""
+    # -- Size of the created PVC.
     size: 5Gi
+    # -- StorageClass of the created PVC. Unset (null) uses the cluster default.
     storageClassName: null
+    # -- Access modes of the created PVC.
     accessModes:
       - ReadWriteOnce
+    # -- Annotations for the created PVC.
     annotations: {}
+    # -- Labels for the created PVC.
     labels: {}
+    # -- Selector for matching statically provisioned PVs.
     selector: {}
+  # -- Resource requests and limits for the DragonflyDB container.
   resources: {}
 
 metrics:
+  # -- Deploy an in-chart single-node VictoriaMetrics instance.
   enabled: false
+  # -- Use an external Prometheus-compatible query URL instead of an in-chart instance.
   externalUrl: ""
   existingSecret:
+    # -- Secret holding the external metrics URL, for URLs that contain credentials.
     name: ""
+    # -- Secret key that holds the metrics URL.
     key: PROMETHEUS_URL
   service:
+    # -- Port exposed by the in-chart metrics Service.
     port: 9090
   image:
+    # -- VictoriaMetrics image repository.
     repository: victoriametrics/victoria-metrics
+    # -- VictoriaMetrics image tag.
     tag: v1.137.0
+    # -- Image pull policy.
     pullPolicy: IfNotPresent
+  # -- VictoriaMetrics retention period for stored time series.
   retentionPeriod: 1y
+  # -- Prometheus scrape configuration supplied to the in-chart VictoriaMetrics. Empty scrapes no targets.
   scrapeConfig: ""
   persistence:
+    # -- Create and mount a PVC for metrics storage.
     enabled: true
+    # -- Mount an existing PVC instead of creating one.
     existingClaim: ""
+    # -- Size of the created PVC.
     size: 10Gi
+    # -- StorageClass of the created PVC. Unset (null) uses the cluster default.
     storageClassName: null
+    # -- Access modes of the created PVC.
     accessModes:
       - ReadWriteOnce
+    # -- Annotations for the created PVC.
     annotations: {}
+    # -- Labels for the created PVC.
     labels: {}
+    # -- Selector for matching statically provisioned PVs.
     selector: {}
+  # -- Resource requests and limits for the VictoriaMetrics container.
   resources: {}
 
 cnpg:
   operator:
+    # -- Install the CloudNativePG operator through the chart dependency. Requires cluster-scoped permissions.
     enabled: true
   cluster:
+    # -- Create a CloudNativePG PostgreSQL Cluster in the same release. Requires the operator to be running.
     enabled: true
+    # -- Override the generated CNPG Cluster name.
     name: ""
+    # -- Number of PostgreSQL instances in the CNPG Cluster.
     instances: 1
+    # -- PostgreSQL image used by the CNPG Cluster.
     imageName: ghcr.io/cloudnative-pg/postgresql:17.6
+    # -- Application database name created in the CNPG Cluster.
     database: kang
+    # -- Database owner role.
     owner: kang
     storage:
+      # -- Size of the CNPG PostgreSQL data PVC.
       size: 10Gi
+      # -- StorageClass for the CNPG PostgreSQL data PVC. Empty uses the cluster default.
       storageClass: ""
     walStorage:
+      # -- Mount a separate PVC for PostgreSQL WAL files.
       enabled: false
+      # -- Size of the WAL PVC.
       size: 2Gi
+      # -- StorageClass for the WAL PVC. Empty uses the cluster default.
       storageClass: ""
+    # -- Resource requests and limits for the CNPG Cluster pods.
     resources: {}
 
 networking:
-  mode: none # none, ingress, gatewayApi
+  # -- Exposure mode: none (local port-forward), ingress, or gatewayApi.
+  mode: none
+  # -- Public hostname used by Ingress and Gateway API modes. Also derives the default browser-facing API URL and CORS origin.
   host: ""
+  # -- Explicit browser-facing API base URL, for custom public API origins.
   publicApiUrl: ""
   ingress:
+    # -- Ingress class name of an installed Ingress controller. The controller is not installed by this chart.
     className: ""
+    # -- Additional annotations for the created Ingress.
     annotations: {}
     tls:
+      # -- Enable TLS on the created Ingress. The referenced Secret must exist in the release namespace.
       enabled: false
+      # -- Existing TLS Secret name for the Ingress.
       secretName: ""
   gatewayApi:
+    # -- Create a Gateway in the release namespace instead of attaching to an existing Gateway.
     createGateway: false
+    # -- GatewayClass name, required only when createGateway is true.
     gatewayClassName: ""
+    # -- Name of the existing Gateway to attach the HTTPRoute to.
     gatewayName: ""
+    # -- Namespace of the existing Gateway. Empty uses the release namespace.
     gatewayNamespace: ""
+    # -- Existing Gateway listener name to attach to.
     sectionName: ""
+    # -- HTTP listener port when this chart creates the Gateway.
     httpPort: 80
+    # -- AllowedRoutes from policy used only when this chart creates the Gateway.
     allowedRoutesFrom: Same
+    # -- Selector for AllowedRoutes when this chart creates the Gateway.
     allowedRoutesSelector: {}
     tls:
+      # -- Enable a TLS listener when this chart creates the Gateway.
       enabled: false
+      # -- Existing TLS Secret name for the Gateway listener.
       secretName: ""
+      # -- HTTPS listener port when this chart creates the Gateway.
       port: 443
+    # -- Additional annotations for the created HTTPRoute or Gateway.
     annotations: {}
 
 serviceAccount:
+  # -- Create a shared ServiceAccount for application pods. Token automount is disabled.
   create: true
+  # -- Override the generated ServiceAccount name.
   name: ""
+  # -- Annotations for the created ServiceAccount.
   annotations: {}
 
+# -- Node selector applied to application pods.
 nodeSelector: {}
+# -- Tolerations applied to application pods.
 tolerations: []
+# -- Affinity applied to application pods.
 affinity: {}

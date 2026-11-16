@@ -1,0 +1,272 @@
+# Kang Helm Chart
+
+{{ template "chart.versionBadge" . }} {{ template "chart.appVersionBadge" . }}
+
+- [Kang Helm Chart](#kang-helm-chart)
+  - [Introduction](#introduction)
+  - [Prerequisites](#prerequisites)
+  - [Requirements](#requirements)
+  - [Installing the Chart](#installing-the-chart)
+    - [Installing the Chart from the OCI Registry](#installing-the-chart-from-the-oci-registry)
+    - [Installing the Chart from Sources](#installing-the-chart-from-sources)
+      - [Pulling the Chart](#pulling-the-chart)
+      - [Installing the Chart](#installing-the-chart-1)
+    - [Custom installation options](#custom-installation-options)
+      - [Exposing the application](#exposing-the-application)
+      - [Database choices](#database-choices)
+      - [Optional cache and metrics services](#optional-cache-and-metrics-services)
+  - [Upgrading the Chart](#upgrading-the-chart)
+  - [Uninstalling the Chart](#uninstalling-the-chart)
+  - [Configuration](#configuration)
+  - [Operational notes](#operational-notes)
+  - [Troubleshooting](#troubleshooting)
+  - [License](#license)
+
+## Introduction
+
+This chart deploys [Kang](https://github.com/zaidanm16/kang-deploy) in your Kubernetes cluster: the Next.js frontend, the Go backend, and a PostgreSQL database through CloudNativePG by default, plus optional cache, metrics, and networking resources.
+
+Kang is the management application for Kong API Gateway. It manages your existing Kong instances through their Admin APIs; it does not deploy Kong Gateway itself.
+
+## Prerequisites
+
+- [Helm 3.19+](https://helm.sh/docs/intro/install/) or Helm 4. The checked-in CloudNativePG dependency is pinned to chart `0.22.0`.
+- [kubectl](https://kubernetes.io/docs/tasks/tools/)
+- A Kubernetes Secret containing a unique, stable `JWT_SECRET` value, created outside Helm. Keeping credentials outside Helm values avoids writing them into a values file or the Helm release record.
+
+> [!NOTE]
+>
+> When `cnpg.operator.enabled=true` (the default), the chart installs the [CloudNativePG](https://cloudnative-pg.io/documentation/) operator through its dependency. This needs cluster-scoped permissions. If your cluster policy separates operator administration, install and manage the operator separately and set `cnpg.operator.enabled=false`.
+
+## Requirements
+
+- Kubernetes with a default StorageClass, or a storage class / pre-created PV and claim that matches your values, when persistence is enabled.
+- For `networking.mode: ingress`, an installed Ingress controller.
+- For `networking.mode: gatewayApi`, Gateway API CRDs and a controller that implements `Gateway` and `HTTPRoute` `gateway.networking.k8s.io/v1`.
+- For a private GHCR package, an image pull Secret and its name in `global.imagePullSecrets`. The published application images are public when package visibility permits anonymous pulls.
+- For an external PostgreSQL/MySQL database, a Secret key with its DSN.
+
+## Installing the Chart
+
+### Installing the Chart from the OCI Registry
+
+The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. The `v{{ template "chart.version" . }}` OCI tag is also published as an alias of the standard Helm tag; use `--version {{ template "chart.version" . }}` with Helm.
+
+Create a namespace and the backend Secret, then install:
+
+```shell
+kubectl create namespace kang
+secret_file="$(mktemp)"
+trap 'rm -f "$secret_file"' EXIT
+openssl rand -hex 32 > "$secret_file"
+kubectl -n kang create secret generic kang-backend-secrets \
+  --from-file=JWT_SECRET="$secret_file"
+
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
+  --version {{ template "chart.version" . }} \
+  --namespace kang \
+  --set backend.secret.existingName=kang-backend-secrets \
+  --set backend.env.AUTH_COOKIE_SECURE=false
+```
+
+`kang` is the name of the release and can be changed. The defaults install the CloudNativePG operator and a PostgreSQL cluster with persistent storage. To access the application locally without an Ingress or Gateway, use two terminals:
+
+```shell
+kubectl -n kang port-forward svc/kang-backend 8080:8080
+kubectl -n kang port-forward svc/kang-frontend 3000:3000
+```
+
+Then open `http://localhost:3000`. The default browser API URL is `http://localhost:8080`, and the backend CORS origin is `http://localhost:3000`. For HTTPS production traffic, expose the application as described below and set `backend.env.AUTH_COOKIE_SECURE=true` (the default).
+
+Use a reviewed values file for repeatable installs rather than long command-line overrides:
+
+```shell
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
+  --version {{ template "chart.version" . }} \
+  --namespace kang --create-namespace \
+  -f kang-values.yaml \
+  --set backend.secret.existingName=kang-backend-secrets
+```
+
+Render before applying and review the manifests for your cluster:
+
+```shell
+helm template kang oci://ghcr.io/zaidanm16/kang \
+  --version {{ template "chart.version" . }} \
+  --namespace kang \
+  -f kang-values.yaml \
+  --set backend.secret.existingName=kang-backend-secrets
+```
+
+### Installing the Chart from Sources
+
+#### Pulling the Chart
+
+```shell
+git clone --depth 1 --branch v{{ template "chart.version" . }} https://github.com/zaidanm16/kang-deploy.git
+cd kang-deploy/charts/kang
+helm dependency build
+```
+
+#### Installing the Chart
+
+To install the chart into the `kang` namespace from the pulled sources:
+
+```shell
+helm install kang . --namespace kang \
+  --set backend.secret.existingName=kang-backend-secrets
+```
+
+### Custom installation options
+
+#### Exposing the application
+
+Choose one exposure mode. Both templates route `/api/v1`, `/auth`, and `/health` to the backend and all remaining paths to the frontend. This keeps browser API calls on the same origin and avoids adding a second public host or CORS setup. The Services are `ClusterIP`; there is no NodePort or LoadBalancer setting in this chart.
+
+Existing Ingress controller:
+
+```yaml
+networking:
+  mode: ingress
+  host: kang.example.com
+  ingress:
+    className: nginx
+    tls:
+      enabled: true
+      secretName: kang-example-tls
+```
+
+Existing Gateway API Gateway:
+
+```yaml
+networking:
+  mode: gatewayApi
+  host: kang.example.com
+  gatewayApi:
+    gatewayName: shared-gateway
+    gatewayNamespace: edge
+    sectionName: https
+    tls:
+      enabled: true
+```
+
+To create a Gateway in the release namespace instead, set `gatewayApi.createGateway: true` and provide `gatewayClassName`. For custom public API origins, set `networking.publicApiUrl` and `backend.env.CORS_ORIGINS` to the exact frontend origin(s), comma-separated.
+
+#### Database choices
+
+| Mode | Values | Notes |
+| --- | --- | --- |
+| CNPG managed PostgreSQL (default) | `cnpg.cluster.enabled: true`, `cnpg.operator.enabled: true` | CNPG creates its own PVCs and `<cluster>-app` Secret; the backend reads the `uri` key. Configure storage on `cnpg.cluster.storage`. |
+| External PostgreSQL | `backend.database.driver: postgres`, `backend.database.dsnSecret.name/key` | Disable both `cnpg.cluster.enabled` and `cnpg.operator.enabled`. |
+| External MySQL | `backend.database.driver: mysql`, `backend.database.dsnSecret.name/key` | Same Secret approach; DSN syntax is defined by the backend's MySQL driver. |
+| SQLite (optional) | `backend.database.driver: sqlite`, `backend.database.dsn: /data/data.db`, CNPG disabled | Keep the backend at one replica. The backend PVC holds the database file. |
+
+External DSN Secret:
+
+```shell
+kubectl -n kang create secret generic kang-database \
+  --from-file=DATABASE_DSN=/secure/path/to/database-dsn
+```
+
+```yaml
+backend:
+  database:
+    driver: postgres
+    dsnSecret:
+      name: kang-database
+      key: DATABASE_DSN
+  persistence:
+    enabled: false
+```
+
+#### Optional cache and metrics services
+
+No Redis service is required by default: rate limiting uses the backend's in-memory store. Enable an in-chart DragonflyDB (Redis-compatible) instance, or supply an external Redis URL (or a Secret holding it):
+
+```yaml
+redis:
+  enabled: true
+  persistence:
+    enabled: true
+```
+
+The backend also reuses the configured Redis URL for its optional Kong list, overview, compatibility, and metrics dashboard caches, enabled through `backend.env`.
+
+For dashboard metrics, the backend queries a Prometheus-compatible API at `PROMETHEUS_URL`. Enable an in-chart single-node VictoriaMetrics instance, or point at an external service:
+
+```yaml
+metrics:
+  enabled: true
+  persistence:
+    enabled: true
+```
+
+`metrics.scrapeConfig` supplies a Prometheus scrape configuration to the in-chart instance; by default it scrapes no external targets, and this chart does not discover Kong metrics endpoints automatically.
+
+## Upgrading the Chart
+
+Back up the application database before every upgrade. Helm does not back up CNPG, SQLite, or metrics data and does not perform cross-engine data migration.
+
+To upgrade the release `kang` from the OCI registry, point `--version` at the new chart version and set the new application image tags in your values:
+
+```shell
+helm upgrade kang oci://ghcr.io/zaidanm16/kang \
+  --version <new-chart-version> \
+  --namespace kang
+```
+
+Pin application images to release or commit tags and update both image tags through reviewed values. The backend runs schema migrations on startup when `MIGRATE_ON_START=true` (the default). See the [Upgrade guide](https://zaidanm16.github.io/kang-deploy/installation/upgrade/) for the full procedure and release notes guidance.
+
+## Uninstalling the Chart
+
+To uninstall/delete the release `kang`:
+
+```shell
+helm uninstall kang -n kang
+```
+
+> [!WARNING]
+>
+> This command removes the Kubernetes components associated with the release, including the CNPG `Cluster` and its PostgreSQL data PVCs. Database and metrics data is deleted and cannot be recovered unless you have backups outside the cluster.
+
+## Configuration
+
+The following table lists the configurable parameters of the Kang chart and their default values.
+
+> More granular configuration options may not show up in this table.
+> Viewing the `values.yaml` file directly can show all available options.
+> `values.schema.json` validates supported enums and common value types.
+
+{{ template "chart.valuesTable" . }}
+
+## Operational notes
+
+- `backend.secret.existingName` references the backend Secret. Its `JWT_SECRET` key (overridable via `backend.secret.jwtSecretKey`) is required in production. The same Secret may contain other backend-only secret variables such as `KANG_LICENSE`, `KANG_LICENSE_PUBLIC_KEYS`, `CLOUDINARY_API_SECRET`, `KONG_CREDENTIAL_ENCRYPTION_KEY`, `MIGRATION_WORKER_TOKEN`, or OTLP credentials; Secret keys are exposed as environment variables through `envFrom`. Create it through your platform's secret manager, External Secrets, Sealed Secrets, or `kubectl create secret`. Do not put secret values in a committed values file; Helm values are stored with the release.
+- The frontend image writes `NEXT_PUBLIC_*` runtime settings to `/app/public/runtime-env.js` at container startup. These values are browser-visible configuration, never credentials. `API_URL` is the server-to-server backend URL; `NEXT_PUBLIC_API_URL` is the browser-facing base API URL. With one public hostname and the supplied routing templates, the browser-facing URL should be that origin, while `API_URL` remains the in-cluster backend Service URL. Frontend cookie names must match the backend's `AUTH_COOKIE_NAME` and `AUTH_REFRESH_COOKIE_NAME`.
+- `storageClassName` semantics: `null` (default) omits the field and lets the cluster's default StorageClass apply; a class name requests that StorageClass; `""` explicitly requests no StorageClass, for a matching pre-created or static PV. A PVC selector constrains static PV matching only.
+- Backend SQLite, local Dragonfly, and local VictoriaMetrics are single-replica deployments; the chart uses `Recreate` for those stateful singletons. With `RATE_LIMIT_STORE=memory` (the default when Redis is off), each backend replica keeps its own in-memory rate-limit state.
+- The backend image workflow builds only the API binary and the frontend workflow builds the standalone Next.js app. There is no published migration-worker image; if you use the full database migration features, build and operate `Dockerfile.migration-worker` separately, then set the worker URL and token via `backend.extraEnv` and a Secret.
+- Health endpoints: backend `/health`, frontend `/api/health`. Kubernetes probes use those paths.
+- Scheduling: `nodeSelector`, `tolerations`, and `affinity` apply to application pods; `global.podAnnotations`, `global.commonLabels`, and `global.imagePullSecrets` apply chart-wide. The shared ServiceAccount does not automount Kubernetes API credentials.
+
+## Troubleshooting
+
+| Symptom | Check |
+| --- | --- |
+| Backend CrashLoopBackOff | `JWT_SECRET` exists in the referenced Secret; inspect `kubectl logs deploy/kang-backend`. For PostgreSQL/MySQL, check `DB_DRIVER`, Secret key and DSN. |
+| SQLite permission/open error | Verify PVC binding and mounted volume ownership; check storage driver mount permissions for UID/GID 1000. |
+| PVC Pending | Check StorageClasses and PV matching: `kubectl get pvc,pv,storageclass -n kang`. `storageClassName: ""` disables dynamic provisioning. |
+| Browser API calls fail | Check frontend `NEXT_PUBLIC_API_URL`, browser reachability, route path matches, CORS origin and cookie settings. Internal Service DNS is not reachable from a user's browser. |
+| Login cookie is not stored | Match cookie names; set `AUTH_COOKIE_SECURE=true` only when requests use HTTPS, and confirm proxy TLS termination behavior. |
+| HTTPRoute not accepted | Inspect `kubectl describe httproute -n kang` and Gateway listener `allowedRoutes`; confirm API/controller support and parent listener section. |
+| CNPG Cluster not ready | Confirm operator is running, `Cluster` CRD exists, PVCs bind, and the selected PostgreSQL image is supported by that operator. |
+| Dashboard has no metrics | Confirm backend `PROMETHEUS_URL` points to a reachable Prometheus-compatible query API and the metrics service has data. |
+| Dragonfly not used | Confirm `RATE_LIMIT_STORE=redis`, Redis URL Secret/value, and Dragonfly Service readiness. |
+
+## License
+
+The Kang chart is available under the [MIT License](LICENSE). Its bundled CloudNativePG dependency is licensed separately under Apache-2.0; see [third-party notices](THIRD_PARTY_NOTICES.md) and [the Apache license text](licenses/Apache-2.0.txt). The Kang frontend and backend are separate projects with their own licenses.
+
+----------------------------------------------
+
+Autogenerated values table from chart metadata using [helm-docs](https://github.com/norwoodj/helm-docs).

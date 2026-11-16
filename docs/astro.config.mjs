@@ -6,6 +6,7 @@ export default defineConfig({
   base: '/kang-deploy',
   integrations: [starlight({
     title: 'Kang',
+    favicon: '/kang-logo.svg',
     locales: { root: { label: 'English', lang: 'en' }, id: { label: 'Bahasa Indonesia', lang: 'id' } },
     components: { SiteTitle: './src/components/SiteTitle.astro' },
     description: 'Manage Kong gateways with Kang. Installation, gateway management, and administration guides.',
@@ -18,6 +19,9 @@ export default defineConfig({
       "id": "Tentang Kang"
     },
     "slug": ""
+  },
+  {
+    "slug": "architecture"
   },
   {
     "label": "Installation",
