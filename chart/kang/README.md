@@ -32,7 +32,7 @@ The CNPG dependency can install the operator when `cnpg.operator.enabled=true`. 
 
 ## Quick start: Helm with PostgreSQL
 
-Install the published OCI chart; cloning this repository is not required.
+Install the published OCI chart at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. The `v3.0.0` tag is also published as an alias; use `--version 3.0.0` with Helm. For a private chart, authenticate first with `helm registry login ghcr.io` using a token with package read access.
 
 Create a namespace and a Secret outside Helm. Keeping credentials outside Helm values avoids writing them into a values file or the Helm release record.
 
@@ -44,7 +44,7 @@ openssl rand -hex 32 > "$secret_file"
 kubectl -n kang create secret generic kang-backend-secrets \
   --from-file=JWT_SECRET="$secret_file"
 
-helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
   --version 3.0.0 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
@@ -297,7 +297,7 @@ For custom public API origins, set `networking.publicApiUrl` to the browser-faci
 Create `kang-values.yaml` outside the repository or in a private deployment repository, then install:
 
 ```sh
-helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
   --version 3.0.0 \
   --namespace kang --create-namespace \
   -f kang-values.yaml \
@@ -307,7 +307,7 @@ helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
 Render before applying and review the manifests for your cluster:
 
 ```sh
-helm template kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+helm template kang oci://ghcr.io/zaidanm16/kang \
   --version 3.0.0 \
   --namespace kang \
   -f kang-values.yaml \
