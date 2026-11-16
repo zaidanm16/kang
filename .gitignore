@@ -7,3 +7,6 @@ backend.env
 .codex/
 .DS_Store
 dist/
+
+node_modules/
+.astro/

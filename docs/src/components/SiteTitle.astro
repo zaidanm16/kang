@@ -1,0 +1,21 @@
+---
+const { siteTitleHref, locale } = Astro.locals.starlightRoute;
+const homeLabel = locale === 'id' ? 'Beranda dokumentasi Kang' : 'Kang documentation home';
+---
+<a href={siteTitleHref} class="kang-brand" aria-label={homeLabel}>
+  <img src={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/kang-logo.svg`} width="46" height="46" alt="" />
+  <span class="kang-wordmark" aria-hidden="true" translate="no">
+    <span class="latin">kang.</span>
+    <span class="sundanese">ᮊᮀ.</span>
+  </span>
+</a>
+<style>
+  .kang-brand { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--sl-color-white); }
+  .kang-wordmark { display: block; position: relative; overflow: hidden; height: 2.5rem; width: 5rem; }
+  .latin, .sundanese { position: absolute; top: 0; left: 0; line-height: 2.5rem; transition: transform 0.3s ease; }
+  .latin { font-family: Lobster, cursive; font-size: 2rem; }
+  .sundanese { font-family: 'Noto Sans Sundanese', sans-serif; font-size: 1.75rem; font-weight: 600; transform: translateY(110%); }
+  .kang-brand:hover .latin, .kang-brand:focus-visible .latin { transform: translateY(-110%); }
+  .kang-brand:hover .sundanese, .kang-brand:focus-visible .sundanese { transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .latin, .sundanese { transition: none; } }
+</style>

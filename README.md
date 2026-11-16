@@ -1,9 +1,31 @@
-# KANG Deploy
+# Kang
 
 [![Release](https://img.shields.io/badge/release-v3.0.0-blue)](https://github.com/zaidanm16/kang-deploy/releases)
 [![Release workflow](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml/badge.svg)](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml)
 
-Deploy [Kang](https://github.com/zaidanm16/kang-frontend), a management application for Kong API Gateway, with Docker Compose or Kubernetes. Kong Gateway runs separately.
+**Manage your Kong gateways from one place.**
+
+Kang is a self-hosted web application for managing Kong API Gateway. It gives individual operators and teams a UI to configure services, routes, consumers, and plugins, switch between gateway environments, and review administrative activity.
+
+Use Kang to work with staging and production gateways without maintaining a separate management tool for each one. Connections are part of the URL, so you can keep different environments open in separate browser tabs. Access still depends on the signed-in user's permissions.
+
+### What you can do
+
+- Configure gateway services, routes, consumers, plugins, upstreams, certificates, and other supported Kong resources.
+- Manage multiple gateway connections from one workspace.
+- Review audit activity and, with Pro, inspect change details and manage configuration snapshots.
+- With Pro, collaborate through additional users, organizations, teams, and permissions.
+- View traffic metrics when a Prometheus-compatible service is configured and analytics is enabled.
+
+Kang manages **existing Kong gateways** through their Admin APIs. It does not replace Kong's proxy or install Kong itself. Available gateway features also depend on your Kong version and edition.
+
+This is Kang's public home for installation files and documentation. The application source is closed source; the deployment configuration and docs here are MIT licensed.
+
+### Free and Pro
+
+Free requires no license key and includes Gateway Manager, up to 2 connections, 1 user, and the audit activity list. Pro adds unlimited connections and users, organizations, teams, snapshots, and audit change details. Pro requires a valid license; after expiry and a 7-day grace period, application access locks until renewal. Login and license installation remain available, and data is retained.
+
+Start with Docker Compose below, or use the published Helm chart on Kubernetes. Documentation source lives in [`docs/`](docs/README.md).
 
 ## Getting started
 
@@ -17,7 +39,7 @@ cp backend.env.example backend.env
 docker compose up -d
 ```
 
-If the repository or images are private, authenticate Git and Docker with an account that has access before starting.
+The chart and application images are public and can be downloaded without registry login.
 
 Open **http://localhost:3000**. Get the one-time setup token with `docker compose logs backend`, then follow the setup screen to create your administrator and connect an existing Kong Admin API. The Admin API must be reachable from the backend container; `localhost` inside a container refers to that container.
 
@@ -55,7 +77,7 @@ See the [chart guide](charts/kang/README.md) for external databases, storage, HT
 
 ## Releases
 
-Release **v3.0.0** includes the chart and frontend version `3.0.0`. Backend images are pinned independently; the current default is `ghcr.io/zaidanm16/kang-backend:v1.0.0`.
+Release **v3.0.0** includes the chart and frontend version `3.0.0`. Backend images are pinned independently; the current default is `ghcr.io/zaidanm16/kang-backend:1.0.0`.
 
 The [release workflow](.github/workflows/release.yaml) publishes these artifacts when a matching `v*` tag is pushed:
 
@@ -70,11 +92,11 @@ The [release workflow](.github/workflows/release.yaml) publishes these artifacts
 
 Chart `version` must match the release tag without `v`. `appVersion` records the frontend version. Application image tags retain the upstream `v` prefix. The `v3.0.0` OCI tag is an alias of the standard Helm tag `3.0.0`; Helm installation examples use `--version 3.0.0`. GitHub lists OCI Helm charts under container Packages because they use the same registry format. Registry packages must be public for anonymous downloads; private packages require registry authentication.
 
-The release badge uses an explicit version so it also works while this repository is private. Update it alongside the documented release version.
+Update the release badge alongside the documented release version.
 
 ## Contributing
 
-Application source code lives in [kang-frontend](https://github.com/zaidanm16/kang-frontend) and [kang-backend](https://github.com/zaidanm16/kang-backend). This repository contains deployment configuration; chart sources live in `charts/kang`.
+Contributions here cover installation configuration and product documentation. Chart sources live in `charts/kang`; the Starlight documentation site lives in `docs`. The frontend and backend application source is maintained separately.
 
 Validate source changes before publishing:
 
