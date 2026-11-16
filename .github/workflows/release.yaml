@@ -71,10 +71,16 @@ jobs:
           printf '%s' "$GH_TOKEN" | oras login ghcr.io --username "$GH_USER" --password-stdin
           chart_version="${RELEASE_TAG#v}"
           chart_ref="ghcr.io/${GH_OWNER,,}/kang"
-          helm push "dist/kang-${chart_version}.tgz" "oci://ghcr.io/${GH_OWNER,,}"
+          legacy_ref="ghcr.io/${GH_OWNER,,}/kang-deploy/kang:${chart_version}"
+          if oras resolve "$legacy_ref" >/dev/null 2>&1; then
+            oras cp "$legacy_ref" "${chart_ref}:${chart_version}"
+          else
+            helm push "dist/kang-${chart_version}.tgz" "oci://ghcr.io/${GH_OWNER,,}"
+          fi
           oras tag "${chart_ref}:${chart_version}" "$RELEASE_TAG"
           test "$(oras resolve "${chart_ref}:${chart_version}")" = "$(oras resolve "${chart_ref}:${RELEASE_TAG}")"
           helm show chart "oci://${chart_ref}" --version "$chart_version"
+          helm show chart "oci://${chart_ref}:${RELEASE_TAG}"
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
