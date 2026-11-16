@@ -1,6 +1,6 @@
 # KANG Deploy
 
-[![Release](https://img.shields.io/github/v/release/zaidanm16/kang-deploy)](https://github.com/zaidanm16/kang-deploy/releases)
+[![Release](https://img.shields.io/badge/release-v3.0.0-blue)](https://github.com/zaidanm16/kang-deploy/releases)
 [![Release workflow](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml/badge.svg)](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml)
 
 Deploy [Kang](https://github.com/zaidanm16/kang-frontend), a management application for Kong API Gateway, with Docker Compose or Kubernetes. Kong Gateway runs separately.
@@ -37,7 +37,7 @@ kubectl -n kang create secret generic kang-backend-secrets \
   --from-file=JWT_SECRET="$secret_file"
 rm -f "$secret_file"
 
-helm upgrade --install kang oci://ghcr.io/zaidanm16/kang-deploy/kang \
+helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
   --version 3.0.0 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
@@ -61,13 +61,16 @@ The [release workflow](.github/workflows/release.yaml) publishes these artifacts
 
 | Artifact | Use |
 | --- | --- |
-| `oci://ghcr.io/zaidanm16/kang-deploy/kang:3.0.0` | Install with Helm using `--version 3.0.0` |
+| `oci://ghcr.io/zaidanm16/kang:3.0.0` | Install with Helm using `--version 3.0.0` |
+| `oci://ghcr.io/zaidanm16/kang:v3.0.0` | Alias for the same chart artifact |
 | `kang-3.0.0.tgz` | Packaged chart with its pinned CloudNativePG dependency |
 | `kang-compose.tar.gz` | Docker Compose stack, environment examples, and guide |
 | `kang.yaml`, `kubernetes-README.md` | Standalone Kubernetes deployment |
 | `SHA256SUMS` | Checksums for the downloadable files |
 
-Chart `version` must match the release tag without `v`. `appVersion` records the frontend version. Application image tags retain the upstream `v` prefix. Registry packages must be public for anonymous downloads; private packages require registry authentication.
+Chart `version` must match the release tag without `v`. `appVersion` records the frontend version. Application image tags retain the upstream `v` prefix. The `v3.0.0` OCI tag is an alias of the standard Helm tag `3.0.0`; Helm installation examples use `--version 3.0.0`. GitHub lists OCI Helm charts under container Packages because they use the same registry format. Registry packages must be public for anonymous downloads; private packages require registry authentication.
+
+The release badge uses an explicit version so it also works while this repository is private. Update it alongside the documented release version.
 
 ## Contributing
 
