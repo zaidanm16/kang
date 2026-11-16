@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kang.frontendName" . }}-config
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+data:
+  NODE_ENV: production
+  PORT: "3000"
+  HOSTNAME: 0.0.0.0
+  API_URL: {{ default (printf "http://%s:%v" (include "kang.backendName" .) .Values.backend.service.port) .Values.frontend.env.API_URL | quote }}
+  {{- range $key, $value := .Values.frontend.env }}
+  {{- if not (has $key (list "API_URL" "NEXT_PUBLIC_API_URL")) }}
+  {{ $key }}: {{ $value | toString | quote }}
+  {{- end }}
+  {{- end }}
+  {{- if .Values.frontend.env.NEXT_PUBLIC_API_URL }}
+  NEXT_PUBLIC_API_URL: {{ .Values.frontend.env.NEXT_PUBLIC_API_URL | quote }}
+  {{- else if .Values.networking.publicApiUrl }}
+  NEXT_PUBLIC_API_URL: {{ .Values.networking.publicApiUrl | quote }}
+  {{- else if .Values.networking.host }}
+  {{- $scheme := "http" }}
+  {{- if and (eq .Values.networking.mode "ingress") .Values.networking.ingress.tls.enabled }}{{ $scheme = "https" }}{{ end }}
+  {{- if and (eq .Values.networking.mode "gatewayApi") .Values.networking.gatewayApi.tls.enabled }}{{ $scheme = "https" }}{{ end }}
+  NEXT_PUBLIC_API_URL: {{ printf "%s://%s" $scheme .Values.networking.host | quote }}
+  {{- else }}
+  NEXT_PUBLIC_API_URL: "http://localhost:8080"
+  {{- end }}

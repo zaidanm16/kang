@@ -1,0 +1,289 @@
+# PostgreSQL quick start. Replace JWT and matching database password placeholders before applying.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kang-backend-secrets
+  labels:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: backend
+type: Opaque
+stringData:
+  JWT_SECRET: REPLACE_WITH_OUTPUT_OF_openssl_rand_hex_32
+  POSTGRES_PASSWORD: REPLACE_WITH_GENERATED_DATABASE_PASSWORD
+  DATABASE_DSN: postgresql://kang:REPLACE_WITH_GENERATED_DATABASE_PASSWORD@kang-postgres:5432/kang?sslmode=disable
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kang-backend-config
+  labels:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: backend
+data:
+  SERVER_PORT: "8080"
+  GIN_MODE: release
+  LOG_LEVEL: info
+  ACCESS_LOG_MODE: important
+  DB_DRIVER: postgres
+  MIGRATE_ON_START: "true"
+  JWT_ISSUER: kang
+  JWT_AUDIENCE: kang-api
+  ACCESS_TOKEN_TTL: 15m
+  REFRESH_TOKEN_TTL: 168h
+  REMEMBER_ME_REFRESH_TOKEN_TTL: 720h
+  MAX_SESSIONS: "5"
+  AUTH_COOKIE_NAME: kang_session
+  AUTH_COOKIE_SECURE: "false"
+  AUTH_COOKIE_SAMESITE: lax
+  CSRF_ENABLED: "true"
+  CORS_ORIGINS: http://localhost:3000
+  CORS_ALLOW_CREDENTIALS: "true"
+  CORS_METHODS: GET,POST,PUT,PATCH,DELETE,OPTIONS
+  CORS_HEADERS: Origin,Content-Type,Accept,Authorization,X-Skip-Audit,X-CSRF-Token,X-Kong-Instance-ID
+  CORS_EXPOSE_HEADERS: Content-Length
+  RATE_LIMIT_STORE: memory
+  RATE_LIMIT_REQUESTS: "120"
+  RATE_LIMIT_WINDOW: 1m
+  AUTH_RATE_LIMIT_REQUESTS: "10"
+  AUTH_RATE_LIMIT_WINDOW: 1m
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kang-frontend-config
+  labels:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: frontend
+data:
+  NODE_ENV: production
+  PORT: "3000"
+  HOSTNAME: 0.0.0.0
+  API_URL: http://kang-backend:8080
+  NEXT_PUBLIC_API_URL: http://localhost:8080
+  AUTH_COOKIE_NAME: kang_session
+  AUTH_REFRESH_COOKIE_NAME: kang_refresh
+  NEXT_PUBLIC_KONG_DEVELOPER_DOCS_BASE_URL: https://developer.konghq.com
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kang-backend
+  labels:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kang
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kang
+        app.kubernetes.io/component: backend
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+      containers:
+        - name: backend
+          image: ghcr.io/zaidanm16/kang-backend:v1.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: kang-backend-config
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: kang-backend-secrets
+                  key: JWT_SECRET
+            - name: DATABASE_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: kang-backend-secrets
+                  key: DATABASE_DSN
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 1000
+            runAsGroup: 1000
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kang-backend
+  labels:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: backend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: backend
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kang-frontend
+  labels:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kang
+      app.kubernetes.io/component: frontend
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kang
+        app.kubernetes.io/component: frontend
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: frontend
+          image: ghcr.io/zaidanm16/kang-frontend:v3.0.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: kang-frontend-config
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
+          startupProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            periodSeconds: 20
+      volumes:
+        - name: tmp
+          emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kang-frontend
+  labels:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: frontend
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: kang
+    app.kubernetes.io/component: frontend
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kang-postgres
+spec:
+  clusterIP: None
+  selector:
+    app: kang-postgres
+  ports:
+    - port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kang-postgres
+spec:
+  serviceName: kang-postgres
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kang-postgres
+  template:
+    metadata:
+      labels:
+        app: kang-postgres
+    spec:
+      containers:
+        - name: postgres
+          image: postgres:17-alpine
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_DB
+              value: kang
+            - name: POSTGRES_USER
+              value: kang
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kang-backend-secrets
+                  key: POSTGRES_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - kang
+                - -d
+                - kang
+            initialDelaySeconds: 5
+            periodSeconds: 5
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi

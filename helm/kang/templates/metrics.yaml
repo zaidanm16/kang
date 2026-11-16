@@ -1,0 +1,137 @@
+{{- if .Values.metrics.enabled }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kang.metricsName" . }}-config
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: metrics
+data:
+  prometheus.yml: |
+    {{- if .Values.metrics.scrapeConfig }}
+    {{- .Values.metrics.scrapeConfig | nindent 4 }}
+    {{- else }}
+    global:
+      scrape_interval: 30s
+    scrape_configs: []
+    {{- end }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "kang.metricsName" . }}
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: metrics
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "kang.selectorLabels" . | nindent 4 }}
+    app.kubernetes.io/component: metrics
+  ports:
+    - name: http
+      port: {{ .Values.metrics.service.port }}
+      targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kang.metricsName" . }}
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: metrics
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      {{- include "kang.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: metrics
+  template:
+    metadata:
+      labels:
+        {{- include "kang.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: metrics
+    spec:
+      containers:
+        - name: victoriametrics
+          image: {{ printf "%s:%s" .Values.metrics.image.repository .Values.metrics.image.tag | quote }}
+          imagePullPolicy: {{ .Values.metrics.image.pullPolicy }}
+          args:
+            - -promscrape.config=/etc/victoria-metrics/prometheus.yml
+            - -storageDataPath=/victoria-metrics-data
+            - -retentionPeriod={{ .Values.metrics.retentionPeriod }}
+            - -httpListenAddr=:{{ .Values.metrics.service.port }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.metrics.service.port }}
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 15
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 30
+          resources:
+            {{- toYaml .Values.metrics.resources | nindent 12 }}
+          volumeMounts:
+            - name: config
+              mountPath: /etc/victoria-metrics
+              readOnly: true
+            - name: data
+              mountPath: /victoria-metrics-data
+      volumes:
+        - name: config
+          configMap:
+            name: {{ include "kang.metricsName" . }}-config
+        - name: data
+          {{- if .Values.metrics.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.metrics.persistence.existingClaim }}
+          {{- else if .Values.metrics.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-data" (include "kang.metricsName" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+{{- if and .Values.metrics.persistence.enabled (not .Values.metrics.persistence.existingClaim) }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "kang.metricsName" . }}-data
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: metrics
+    {{- with .Values.metrics.persistence.labels }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+  {{- with .Values.metrics.persistence.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    {{- toYaml .Values.metrics.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.metrics.persistence.size | quote }}
+  {{- if ne .Values.metrics.persistence.storageClassName nil }}
+  storageClassName: {{ .Values.metrics.persistence.storageClassName | quote }}
+  {{- end }}
+  {{- with .Values.metrics.persistence.selector }}
+  selector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}
+{{- end }}

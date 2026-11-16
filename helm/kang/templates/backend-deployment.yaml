@@ -1,0 +1,147 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "kang.backendName" . }}
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+  strategy:
+    type: {{ ternary "RollingUpdate" "Recreate" (or .Values.cnpg.cluster.enabled (ne .Values.backend.database.driver "sqlite")) }}
+  selector:
+    matchLabels:
+      {{- include "kang.selectorLabels" . | nindent 6 }}
+      app.kubernetes.io/component: backend
+  template:
+    metadata:
+      labels:
+        {{- include "kang.selectorLabels" . | nindent 8 }}
+        app.kubernetes.io/component: backend
+      {{- with .Values.global.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    spec:
+      serviceAccountName: {{ include "kang.serviceAccountName" . }}
+      automountServiceAccountToken: false
+      {{- with .Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      securityContext:
+        {{- toYaml .Values.backend.podSecurityContext | nindent 8 }}
+      containers:
+        - name: backend
+          image: {{ printf "%s:%s" .Values.backend.image.repository .Values.backend.image.tag | quote }}
+          imagePullPolicy: {{ .Values.backend.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: {{ include "kang.backendName" . }}-config
+            {{- if .Values.backend.secret.existingName }}
+            - secretRef:
+                name: {{ .Values.backend.secret.existingName }}
+            {{- end }}
+            {{ if .Values.backend.extraEnvFrom }}
+            {{ toYaml .Values.backend.extraEnvFrom | nindent 12 }}
+            {{ end }}
+          env:
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "Set backend.secret.existingName to a Kubernetes Secret containing JWT_SECRET" .Values.backend.secret.existingName }}
+                  key: {{ .Values.backend.secret.jwtSecretKey }}
+            {{- if .Values.cnpg.cluster.enabled }}
+            - name: DATABASE_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ printf "%s-app" (include "kang.cnpgName" .) }}
+                  key: uri
+            {{- else if ne .Values.backend.database.dsnSecret.name "" }}
+            - name: DATABASE_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.backend.database.dsnSecret.name }}
+                  key: {{ .Values.backend.database.dsnSecret.key }}
+            {{- else if ne .Values.backend.database.driver "sqlite" }}
+            - name: DATABASE_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ required "Set backend.database.dsnSecret.name for external PostgreSQL/MySQL" .Values.backend.database.dsnSecret.name }}
+                  key: {{ .Values.backend.database.dsnSecret.key }}
+            {{- end }}
+            {{- if .Values.redis.existingSecret.name }}
+            - name: RATE_LIMIT_REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.redis.existingSecret.name }}
+                  key: {{ .Values.redis.existingSecret.key }}
+            {{- end }}
+            {{- if .Values.metrics.existingSecret.name }}
+            - name: PROMETHEUS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.metrics.existingSecret.name }}
+                  key: {{ .Values.metrics.existingSecret.key }}
+            {{- end }}
+            {{ if .Values.backend.extraEnv }}
+            {{ toYaml .Values.backend.extraEnv | nindent 12 }}
+            {{ end }}
+          volumeMounts:
+            {{- if and (eq .Values.backend.database.driver "sqlite") (not .Values.cnpg.cluster.enabled) }}
+            - name: database
+              mountPath: /data
+            {{- end }}
+            - name: tmp
+              mountPath: /tmp
+          startupProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+            failureThreshold: 30
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 20
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12 }}
+          securityContext:
+            {{- toYaml .Values.backend.securityContext | nindent 12 }}
+      volumes:
+        {{- if and (eq .Values.backend.database.driver "sqlite") (not .Values.cnpg.cluster.enabled) }}
+        - name: database
+          {{- if .Values.backend.persistence.existingClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.backend.persistence.existingClaim }}
+          {{- else if .Values.backend.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: {{ printf "%s-data" (include "kang.backendName" .) }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- end }}
+        - name: tmp
+          emptyDir: {}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

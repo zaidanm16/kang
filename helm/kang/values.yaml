@@ -1,0 +1,244 @@
+nameOverride: ""
+fullnameOverride: ""
+
+global:
+  imagePullSecrets: []
+  podAnnotations: {}
+  commonLabels: {}
+
+backend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/zaidanm16/kang-backend
+    tag: v1.0.0
+    pullPolicy: IfNotPresent
+  service:
+    port: 8080
+  resources: {}
+  podSecurityContext:
+    fsGroup: 1000
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1000
+    runAsGroup: 1000
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+  persistence:
+    enabled: true
+    existingClaim: ""
+    size: 5Gi
+    storageClassName: null
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+    labels: {}
+    selector: {}
+  secret:
+    existingName: ""
+    jwtSecretKey: JWT_SECRET
+  database:
+    driver: postgres
+    dsn: /data/data.db
+    dsnSecret:
+      name: ""
+      key: DATABASE_DSN
+  env:
+    DB_MAX_OPEN_CONNS: "100"
+    DB_MAX_IDLE_CONNS: "10"
+    DB_CONN_MAX_LIFETIME: 1h
+    PROMETHEUS_TIMEOUT: 30s
+    PROMETHEUS_CACHE_ENABLED: "false"
+    PROMETHEUS_CACHE_PREFIX: kang:prometheus-dashboard
+    PROMETHEUS_CACHE_FRESH_TTL: 1m
+    PROMETHEUS_CACHE_STALE_TTL: 5m
+    ACCESS_TOKEN_TTL: 15m
+    REFRESH_TOKEN_TTL: 168h
+    REMEMBER_ME_REFRESH_TOKEN_TTL: 720h
+    MAX_SESSIONS: "5"
+    PASSWORD_MIN_LENGTH: "8"
+    PASSWORD_REQUIRE_UPPER: "true"
+    PASSWORD_REQUIRE_NUMBER: "true"
+    PASSWORD_REQUIRE_SPECIAL: "true"
+    MAX_LOGIN_ATTEMPTS: "5"
+    LOGIN_LOCKOUT_DURATION: 15m
+    BCRYPT_COST: "12"
+    GIN_MODE: release
+    LOG_LEVEL: info
+    ACCESS_LOG_MODE: important
+    JWT_ISSUER: kang
+    JWT_AUDIENCE: kang-api
+    AUTH_COOKIE_NAME: kang_session
+    AUTH_COOKIE_SECURE: "true"
+    AUTH_COOKIE_SAMESITE: lax
+    CSRF_ENABLED: "true"
+    CORS_ALLOW_CREDENTIALS: "true"
+    CORS_METHODS: GET,POST,PUT,PATCH,DELETE,OPTIONS
+    CORS_HEADERS: Origin,Content-Type,Accept,Authorization,X-Skip-Audit,X-CSRF-Token,X-Kong-Instance-ID
+    CORS_EXPOSE_HEADERS: Content-Length
+    RATE_LIMIT_STORE: ""
+    RATE_LIMIT_REQUESTS: "120"
+    RATE_LIMIT_WINDOW: 1m
+    AUTH_RATE_LIMIT_REQUESTS: "10"
+    AUTH_RATE_LIMIT_WINDOW: 1m
+    MIGRATE_ON_START: "true"
+    PROXY_REQUEST_TIMEOUT: 60s
+    KONG_RECURSIVE_CACHE_ENABLED: "true"
+    KONG_RECURSIVE_CACHE_TTL_MS: 30s
+    KONG_RECURSIVE_CACHE_REDIS_PREFIX: kang:kong-list
+    KONG_RECURSIVE_CACHE_REDIS_TTL: 5m
+    KONG_COMPATIBILITY_CACHE_ENABLED: "false"
+    KONG_COMPATIBILITY_CACHE_PREFIX: kang:compatibility
+    KONG_COMPATIBILITY_CACHE_TTL: 6h
+    KONG_COMPATIBILITY_ERROR_CACHE_TTL: 1m
+    KONG_OVERVIEW_CACHE_ENABLED: "false"
+    KONG_OVERVIEW_CACHE_PREFIX: kang:overview
+    KONG_OVERVIEW_CACHE_TTL: 5m
+    OTEL_TRACING_ENABLED: "false"
+    OTEL_SERVICE_NAME: kang-backend
+    OTEL_EXPORTER_OTLP_ENDPOINT: http://localhost:4317
+    AUDIT_LOG_RETENTION_PERIOD: 2160h
+    AUDIT_LOG_RETENTION_INTERVAL: 24h
+  extraEnv: []
+  extraEnvFrom: []
+
+frontend:
+  replicaCount: 1
+  image:
+    repository: ghcr.io/zaidanm16/kang-frontend
+    tag: v3.0.0
+    pullPolicy: IfNotPresent
+  service:
+    port: 3000
+  resources: {}
+  securityContext:
+    runAsNonRoot: true
+    runAsUser: 1001
+    runAsGroup: 1001
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop: [ALL]
+  env:
+    API_URL: ""
+    AUTH_COOKIE_NAME: kang_session
+    AUTH_REFRESH_COOKIE_NAME: kang_refresh
+    NEXT_PUBLIC_API_URL: ""
+    NEXT_PUBLIC_KONG_DEVELOPER_DOCS_BASE_URL: https://developer.konghq.com
+    NEXT_PUBLIC_API_TIMEOUT_MS: "10000"
+    NEXT_PUBLIC_KONG_PROXY_TIMEOUT_MS: "5000"
+    NEXT_PUBLIC_KONG_OVERVIEW_REQUEST_TIMEOUT_MS: "30000"
+    NEXT_PUBLIC_KONG_OVERVIEW_STALE_MS: "30000"
+    NEXT_PUBLIC_KONG_STATUS_REFRESH_MS: "10000"
+    NEXT_PUBLIC_METRICS_REFRESH_MS: "60000"
+    NEXT_PUBLIC_AUDIT_LOG_MAX_LIMIT: "100"
+    NEXT_PUBLIC_ERROR_REPORTING_ENDPOINT: ""
+    NEXT_PUBLIC_FULL_MIGRATION_ENABLED: "false"
+    NEXT_PUBLIC_APP_VERSION: ""
+  extraEnv: []
+  extraEnvFrom: []
+
+redis:
+  enabled: false
+  externalUrl: ""
+  existingSecret:
+    name: ""
+    key: RATE_LIMIT_REDIS_URL
+  service:
+    port: 6379
+  image:
+    repository: docker.dragonflydb.io/dragonflydb/dragonfly
+    tag: v1.37.0
+    pullPolicy: IfNotPresent
+  args:
+    - --bind=0.0.0.0
+    - --port=6379
+  persistence:
+    enabled: false
+    existingClaim: ""
+    size: 5Gi
+    storageClassName: null
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+    labels: {}
+    selector: {}
+  resources: {}
+
+metrics:
+  enabled: false
+  externalUrl: ""
+  existingSecret:
+    name: ""
+    key: PROMETHEUS_URL
+  service:
+    port: 9090
+  image:
+    repository: victoriametrics/victoria-metrics
+    tag: v1.137.0
+    pullPolicy: IfNotPresent
+  retentionPeriod: 1y
+  scrapeConfig: ""
+  persistence:
+    enabled: true
+    existingClaim: ""
+    size: 10Gi
+    storageClassName: null
+    accessModes:
+      - ReadWriteOnce
+    annotations: {}
+    labels: {}
+    selector: {}
+  resources: {}
+
+cnpg:
+  operator:
+    enabled: true
+  cluster:
+    enabled: true
+    name: ""
+    instances: 1
+    imageName: ghcr.io/cloudnative-pg/postgresql:17.6
+    database: kang
+    owner: kang
+    storage:
+      size: 10Gi
+      storageClass: ""
+    walStorage:
+      enabled: false
+      size: 2Gi
+      storageClass: ""
+    resources: {}
+
+networking:
+  mode: none # none, ingress, gatewayApi
+  host: ""
+  publicApiUrl: ""
+  ingress:
+    className: ""
+    annotations: {}
+    tls:
+      enabled: false
+      secretName: ""
+  gatewayApi:
+    createGateway: false
+    gatewayClassName: ""
+    gatewayName: ""
+    gatewayNamespace: ""
+    sectionName: ""
+    httpPort: 80
+    allowedRoutesFrom: Same
+    allowedRoutesSelector: {}
+    tls:
+      enabled: false
+      secretName: ""
+      port: 443
+    annotations: {}
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

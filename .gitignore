@@ -1,0 +1,9 @@
+.env
+backend.env
+.env.local
+.env.*.local
+.agents/
+.claude/
+.codex/
+.DS_Store
+dist/

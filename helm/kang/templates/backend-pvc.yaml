@@ -1,0 +1,27 @@
+{{- if and .Values.backend.persistence.enabled (not .Values.backend.persistence.existingClaim) (eq .Values.backend.database.driver "sqlite") (not .Values.cnpg.cluster.enabled) }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "kang.backendName" . }}-data
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+    {{- with .Values.backend.persistence.labels }}{{ toYaml . | nindent 4 }}{{- end }}
+  {{- with .Values.backend.persistence.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  accessModes:
+    {{- toYaml .Values.backend.persistence.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.backend.persistence.size }}
+  {{- if ne .Values.backend.persistence.storageClassName nil }}
+  storageClassName: {{ .Values.backend.persistence.storageClassName | quote }}
+  {{- end }}
+  {{- with .Values.backend.persistence.selector }}
+  selector:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

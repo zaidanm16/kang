@@ -1,0 +1,54 @@
+{{- if eq .Values.networking.mode "ingress" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "kang.fullname" . }}
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+  {{- with .Values.networking.ingress.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  {{- with .Values.networking.ingress.className }}
+  ingressClassName: {{ . | quote }}
+  {{- end }}
+  {{- if .Values.networking.ingress.tls.enabled }}
+  tls:
+    - hosts:
+        - {{ required "networking.host is required for Ingress TLS" .Values.networking.host | quote }}
+      secretName: {{ required "networking.ingress.tls.secretName is required when TLS is enabled" .Values.networking.ingress.tls.secretName }}
+  {{- end }}
+  rules:
+    - host: {{ required "networking.host is required when networking.mode=ingress" .Values.networking.host | quote }}
+      http:
+        paths:
+          - path: /api/v1
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "kang.backendName" . }}
+                port:
+                  number: {{ .Values.backend.service.port }}
+          - path: /auth
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "kang.backendName" . }}
+                port:
+                  number: {{ .Values.backend.service.port }}
+          - path: /health
+            pathType: Exact
+            backend:
+              service:
+                name: {{ include "kang.backendName" . }}
+                port:
+                  number: {{ .Values.backend.service.port }}
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ include "kang.frontendName" . }}
+                port:
+                  number: {{ .Values.frontend.service.port }}
+{{- end }}

@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "kang.backendName" . }}-config
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+data:
+  SERVER_PORT: "8080"
+  DB_DRIVER: {{ ternary "postgres" .Values.backend.database.driver .Values.cnpg.cluster.enabled | quote }}
+  {{- if and (not .Values.cnpg.cluster.enabled) (eq .Values.backend.database.driver "sqlite") }}
+  DATABASE_DSN: {{ .Values.backend.database.dsn | quote }}
+  {{- end }}
+  {{- range $key, $value := .Values.backend.env }}
+  {{- if not (has $key (list "SERVER_PORT" "DB_DRIVER" "DATABASE_DSN" "JWT_SECRET" "CORS_ORIGINS" "PROMETHEUS_URL" "RATE_LIMIT_REDIS_URL" "RATE_LIMIT_STORE")) }}
+  {{ $key }}: {{ $value | toString | quote }}
+  {{- end }}
+  {{- end }}
+  {{- if hasKey .Values.backend.env "CORS_ORIGINS" }}
+  CORS_ORIGINS: {{ index .Values.backend.env "CORS_ORIGINS" | quote }}
+  {{- else if .Values.networking.host }}
+  {{- $scheme := "http" }}
+  {{- if and (eq .Values.networking.mode "ingress") .Values.networking.ingress.tls.enabled }}{{ $scheme = "https" }}{{ end }}
+  {{- if and (eq .Values.networking.mode "gatewayApi") .Values.networking.gatewayApi.tls.enabled }}{{ $scheme = "https" }}{{ end }}
+  CORS_ORIGINS: {{ printf "%s://%s" $scheme .Values.networking.host | quote }}
+  {{- else }}
+  CORS_ORIGINS: "http://localhost:3000"
+  {{- end }}
+  {{- if .Values.metrics.existingSecret.name }}
+  PROMETHEUS_URL: ""
+  {{- else if .Values.metrics.externalUrl }}
+  PROMETHEUS_URL: {{ .Values.metrics.externalUrl | quote }}
+  {{- else if .Values.metrics.enabled }}
+  PROMETHEUS_URL: {{ printf "http://%s:%v" (include "kang.metricsName" .) .Values.metrics.service.port | quote }}
+  {{- else }}
+  PROMETHEUS_URL: ""
+  {{- end }}
+  RATE_LIMIT_STORE: {{- if .Values.backend.env.RATE_LIMIT_STORE }} {{ .Values.backend.env.RATE_LIMIT_STORE | quote }}{{- else if or .Values.redis.enabled .Values.redis.externalUrl .Values.redis.existingSecret.name }} "redis"{{- else }} "memory"{{- end }}
+  {{- if and .Values.redis.enabled (not .Values.redis.externalUrl) (not .Values.redis.existingSecret.name) }}
+  RATE_LIMIT_REDIS_URL: {{ printf "redis://%s:%v/0" (include "kang.redisName" .) .Values.redis.service.port | quote }}
+  {{- else if .Values.redis.externalUrl }}
+  RATE_LIMIT_REDIS_URL: {{ .Values.redis.externalUrl | quote }}
+  {{- end }}

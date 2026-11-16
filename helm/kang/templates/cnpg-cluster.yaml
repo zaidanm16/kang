@@ -1,0 +1,31 @@
+{{- if .Values.cnpg.cluster.enabled }}
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ include "kang.cnpgName" . }}
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+spec:
+  instances: {{ .Values.cnpg.cluster.instances }}
+  imageName: {{ .Values.cnpg.cluster.imageName | quote }}
+  bootstrap:
+    initdb:
+      database: {{ .Values.cnpg.cluster.database | quote }}
+      owner: {{ .Values.cnpg.cluster.owner | quote }}
+  storage:
+    size: {{ .Values.cnpg.cluster.storage.size | quote }}
+    {{- with .Values.cnpg.cluster.storage.storageClass }}
+    storageClass: {{ . | quote }}
+    {{- end }}
+  {{- if .Values.cnpg.cluster.walStorage.enabled }}
+  walStorage:
+    size: {{ .Values.cnpg.cluster.walStorage.size | quote }}
+    {{- with .Values.cnpg.cluster.walStorage.storageClass }}
+    storageClass: {{ . | quote }}
+    {{- end }}
+  {{- end }}
+  {{- with .Values.cnpg.cluster.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+{{- end }}

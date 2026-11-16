@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "title": "KANG Helm values",
+  "type": "object",
+  "properties": {
+    "backend": {
+      "type": "object",
+      "properties": {
+        "replicaCount": { "type": "integer", "minimum": 1 },
+        "image": {
+          "type": "object",
+          "required": ["repository", "tag"],
+          "properties": {
+            "repository": { "type": "string", "minLength": 1 },
+            "tag": { "type": "string", "minLength": 1 },
+            "pullPolicy": { "type": "string", "enum": ["Always", "IfNotPresent", "Never"] }
+          }
+        },
+        "database": {
+          "type": "object",
+          "properties": {
+            "driver": { "type": "string", "enum": ["sqlite", "postgres", "mysql"] },
+            "dsn": { "type": "string" },
+            "dsnSecret": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "key": { "type": "string", "minLength": 1 }
+              }
+            }
+          }
+        },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "existingClaim": { "type": "string" },
+            "size": { "type": "string", "pattern": "^[1-9][0-9]*(Ki|Mi|Gi|Ti|Pi|Ei|K|M|G|T|P|E)?$" },
+            "storageClassName": { "type": ["string", "null"] },
+            "accessModes": { "type": "array", "minItems": 1, "items": { "type": "string", "enum": ["ReadWriteOnce", "ReadOnlyMany", "ReadWriteMany", "ReadWriteOncePod"] } },
+            "selector": { "type": "object" },
+            "annotations": { "type": "object" },
+            "labels": { "type": "object" }
+          }
+        },
+        "secret": {
+          "type": "object",
+          "properties": {
+            "existingName": { "type": "string" },
+            "jwtSecretKey": { "type": "string", "minLength": 1 }
+          }
+        },
+        "env": { "type": "object", "additionalProperties": { "type": ["string", "number", "boolean"] } },
+        "extraEnv": { "type": "array", "items": { "type": "object" } },
+        "extraEnvFrom": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "frontend": {
+      "type": "object",
+      "properties": {
+        "replicaCount": { "type": "integer", "minimum": 1 },
+        "image": {
+          "type": "object",
+          "required": ["repository", "tag"],
+          "properties": {
+            "repository": { "type": "string", "minLength": 1 },
+            "tag": { "type": "string", "minLength": 1 },
+            "pullPolicy": { "type": "string", "enum": ["Always", "IfNotPresent", "Never"] }
+          }
+        },
+        "env": { "type": "object", "additionalProperties": { "type": ["string", "number", "boolean"] } },
+        "extraEnv": { "type": "array", "items": { "type": "object" } },
+        "extraEnvFrom": { "type": "array", "items": { "type": "object" } }
+      }
+    },
+    "redis": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "externalUrl": { "type": "string" },
+        "existingSecret": {
+          "type": "object",
+          "properties": { "name": { "type": "string" }, "key": { "type": "string", "minLength": 1 } }
+        },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "existingClaim": { "type": "string" },
+            "size": { "type": "string" },
+            "storageClassName": { "type": ["string", "null"] },
+            "accessModes": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+            "annotations": { "type": "object" },
+            "labels": { "type": "object" },
+            "selector": { "type": "object" }
+          }
+        }
+      }
+    },
+    "metrics": {
+      "type": "object",
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "externalUrl": { "type": "string" },
+        "existingSecret": {
+          "type": "object",
+          "properties": { "name": { "type": "string" }, "key": { "type": "string", "minLength": 1 } }
+        },
+        "scrapeConfig": { "type": "string" },
+        "persistence": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "existingClaim": { "type": "string" },
+            "size": { "type": "string" },
+            "storageClassName": { "type": ["string", "null"] },
+            "accessModes": { "type": "array", "minItems": 1, "items": { "type": "string" } },
+            "annotations": { "type": "object" },
+            "labels": { "type": "object" },
+            "selector": { "type": "object" }
+          }
+        }
+      }
+    },
+    "cnpg": {
+      "type": "object",
+      "properties": {
+        "operator": { "type": "object", "properties": { "enabled": { "type": "boolean" } } },
+        "cluster": {
+          "type": "object",
+          "properties": {
+            "enabled": { "type": "boolean" },
+            "instances": { "type": "integer", "minimum": 1 },
+            "imageName": { "type": "string", "minLength": 1 },
+            "database": { "type": "string", "minLength": 1 },
+            "owner": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    },
+    "networking": {
+      "type": "object",
+      "properties": {
+        "mode": { "type": "string", "enum": ["none", "ingress", "gatewayApi"] },
+        "host": { "type": "string" },
+        "publicApiUrl": { "type": "string" },
+        "ingress": { "type": "object", "properties": { "className": { "type": "string" }, "annotations": { "type": "object" }, "tls": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "secretName": { "type": "string" } } } } },
+        "gatewayApi": { "type": "object", "properties": { "createGateway": { "type": "boolean" }, "gatewayClassName": { "type": "string" }, "gatewayName": { "type": "string" }, "gatewayNamespace": { "type": "string" }, "sectionName": { "type": "string" }, "httpPort": { "type": "integer", "minimum": 1, "maximum": 65535 }, "allowedRoutesFrom": { "type": "string", "enum": ["Same", "All", "Selector"] }, "allowedRoutesSelector": { "type": "object" }, "tls": { "type": "object", "properties": { "enabled": { "type": "boolean" }, "secretName": { "type": "string" }, "port": { "type": "integer", "minimum": 1, "maximum": 65535 } } } } }
+      }
+    }
+  }
+}

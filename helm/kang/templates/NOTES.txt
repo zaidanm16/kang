@@ -1,0 +1,14 @@
+KANG was deployed in namespace {{ .Release.Namespace }}.
+
+Frontend Service: {{ include "kang.frontendName" . }}:{{ .Values.frontend.service.port }}
+Backend Service:  {{ include "kang.backendName" . }}:{{ .Values.backend.service.port }}
+
+{{- if eq .Values.networking.mode "none" }}
+For local access, port-forward both services:
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "kang.frontendName" . }} 3000:{{ .Values.frontend.service.port }}
+  kubectl -n {{ .Release.Namespace }} port-forward svc/{{ include "kang.backendName" . }} 8080:{{ .Values.backend.service.port }}
+{{- else }}
+Configured exposure mode: {{ .Values.networking.mode }}
+{{- end }}
+
+The backend requires an existing Secret named {{ .Values.backend.secret.existingName | default "<set backend.secret.existingName>" }} with key {{ .Values.backend.secret.jwtSecretKey }}.

@@ -1,0 +1,24 @@
+{{- if and .Values.redis.enabled (or .Values.redis.externalUrl .Values.redis.existingSecret.name) -}}
+{{- fail "Choose one Redis mode: redis.enabled, redis.externalUrl, or redis.existingSecret; do not combine them" -}}
+{{- end -}}
+{{- if and .Values.redis.externalUrl .Values.redis.existingSecret.name -}}
+{{- fail "Set either redis.externalUrl or redis.existingSecret, not both" -}}
+{{- end -}}
+{{- if and .Values.metrics.enabled (or .Values.metrics.externalUrl .Values.metrics.existingSecret.name) -}}
+{{- fail "Choose local metrics.enabled or an external metrics URL/Secret, not both" -}}
+{{- end -}}
+{{- if and .Values.metrics.externalUrl .Values.metrics.existingSecret.name -}}
+{{- fail "Set either metrics.externalUrl or metrics.existingSecret, not both" -}}
+{{- end -}}
+{{- if and .Values.cnpg.cluster.enabled (eq .Values.backend.database.driver "mysql") -}}
+{{- fail "CNPG provides PostgreSQL; use a PostgreSQL driver or disable the CNPG cluster" -}}
+{{- end -}}
+{{- if and (ne .Values.backend.database.driver "sqlite") (not .Values.cnpg.cluster.enabled) (eq .Values.backend.database.dsnSecret.name "") -}}
+{{- fail "Set backend.database.dsnSecret.name for an external PostgreSQL/MySQL DSN" -}}
+{{- end -}}
+{{- if and (eq .Values.backend.database.driver "sqlite") (not .Values.cnpg.cluster.enabled) (gt (int .Values.backend.replicaCount) 1) -}}
+{{- fail "SQLite supports a single backend replica; use PostgreSQL/MySQL for multiple replicas" -}}
+{{- end -}}
+{{- if and (eq .Values.networking.mode "gatewayApi") .Values.networking.gatewayApi.createGateway (eq .Values.networking.gatewayApi.allowedRoutesFrom "Selector") (empty .Values.networking.gatewayApi.allowedRoutesSelector) -}}
+{{- fail "Set networking.gatewayApi.allowedRoutesSelector when allowedRoutesFrom=Selector" -}}
+{{- end -}}

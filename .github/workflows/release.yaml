@@ -1,0 +1,51 @@
+name: Release deployment artifacts
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: write
+  packages: write
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/setup-helm@v4.3.1
+        with:
+          version: v3.19.0
+      - name: Validate release version and manifests
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          set -euo pipefail
+          version="$(helm show chart ./helm/kang | awk '/^version:/ {print $2}')"
+          test "$RELEASE_TAG" = "v$version"
+          helm dependency build ./helm/kang
+          helm lint ./helm/kang --set backend.secret.existingName=validation-secret
+          helm template kang ./helm/kang --set backend.secret.existingName=validation-secret > /tmp/kang-rendered.yaml
+          JWT_SECRET=validation-only POSTGRES_PASSWORD=validation-only docker compose -f compose/compose.yaml --env-file compose/.env.example config --no-env-resolution --quiet
+      - name: Package artifacts
+        run: |
+          mkdir -p dist
+          helm package ./helm/kang --destination dist
+          tar -czf dist/kang-compose.tar.gz compose
+          cp kubernetes/kang.yaml dist/kang.yaml
+          cp kubernetes/README.md dist/kubernetes-README.md
+          cd dist
+          sha256sum *.tgz *.tar.gz *.yaml *.md > SHA256SUMS
+      - name: Publish Helm OCI chart
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_USER: ${{ github.actor }}
+          GH_OWNER: ${{ github.repository_owner }}
+        run: |
+          printf '%s' "$GH_TOKEN" | helm registry login ghcr.io --username "$GH_USER" --password-stdin
+          helm push dist/kang-*.tgz "oci://ghcr.io/${GH_OWNER,,}/kang-deploy"
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" dist/* --verify-tag --title "$RELEASE_TAG" --generate-notes

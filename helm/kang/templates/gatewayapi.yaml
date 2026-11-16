@@ -1,0 +1,86 @@
+{{- if eq .Values.networking.mode "gatewayApi" }}
+{{- if .Values.networking.gatewayApi.createGateway }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ default (printf "%s-gateway" (include "kang.fullname" .)) .Values.networking.gatewayApi.gatewayName }}
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+  {{- with .Values.networking.gatewayApi.annotations }}
+  annotations:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+spec:
+  gatewayClassName: {{ required "networking.gatewayApi.gatewayClassName is required when createGateway=true" .Values.networking.gatewayApi.gatewayClassName }}
+  listeners:
+    {{- if .Values.networking.gatewayApi.tls.enabled }}
+    - name: https
+      protocol: HTTPS
+      port: {{ .Values.networking.gatewayApi.tls.port }}
+      hostname: {{ required "networking.host is required for Gateway API TLS" .Values.networking.host | quote }}
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: {{ required "networking.gatewayApi.tls.secretName is required" .Values.networking.gatewayApi.tls.secretName }}
+      allowedRoutes:
+        namespaces:
+          from: {{ .Values.networking.gatewayApi.allowedRoutesFrom }}
+          {{- if eq .Values.networking.gatewayApi.allowedRoutesFrom "Selector" }}
+          selector:
+            {{- toYaml .Values.networking.gatewayApi.allowedRoutesSelector | nindent 12 }}
+          {{- end }}
+    {{- else }}
+    - name: http
+      protocol: HTTP
+      port: {{ .Values.networking.gatewayApi.httpPort }}
+      {{ with .Values.networking.host }}
+      hostname: {{ . | quote }}
+      {{ end }}
+      allowedRoutes:
+        namespaces:
+          from: {{ .Values.networking.gatewayApi.allowedRoutesFrom }}
+          {{- if eq .Values.networking.gatewayApi.allowedRoutesFrom "Selector" }}
+          selector:
+            {{- toYaml .Values.networking.gatewayApi.allowedRoutesSelector | nindent 12 }}
+          {{- end }}
+    {{- end }}
+{{- end }}
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ include "kang.fullname" . }}
+  labels:
+    {{- include "kang.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+    - name: {{ if .Values.networking.gatewayApi.createGateway }}{{ default (printf "%s-gateway" (include "kang.fullname" .)) .Values.networking.gatewayApi.gatewayName }}{{ else }}{{ required "networking.gatewayApi.gatewayName is required when using an existing Gateway" .Values.networking.gatewayApi.gatewayName }}{{ end }}
+      {{ with .Values.networking.gatewayApi.gatewayNamespace }}
+      namespace: {{ . | quote }}
+      {{ end }}
+      {{ if and (not .Values.networking.gatewayApi.createGateway) .Values.networking.gatewayApi.sectionName }}
+      sectionName: {{ .Values.networking.gatewayApi.sectionName | quote }}
+      {{ end }}
+  {{- with .Values.networking.host }}
+  hostnames:
+    - {{ . | quote }}
+  {{- end }}
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /api/v1
+        - path:
+            type: PathPrefix
+            value: /auth
+        - path:
+            type: Exact
+            value: /health
+      backendRefs:
+        - name: {{ include "kang.backendName" . }}
+          port: {{ .Values.backend.service.port }}
+    - backendRefs:
+        - name: {{ include "kang.frontendName" . }}
+          port: {{ .Values.frontend.service.port }}
+{{- end }}
