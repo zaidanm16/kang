@@ -363,3 +363,7 @@ kubectl get cluster.postgresql.cnpg.io -n kang
 - [Persistent Volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
 - [Helm chart best practices](https://helm.sh/docs/chart_best_practices/)
 - [CloudNativePG](https://cloudnative-pg.io/documentation/)
+
+## License
+
+The Kang chart is available under the [MIT License](LICENSE). Its bundled CloudNativePG dependency is licensed separately under Apache-2.0; see [third-party notices](THIRD_PARTY_NOTICES.md) and [the Apache license text](licenses/Apache-2.0.txt). The Kang frontend and backend are separate projects with their own licenses.

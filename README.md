@@ -98,4 +98,4 @@ Never commit credentials, signing keys, signed license keys, or local environmen
 
 ## License
 
-Copyright © 2026 Muhammad Zaidan. All rights reserved. This repository is proprietary; use and redistribution require written permission as described in [LICENSE](LICENSE). Bundled third-party components retain their own licenses.
+The deployment configuration and documentation in this repository are available under the [MIT License](LICENSE). The bundled CloudNativePG Helm chart is licensed separately under Apache-2.0; see the [third-party notices](charts/kang/THIRD_PARTY_NOTICES.md). The Kang frontend and backend are separate projects with their own licenses.
