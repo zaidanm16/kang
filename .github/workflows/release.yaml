@@ -9,6 +9,10 @@ on:
         required: true
         type: string
         default: v3.0.0
+      delete_legacy_package:
+        description: Delete kang-deploy/kang after verifying the replacement chart
+        type: boolean
+        default: false
 permissions:
   contents: write
   packages: write
@@ -91,3 +95,17 @@ jobs:
           else
             gh release create "$RELEASE_TAG" dist/* --verify-tag --title "$RELEASE_TAG" --generate-notes
           fi
+
+      - name: Remove verified legacy package
+        if: ${{ github.event_name == 'workflow_dispatch' && inputs.delete_legacy_package }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_OWNER: ${{ github.repository_owner }}
+        run: |
+          set -euo pipefail
+          test "$(gh api "/users/${GH_OWNER}/packages/container/kang" --jq '.name')" = kang
+          legacy_api="/users/${GH_OWNER}/packages/container/kang-deploy%2Fkang"
+          test "$(gh api "$legacy_api" --jq '.name')" = kang-deploy/kang
+          gh api --method DELETE "$legacy_api"
+          gh api "/users/${GH_OWNER}/packages/container/kang" --jq '{name,visibility}'
+          echo "Legacy package kang-deploy/kang deleted; replacement kang retained."
