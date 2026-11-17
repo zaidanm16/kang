@@ -42,12 +42,16 @@ Query API yang kompatibel dengan Prometheus apa pun bisa dipakai. Store harus bi
 
 ### VictoriaMetrics (single node, Docker)
 
+> [!IMPORTANT]
+> **Nama job scrape harus sama dengan hostname dari Proxy URL koneksi Kang.** Kang menurunkan matcher PromQL `job` dari hostname itu (koneksi dengan proxy URL `http://localhost:18000` me-query `job="localhost"`; `http://kong-gw.internal:8000` me-query `job="kong-gw.internal"`). Kalau namanya tidak cocok, dashboard tetap kosong meskipun scraping berjalan.
+
 ```sh
 cat > vm.yml <<'EOF'
 global:
   scrape_interval: 15s
 scrape_configs:
-  - job_name: kong
+  # job_name = hostname dari Proxy URL koneksi Kang
+  - job_name: localhost
     static_configs:
       - targets: ["kong-data-plane:8100"]   # hostname atau IP data plane Kong yang reachable
 EOF
@@ -64,7 +68,7 @@ docker run --rm --name victoria-metrics -p 127.0.0.1:9090:9090 \
 Jika Kong berjalan di host, target `host.docker.internal:8100` (Docker Desktop) atau IP host. Verifikasi scraping:
 
 ```sh
-curl -s 'http://localhost:9090/api/v1/query?query=kong_http_requests_total'
+curl -s 'http://localhost:9090/api/v1/query?query=kong_http_requests_total{job="localhost"}'
 ```
 
 ### Prometheus

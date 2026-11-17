@@ -30,9 +30,19 @@ This is Kang's public home for installation files and documentation. The applica
 | --- | --- | --- |
 | ![Overview](screenshots/01-overview.png) | ![Services](screenshots/02-services.png) | ![Audit Logs](screenshots/12-audit-logs.png) |
 
-| Plugins | Kong Connections | Service detail |
+| Plugins | Kong Connections | Service analytics |
 | --- | --- | --- |
-| ![Plugins](screenshots/05-plugins.png) | ![Connections](screenshots/11-connections.png) | ![Service detail](screenshots/15-service-detail.png) |
+| ![Plugins](screenshots/05-plugins.png) | ![Connections](screenshots/11-connections.png) | ![Service analytics](screenshots/20-service-analytics.png) |
+
+| Organizations | Teams | Users |
+| --- | --- | --- |
+| ![Organizations](screenshots/21-organizations.png) | ![Teams](screenshots/22-teams.png) | ![Users](screenshots/13-users.png) |
+
+**Themes** — Classic, Gold, Black & Blue, and Black & Gold:
+
+| Classic | Gold | Black & Blue | Black & Gold |
+| --- | --- | --- | --- |
+| ![Classic](screenshots/16-theme-classic.png) | ![Gold](screenshots/17-theme-gold.png) | ![Black & Blue](screenshots/18-theme-black-blue.png) | ![Black & Gold](screenshots/19-theme-black-gold.png) |
 
 <details>
 <summary>More screenshots</summary>
