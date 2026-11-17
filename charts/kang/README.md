@@ -209,7 +209,8 @@ metrics:
     global:
       scrape_interval: 15s
     scrape_configs:
-      - job_name: kong
+      # job_name must match the hostname of the Kang connection's Proxy URL
+      - job_name: my-kong-system
         static_configs:
           - targets: ["kong-status.my-kong-system.svc:8100"]
 ```

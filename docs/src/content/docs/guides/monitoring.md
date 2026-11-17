@@ -42,12 +42,16 @@ Any Prometheus-compatible query API works. The store must be able to reach Kong'
 
 ### VictoriaMetrics (single node, Docker)
 
+> [!IMPORTANT]
+> The scrape **job name must match the hostname of the Kang connection's Proxy URL**. Kang derives the PromQL `job` matcher from that hostname (a connection with proxy URL `http://localhost:18000` queries `job="localhost"`; `http://kong-gw.internal:8000` queries `job="kong-gw.internal"`). If the names do not match, the dashboard stays empty even though scraping works.
+
 ```sh
 cat > vm.yml <<'EOF'
 global:
   scrape_interval: 15s
 scrape_configs:
-  - job_name: kong
+  # job_name = the hostname of the Kang connection's Proxy URL
+  - job_name: localhost
     static_configs:
       - targets: ["kong-data-plane:8100"]   # reachable hostname or IP of the Kong data plane
 EOF
@@ -64,7 +68,7 @@ docker run --rm --name victoria-metrics -p 127.0.0.1:9090:9090 \
 If Kong runs on the host, target `host.docker.internal:8100` (Docker Desktop) or the host IP. Verify scraping:
 
 ```sh
-curl -s 'http://localhost:9090/api/v1/query?query=kong_http_requests_total'
+curl -s 'http://localhost:9090/api/v1/query?query=kong_http_requests_total{job="localhost"}'
 ```
 
 ### Prometheus
