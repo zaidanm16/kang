@@ -22,6 +22,35 @@ Kang manages **existing Kong gateways** through their Admin APIs. It does not re
 
 This is Kang's public home for installation files and documentation. The application source is closed source; the deployment configuration and docs here are MIT licensed.
 
+![Kang interface tour](screenshots/kang-tour.gif)
+
+### Screenshots
+
+| Overview | Gateway Services | Audit Logs |
+| --- | --- | --- |
+| ![Overview](screenshots/01-overview.png) | ![Services](screenshots/02-services.png) | ![Audit Logs](screenshots/12-audit-logs.png) |
+
+| Plugins | Kong Connections | Service detail |
+| --- | --- | --- |
+| ![Plugins](screenshots/05-plugins.png) | ![Connections](screenshots/11-connections.png) | ![Service detail](screenshots/15-service-detail.png) |
+
+<details>
+<summary>More screenshots</summary>
+
+| Routes | Consumers | Upstreams |
+| --- | --- | --- |
+| ![Routes](screenshots/03-routes.png) | ![Consumers](screenshots/04-consumers.png) | ![Upstreams](screenshots/06-upstreams.png) |
+
+| Certificates | Vaults | Keys |
+| --- | --- | --- |
+| ![Certificates](screenshots/07-certificates.png) | ![Vaults](screenshots/08-vaults.png) | ![Keys](screenshots/09-keys.png) |
+
+| Redis Configurations | Users | Profile |
+| --- | --- | --- |
+| ![Redis](screenshots/10-redis.png) | ![Users](screenshots/13-users.png) | ![Profile](screenshots/14-profile.png) |
+
+</details>
+
 ### Free and Pro
 
 Free requires no license key and includes Gateway Manager, up to 2 connections, 1 user, and the audit activity list. Pro adds unlimited connections and users, organizations, teams, snapshots, and audit change details. Pro requires a valid license; after expiry and a 7-day grace period, application access locks until renewal. Login and license installation remain available, and data is retained.
