@@ -6,7 +6,7 @@
 
 **Manage your Kong gateways from one place.**
 
-Kang is a self-hosted web application for managing Kong API Gateway. It gives individual operators and teams a UI to configure services, routes, consumers, and plugins, switch between gateway environments, and review administrative activity.
+Kang is a self-hosted web application for managing Kong API Gateway. It gives individual operators and teams a UI to configure services, routes, consumers, and plugins, switch between gateway environments, and review administrative activity. The interface ships in English, Bahasa Indonesia, Spanish, French, and Japanese.
 
 Use Kang to work with staging and production gateways without maintaining a separate management tool for each one. Connections are part of the URL, so you can keep different environments open in separate browser tabs. Access still depends on the signed-in user's permissions.
 
@@ -43,6 +43,12 @@ This is Kang's public home for installation files and documentation.
 | Classic | Gold | Black & Blue | Black & Gold |
 | --- | --- | --- | --- |
 | ![Classic](screenshots/16-theme-classic.png) | ![Gold](screenshots/17-theme-gold.png) | ![Black & Blue](screenshots/18-theme-black-blue.png) | ![Black & Gold](screenshots/19-theme-black-gold.png) |
+
+**Languages** — the interface is fully translated; switch it any time from the header:
+
+| Bahasa Indonesia | 日本語 |
+| --- | --- |
+| ![Bahasa Indonesia](screenshots/23-bahasa-indonesia.png) | ![日本語](screenshots/25-japanese.png) |
 
 <details>
 <summary>More screenshots</summary>
