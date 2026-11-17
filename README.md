@@ -20,7 +20,7 @@ Use Kang to work with staging and production gateways without maintaining a sepa
 
 Kang manages **existing Kong gateways** through their Admin APIs. It does not replace Kong's proxy or install Kong itself. Available gateway features also depend on your Kong version and edition.
 
-This is Kang's public home for installation files and documentation. The application source is closed source; the deployment configuration and docs here are MIT licensed.
+This is Kang's public home for installation files and documentation.
 
 ![Kang interface tour](screenshots/kang-tour.gif)
 
