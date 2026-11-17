@@ -43,6 +43,9 @@ export default defineConfig({
       },
       {
         "slug": "guides/operations"
+      },
+      {
+        "slug": "guides/monitoring"
       }
     ]
   },

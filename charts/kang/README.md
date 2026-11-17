@@ -201,7 +201,20 @@ metrics:
     enabled: true
 ```
 
-`metrics.scrapeConfig` supplies a Prometheus scrape configuration to the in-chart instance; by default it scrapes no external targets, and this chart does not discover Kong metrics endpoints automatically.
+The chart configures the backend to use the internal VictoriaMetrics Service. `metrics.scrapeConfig` supplies a Prometheus scrape configuration to that single-node instance; **by default it scrapes nothing** — the chart does not deploy Kong and cannot discover its metrics endpoints. To get real dashboard data, install Kong's `prometheus` plugin, expose its status listener (`KONG_STATUS_LISTEN=0.0.0.0:8100`) through a `Service`, and add a matching scrape job to `metrics.scrapeConfig`:
+
+```yaml
+metrics:
+  scrapeConfig: |
+    global:
+      scrape_interval: 15s
+    scrape_configs:
+      - job_name: kong
+        static_configs:
+          - targets: ["kong-status.my-kong-system.svc:8100"]
+```
+
+Full walkthrough, the Docker Compose variant, and troubleshooting: [Monitoring and analytics](https://zaidanm16.github.io/kang-deploy/guides/monitoring/).
 
 ## Upgrading the Chart
 

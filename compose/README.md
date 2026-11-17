@@ -25,6 +25,35 @@ Open http://localhost:3000. The browser connects to the API at http://localhost:
 
 `.env` configures Compose image names, published ports, browser API URL and JWT secret. `backend.env` configures the backend process. Both local files are ignored by Git. Keep the JWT secret stable across restarts. See [all backend environment settings](https://github.com/zaidanm16/kang-backend/blob/main/.env.example) for additional supported settings; `SERVER_PORT`, `DATABASE_DSN`, and `JWT_SECRET` are set explicitly by Compose.
 
+## Gateway analytics (optional)
+
+The dashboard can show traffic, latency, and error analytics. Kang reads metrics from a Prometheus-compatible store; Kong is external, so you wire three things together:
+
+1. **Enable Kong's prometheus plugin** and expose its status listener (`KONG_STATUS_LISTEN=0.0.0.0:8100` on the Kong data plane). Metrics are served at `:8100/metrics`.
+2. **Run a metrics store** that scrapes that endpoint, for example VictoriaMetrics attached to the network Kong uses:
+
+   ```sh
+   cat > vm.yml <<'EOF'
+   global:
+     scrape_interval: 15s
+   scrape_configs:
+     - job_name: kong
+       static_configs:
+         - targets: ["kong-data-plane:8100"]
+   EOF
+
+   docker run -d --name victoria-metrics -p 127.0.0.1:9090:9090 \
+     -v "$PWD/vm.yml:/etc/vm.yml:ro" -v victoria-metrics-data:/victoria-metrics-data \
+     victoriametrics/victoria-metrics:latest \
+     -httpListenAddr=:9090 -storageDataPath=/victoria-metrics-data \
+     -promscrape.config=/etc/vm.yml
+   ```
+
+   Attach the container to a network that can reach the Kong data plane (for example `--network` of your Kong deployment), or target the host address.
+3. **Point the backend at the store:** set `PROMETHEUS_URL=http://victoria-metrics:9090` in `backend.env` and `docker compose up -d backend` again.
+
+Then turn on analytics in the app (per-user preference, Profile → Preferences, or the button on the Overview page). Full walkthrough, Prometheus variant, Kubernetes chart values, and troubleshooting: [Monitoring and analytics](https://zaidanm16.github.io/kang-deploy/guides/monitoring/).
+
 ## URLs and external services
 
 For access from another machine, set `BIND_ADDRESS=0.0.0.0`, set `PUBLIC_API_URL` to a browser-reachable backend URL, and set `CORS_ORIGINS` in `backend.env` to the frontend origin. Update the public URL when changing `BACKEND_PORT`.
