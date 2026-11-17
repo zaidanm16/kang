@@ -38,6 +38,10 @@ This is Kang's public home for installation files and documentation.
 | --- | --- | --- |
 | ![Organizations](screenshots/21-organizations.png) | ![Teams](screenshots/22-teams.png) | ![Users](screenshots/13-users.png) |
 
+| Consumers | Audit Logs | Create service |
+| --- | --- | --- |
+| ![Consumers](screenshots/28-consumer-created.png) | ![Audit Logs](screenshots/12-audit-logs.png) | ![Create service](screenshots/29-service-created.png) |
+
 **Themes** — Classic, Gold, Black & Blue, and Black & Gold:
 
 | Classic | Gold | Black & Blue | Black & Gold |
@@ -46,9 +50,9 @@ This is Kang's public home for installation files and documentation.
 
 **Languages** — the interface is fully translated; switch it any time from the header:
 
-| Bahasa Indonesia | 日本語 |
-| --- | --- |
-| ![Bahasa Indonesia](screenshots/23-bahasa-indonesia.png) | ![日本語](screenshots/25-japanese.png) |
+| Bahasa Indonesia | Español | Français | 日本語 |
+| --- | --- | --- | --- |
+| ![Bahasa Indonesia](screenshots/23-bahasa-indonesia.png) | ![Español](screenshots/26-espanol.png) | ![Français](screenshots/27-francais.png) | ![日本語](screenshots/25-japanese.png) |
 
 <details>
 <summary>More screenshots</summary>
