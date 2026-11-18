@@ -19,6 +19,6 @@ Sensitive fields are excluded from drafts. Drafts use the current tab session an
 Check Analytics preference, time range, real traffic, and the installation's metrics integration.
 
 ## License cannot be installed
-Ask a global administrator to check the complete key and expiry. Environment-managed licenses require the installation operator. See [license renewal]((/kang//guides/plans/).
+Ask a global administrator to check the complete key and expiry. Environment-managed licenses require the installation operator. See [license renewal](/kang/guides/plans/).
 
 When reporting a problem, include the action, selected gateway version, time, and redacted error. Keep passwords, tokens, private keys, and license keys out of the report.

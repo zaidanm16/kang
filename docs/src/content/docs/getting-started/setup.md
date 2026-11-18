@@ -34,4 +34,4 @@ If prompted to change your password, complete that step before continuing. For a
 
 ## First checks
 
-Confirm the selected gateway name in the sidebar. Open **Home** to inspect version and resource counts. Review [connections]((/kang//guides/connections/) before modifying production resources. A successful login to Kang does not mean the gateway accepts every operation.
+Confirm the selected gateway name in the sidebar. Open **Home** to inspect version and resource counts. Review [connections](/kang/guides/connections/) before modifying production resources. A successful login to Kang does not mean the gateway accepts every operation.
