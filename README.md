@@ -4,6 +4,8 @@
 [![Release workflow](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml/badge.svg)](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml)
 [![Documentation](https://img.shields.io/badge/docs-kang--deploy-4A90D9?logo=markdown&logoColor=white)](https://zaidanm16.github.io/kang-deploy/)
 
+![Kang mascot and gateway network illustration](assets/kang-readme-banner.png)
+
 **Manage your Kong gateways from one place.**
 
 Kang is a self-hosted web application for managing Kong API Gateway. It gives individual operators and teams a UI to configure services, routes, consumers, and plugins, switch between gateway environments, and review administrative activity. The interface ships in English, Bahasa Indonesia, Spanish, French, and Japanese.
