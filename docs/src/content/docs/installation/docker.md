@@ -8,8 +8,8 @@ The quickest way to try Kang is with **Docker Compose**. You need Docker with th
 
 ```sh
 # Clone the deployment files at the current release
-git clone --depth 1 --branch v3.1.0 https://github.com/zaidanm16/kang-deploy.git
-cd kang-deploy/compose
+git clone --depth 1 --branch v3.1.0 https://github.com/zaidanm16/kang.git
+cd kang/compose
 # Create backend configuration from the example (backend-only variables like CORS and session settings)
 cp backend.env.example backend.env
 export BACKEND_IMAGE=ghcr.io/zaidanm16/kang-backend:1.0.0
@@ -27,5 +27,5 @@ Open **http://localhost:3000**. Run `docker compose logs backend` to get the one
 
 This starts the frontend, backend, and PostgreSQL with persistent storage. Kang starts on the Free plan; no license key is required. To stop it, run `docker compose down` from the same directory. Your database is retained.
 
-For public URLs, HTTPS, external services, and updates, see the [Compose guide](https://github.com/zaidanm16/kang-deploy/blob/main/compose/README.md).
+For public URLs, HTTPS, external services, and updates, see the [Compose guide](https://github.com/zaidanm16/kang/blob/main/compose/README.md).
 

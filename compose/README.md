@@ -53,7 +53,7 @@ The dashboard can show traffic, latency, and error analytics. Kang reads metrics
    Attach the container to a network that can reach the Kong data plane (for example `--network` of your Kong deployment), or target the host address.
 3. **Point the backend at the store:** set `PROMETHEUS_URL=http://victoria-metrics:9090` in `backend.env` and `docker compose up -d backend` again.
 
-Then turn on analytics in the app (per-user preference, Profile → Preferences, or the button on the Overview page). Full walkthrough, Prometheus variant, Kubernetes chart values, and troubleshooting: [Monitoring and analytics](https://zaidanm16.github.io/kang-deploy/guides/monitoring/).
+Then turn on analytics in the app (per-user preference, Profile → Preferences, or the button on the Overview page). Full walkthrough, Prometheus variant, Kubernetes chart values, and troubleshooting: [Monitoring and analytics](https://zaidanm16.github.io/kang/guides/monitoring/).
 
 ## URLs and external services
 

@@ -12,7 +12,7 @@ npm ci
 npm run dev
 ```
 
-Open http://localhost:4321/kang-deploy/.
+Open http://localhost:4321/kang/.
 
 ```sh
 npm run check
@@ -26,6 +26,6 @@ The production build includes Pagefind search. Search is best checked with `npm 
 
 The workflow in `../.github/workflows/docs.yaml` builds pull requests and deploys main or a manual main-branch run. Before the first deployment, set repository **Settings → Pages → Build and deployment → Source → GitHub Actions**.
 
-The configured URL is `https://zaidanm16.github.io/kang-deploy/`. For a custom domain, update both `site` and `base` in `astro.config.mjs`, and update internal content links to match. No deployment occurs until the workflow is pushed and run.
+The configured URL is `https://zaidanm16.github.io/kang/`. For a custom domain, update both `site` and `base` in `astro.config.mjs`, and update internal content links to match. No deployment occurs until the workflow is pushed and run.
 
 Only static output in `dist` is uploaded. Do not put secrets in documentation or public assets.

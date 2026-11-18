@@ -18,7 +18,7 @@ The backend exposes `/health`; the frontend exposes `/api/health`. If setup cann
 
 For Docker, set `BIND_ADDRESS`, `PUBLIC_API_URL`, and backend `CORS_ORIGINS` for the intended hostnames. Put the frontend and backend behind HTTPS and enable `AUTH_COOKIE_SECURE=true`. Keep database ports and Kong Admin APIs restricted.
 
-For Kubernetes, use the chart's Ingress or Gateway API settings with an installed controller and TLS certificate. See the [chart configuration reference](https://github.com/zaidanm16/kang-deploy/blob/main/charts/kang/README.md).
+For Kubernetes, use the chart's Ingress or Gateway API settings with an installed controller and TLS certificate. See the [chart configuration reference](https://github.com/zaidanm16/kang/blob/main/charts/kang/README.md).
 
 ## Credentials
 

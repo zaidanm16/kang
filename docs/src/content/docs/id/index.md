@@ -7,11 +7,11 @@ Kang adalah aplikasi yang Anda jalankan sendiri untuk mengelola **Kong API Gatew
 
 ## Mulai dari kebutuhan Anda
 
-- **Instalasi baru:** [Instal dengan Docker](/kang-deploy/id/installation/docker/) atau [Helm](/kang-deploy/id/installation/kubernetes/), lalu [selesaikan setup](/kang-deploy/id/getting-started/setup/).
-- **Tim sudah menggunakan Kang:** masuk dengan akun dari administrator dan baca [Dasar workspace](/kang-deploy/id/getting-started/workspace/).
-- **Membuat API pertama:** ikuti [Membuat service dan route](/kang-deploy/id/getting-started/first-api/).
-- **Mengatur akun:** baca [Profil dan keamanan](/kang-deploy/id/account/profile/) serta [Tema dan bahasa](/kang-deploy/id/account/preferences/).
-- **Membutuhkan kolaborasi:** lihat [Free dan Pro](/kang-deploy/id/guides/plans/).
+- **Instalasi baru:** [Instal dengan Docker]((/kang//id/installation/docker/) atau [Helm]((/kang//id/installation/kubernetes/), lalu [selesaikan setup]((/kang//id/getting-started/setup/).
+- **Tim sudah menggunakan Kang:** masuk dengan akun dari administrator dan baca [Dasar workspace]((/kang//id/getting-started/workspace/).
+- **Membuat API pertama:** ikuti [Membuat service dan route]((/kang//id/getting-started/first-api/).
+- **Mengatur akun:** baca [Profil dan keamanan]((/kang//id/account/profile/) serta [Tema dan bahasa]((/kang//id/account/preferences/).
+- **Membutuhkan kolaborasi:** lihat [Free dan Pro]((/kang//id/guides/plans/).
 
 ## Perbedaan Kang dan Kong
 

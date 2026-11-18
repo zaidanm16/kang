@@ -1,8 +1,8 @@
 # Kang
 
-[![Release](https://img.shields.io/badge/release-v3.1.0-blue)](https://github.com/zaidanm16/kang-deploy/releases)
-[![Release workflow](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml/badge.svg)](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml)
-[![Documentation](https://img.shields.io/badge/docs-kang--deploy-4A90D9?logo=markdown&logoColor=white)](https://zaidanm16.github.io/kang-deploy/)
+[![Release](https://img.shields.io/badge/release-v3.1.0-blue)](https://github.com/zaidanm16/kang/releases)
+[![Release workflow](https://github.com/zaidanm16/kang/actions/workflows/release.yaml/badge.svg)](https://github.com/zaidanm16/kang/actions/workflows/release.yaml)
+[![Documentation](https://img.shields.io/badge/docs-kang--deploy-4A90D9?logo=markdown&logoColor=white)](https://zaidanm16.github.io/kang/)
 
 ![Kang mascot and gateway network illustration](assets/kang-readme-banner.png)
 
@@ -83,8 +83,8 @@ The quickest way to try Kang is with **Docker Compose**. You need Docker with th
 
 ```sh
 # Clone the deployment files at the current release
-git clone --depth 1 --branch v3.1.0 https://github.com/zaidanm16/kang-deploy.git
-cd kang-deploy/compose
+git clone --depth 1 --branch v3.1.0 https://github.com/zaidanm16/kang.git
+cd kang/compose
 # Create backend configuration from the example (backend-only variables like CORS and session settings)
 cp backend.env.example backend.env
 # Generate two random secrets into .env: JWT_SECRET signs login sessions, POSTGRES_PASSWORD secures the database

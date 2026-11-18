@@ -36,4 +36,4 @@ Resource diproses berdasarkan urutan dependensi. ID dan timestamp asli tidak dij
 
 Cancel menghentikan pekerjaan berikutnya tetapi tidak otomatis membatalkan operasi yang sudah berhasil. Jika **Undo Restore** tersedia dalam sesi restore saat ini, fitur tersebut menghapus resource yang dibuat dan mengembalikan nilai lama resource yang diperbarui dengan urutan dependensi terbalik. Periksa hasil undo: rollback dapat gagal dan bukan transaksi database atomik. Jangan menutup atau me-refresh dialog dengan mengharapkan status undo tetap tersimpan.
 
-Backup target sebelum perubahan penting dan verifikasi perilaku gateway setelahnya. [Full Migration](/kang-deploy/id/administration/migration/) adalah alur maintenance opsional yang terpisah.
+Backup target sebelum perubahan penting dan verifikasi perilaku gateway setelahnya. [Full Migration]((/kang//id/administration/migration/) adalah alur maintenance opsional yang terpisah.

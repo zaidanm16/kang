@@ -36,5 +36,5 @@ kubectl -n kang port-forward svc/kang-backend 8080:8080
 kubectl -n kang port-forward svc/kang-frontend 3000:3000
 ```
 
-See the [chart guide](https://github.com/zaidanm16/kang-deploy/blob/main/charts/kang/README.md) for external databases, storage, HTTPS, Ingress, Gateway API, and custom values. A [standalone Kubernetes manifest](https://github.com/zaidanm16/kang-deploy/blob/main/kubernetes/README.md) is also available.
+See the [chart guide](https://github.com/zaidanm16/kang/blob/main/charts/kang/README.md) for external databases, storage, HTTPS, Ingress, Gateway API, and custom values. A [standalone Kubernetes manifest](https://github.com/zaidanm16/kang/blob/main/kubernetes/README.md) is also available.
 

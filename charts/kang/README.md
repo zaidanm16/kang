@@ -24,7 +24,7 @@
 
 ## Introduction
 
-This chart deploys [Kang](https://github.com/zaidanm16/kang-deploy) in your Kubernetes cluster: the Next.js frontend, the Go backend, and a PostgreSQL database through CloudNativePG by default, plus optional cache, metrics, and networking resources.
+This chart deploys [Kang](https://github.com/zaidanm16/kang) in your Kubernetes cluster: the Next.js frontend, the Go backend, and a PostgreSQL database through CloudNativePG by default, plus optional cache, metrics, and networking resources.
 
 Kang is the management application for Kong API Gateway. It manages your existing Kong instances through their Admin APIs; it does not deploy Kong Gateway itself.
 
@@ -103,8 +103,8 @@ helm template kang oci://ghcr.io/zaidanm16/kang \
 #### Pulling the Chart
 
 ```shell
-git clone --depth 1 --branch v3.0.0 https://github.com/zaidanm16/kang-deploy.git
-cd kang-deploy/charts/kang
+git clone --depth 1 --branch v3.0.0 https://github.com/zaidanm16/kang.git
+cd kang/charts/kang
 helm dependency build
 ```
 
@@ -215,7 +215,7 @@ metrics:
           - targets: ["kong-status.my-kong-system.svc:8100"]
 ```
 
-Full walkthrough, the Docker Compose variant, and troubleshooting: [Monitoring and analytics](https://zaidanm16.github.io/kang-deploy/guides/monitoring/).
+Full walkthrough, the Docker Compose variant, and troubleshooting: [Monitoring and analytics](https://zaidanm16.github.io/kang/guides/monitoring/).
 
 ## Upgrading the Chart
 
@@ -229,7 +229,7 @@ helm upgrade kang oci://ghcr.io/zaidanm16/kang \
   --namespace kang
 ```
 
-Pin application images to release or commit tags and update both image tags through reviewed values. The backend runs schema migrations on startup when `MIGRATE_ON_START=true` (the default). See the [Upgrade guide](https://zaidanm16.github.io/kang-deploy/installation/upgrade/) for the full procedure and release notes guidance.
+Pin application images to release or commit tags and update both image tags through reviewed values. The backend runs schema migrations on startup when `MIGRATE_ON_START=true` (the default). See the [Upgrade guide](https://zaidanm16.github.io/kang/installation/upgrade/) for the full procedure and release notes guidance.
 
 ## Uninstalling the Chart
 
