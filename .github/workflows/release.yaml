@@ -8,7 +8,7 @@ on:
         description: Existing release tag to publish
         required: true
         type: string
-        default: v3.0.0
+        default: v3.1.1
       delete_legacy_package:
         description: Delete kang-deploy/kang after verifying the replacement chart
         type: boolean

@@ -17,7 +17,7 @@ services:
       retries: 20
 
   backend:
-    image: ${BACKEND_IMAGE:-ghcr.io/zaidanm16/kang-backend:v1.0.0}
+    image: ${BACKEND_IMAGE:-ghcr.io/zaidanm16/kang-backend:v1.1.0}
     restart: unless-stopped
     depends_on:
       postgres:
