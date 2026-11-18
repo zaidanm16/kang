@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 412" role="img" aria-labelledby="title">
+  <title id="title">Alur metrik dari data plane Kong melalui Prometheus atau VictoriaMetrics dan backend Kang hingga dasbor.</title>
+  <style>
+    :root { --fill: #0a111e; --ink: #eee; --muted: #b9c5d8; --blue: #5294ff; }
+    @media (prefers-color-scheme: light) {
+      :root { --fill: #f3f7ff; --ink: #17243a; --muted: #40516d; --blue: #0054d1; }
+    }
+    .box { fill: var(--fill); stroke: var(--blue); stroke-width: 1.8; }
+    .sketch { fill: none; stroke: var(--blue); opacity: .45; }
+    .arrow { fill: none; stroke: var(--muted); stroke-width: 1.5; }
+    text { fill: var(--ink); font: 600 17px Arial, sans-serif; text-anchor: middle; }
+    .detail { fill: var(--muted); font: 13px monospace; }
+    path { stroke-linejoin: round; stroke-linecap: round; }
+  </style>
+  <defs>
+    <path id="box" d="M61 8 Q62 1 72 2 L346 1 Q359 2 359 12 L360 46 Q359 55 347 55 L73 56 Q60 55 60 45 Z"/>
+    <g id="node">
+      <use href="#box" class="sketch" transform="translate(2 2)"/>
+      <use href="#box" class="box"/>
+    </g>
+    <path id="arrow" class="arrow" d="M210 0 Q207 21 210 48 M204 42 L210 48 L216 42"/>
+  </defs>
+  <use href="#node" y="12"/>
+  <text x="210" y="37">Data plane Kong</text>
+  <text class="detail" x="210" y="56">:8100 /metrics</text>
+  <use href="#arrow" y="69"/>
+  <use href="#node" y="118"/>
+  <text x="210" y="151">Prometheus / VictoriaMetrics</text>
+  <use href="#arrow" y="175"/>
+  <text class="detail" x="295" y="203">PROMETHEUS_URL</text>
+  <use href="#node" y="224"/>
+  <text x="210" y="257">Backend Kang · :8080</text>
+  <use href="#arrow" y="281"/>
+  <text class="detail" x="307" y="309">/api/v1/prometheus/*</text>
+  <use href="#node" y="330"/>
+  <text x="210" y="355">Dasbor Kang</text>
+  <text class="detail" x="210" y="374">Tampilan analytics</text>
+</svg>
