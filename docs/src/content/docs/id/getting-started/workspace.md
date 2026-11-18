@@ -32,4 +32,4 @@ Mengganti koneksi saat mengedit memunculkan konfirmasi membuang form. Untuk memp
 
 ## Menghapus resource
 
-Periksa nama resource di modal konfirmasi dan ketik ulang bila diminta. Setelah berhasil, penghapusan memengaruhi gateway atau record Kang terkait. Menghapus koneksi Kang berbeda dari menghapus resource Kong. Gunakan [snapshot](/kang-deploy/id/administration/snapshots/) jika membutuhkan salinan konfigurasi gateway sebelum perubahan.
+Periksa nama resource di modal konfirmasi dan ketik ulang bila diminta. Setelah berhasil, penghapusan memengaruhi gateway atau record Kang terkait. Menghapus koneksi Kang berbeda dari menghapus resource Kong. Gunakan [snapshot]((/kang//id/administration/snapshots/) jika membutuhkan salinan konfigurasi gateway sebelum perubahan.

@@ -30,4 +30,4 @@ Jika diminta mengganti password, selesaikan sebelum melanjutkan. Untuk akun nona
 
 ## Pemeriksaan pertama
 
-Pastikan nama gateway di sidebar sudah benar. Buka **Home** untuk melihat versi dan jumlah resource. Baca [koneksi](/kang-deploy/id/guides/connections/) sebelum mengubah production. Berhasil masuk ke Kang tidak berarti seluruh operasi di gateway diizinkan.
+Pastikan nama gateway di sidebar sudah benar. Buka **Home** untuk melihat versi dan jumlah resource. Baca [koneksi]((/kang//id/guides/connections/) sebelum mengubah production. Berhasil masuk ke Kang tidak berarti seluruh operasi di gateway diizinkan.

@@ -5,7 +5,7 @@ description: "Full migration opsional | Kang"
 
 **Full Migration** adalah fitur maintenance lanjutan, bukan cara biasa menyalin beberapa service. Secara default fitur disembunyikan dan memerlukan dukungan frontend yang diaktifkan operator, migration worker terkonfigurasi, serta administrator global dengan permission migrasi. Deployment standar tidak menyertakan image migration worker.
 
-Jika aksi tidak terlihat, gunakan [clone dan restore snapshot](/kang-deploy/id/administration/snapshots/) untuk pemindahan konfigurasi logis, atau tanyakan operator apakah full migration didukung.
+Jika aksi tidak terlihat, gunakan [clone dan restore snapshot]((/kang//id/administration/snapshots/) untuk pemindahan konfigurasi logis, atau tanyakan operator apakah full migration didukung.
 
 ## Jika instalasi mengaktifkannya
 

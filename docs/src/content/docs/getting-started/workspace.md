@@ -32,4 +32,4 @@ Changing connections while editing prompts you to discard the form. To preserve 
 
 ## Delete carefully
 
-Review the resource name in the confirmation dialog and enter it when requested. Deletion affects the selected gateway or Kang record immediately after success. Deleting a Kang connection is different from deleting Kong resources. Use [snapshots](/kang-deploy/administration/snapshots/) when you need a recoverable gateway configuration before a change.
+Review the resource name in the confirmation dialog and enter it when requested. Deletion affects the selected gateway or Kang record immediately after success. Deleting a Kang connection is different from deleting Kong resources. Use [snapshots]((/kang//administration/snapshots/) when you need a recoverable gateway configuration before a change.

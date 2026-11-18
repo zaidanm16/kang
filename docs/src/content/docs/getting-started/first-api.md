@@ -36,6 +36,6 @@ Replace the address and upstream path with your actual values. If the route also
 
 ## 4. Add a policy
 
-Open the service or route's **Plugins** tab and add an available plugin. Verify **Applied To** before saving so the policy applies to the intended resource. For authentication, create a [consumer and credential](/kang-deploy/gateway/consumers/) and enable the corresponding plugin; a consumer alone does not enforce authentication.
+Open the service or route's **Plugins** tab and add an available plugin. Verify **Applied To** before saving so the policy applies to the intended resource. For authentication, create a [consumer and credential]((/kang//gateway/consumers/) and enable the corresponding plugin; a consumer alone does not enforce authentication.
 
-If the request fails, inspect [troubleshooting](/kang-deploy/guides/troubleshooting/) and check the selected connection before changing anything else.
+If the request fails, inspect [troubleshooting]((/kang//guides/troubleshooting/) and check the selected connection before changing anything else.

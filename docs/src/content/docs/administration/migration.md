@@ -5,7 +5,7 @@ description: "Optional full migration | Kang"
 
 **Full Migration** is an advanced maintenance feature, not the normal way to copy a few services. It is hidden by default and requires operator-enabled frontend support, a configured migration worker, and a global administrator with migration permissions. The standard deployment does not include a migration-worker image.
 
-If you do not see this action, use [snapshot clone and restore](/kang-deploy/administration/snapshots/) for logical configuration transfer, or ask your installation operator whether full migration is supported.
+If you do not see this action, use [snapshot clone and restore]((/kang//administration/snapshots/) for logical configuration transfer, or ask your installation operator whether full migration is supported.
 
 ## If your installation enables it
 

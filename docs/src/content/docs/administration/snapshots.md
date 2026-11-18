@@ -36,4 +36,4 @@ Resources are processed in dependency order. Original IDs and timestamps are not
 
 Cancel stops further work but does not automatically revert successful operations. When **Undo Restore** is available in the current restore session, it deletes resources created by that restore and restores previous values for updated resources in reverse dependency order. Inspect undo results too: rollback can fail and is not an atomic database transaction. Do not close or refresh the dialog expecting undo state to persist.
 
-Back up the target before important changes and verify live gateway behavior afterward. [Full Migration](/kang-deploy/administration/migration/) is a separate, optional maintenance workflow.
+Back up the target before important changes and verify live gateway behavior afterward. [Full Migration]((/kang//administration/migration/) is a separate, optional maintenance workflow.

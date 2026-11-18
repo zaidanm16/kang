@@ -107,7 +107,7 @@ metrics:
           - targets: ["kong-status.my-kong-system.svc:8100"]
 ```
 
-Kong bukan bagian dari chart, jadi Anda harus mengekspos status listener-nya sendiri — misalnya sebuah `Service` bernama `kong-status` yang menarget port `8100` pod data plane Kong. `metrics.scrapeConfig` diteruskan apa adanya ke VictoriaMetrics bawaan; secara bawaan ia tidak men-scrape apa pun. Alternatifnya set `metrics.externalUrl` (atau `metrics.existingSecret`) ke Prometheus/VictoriaMetrics yang sudah ada. Lihat [README chart](https://github.com/zaidanm16/kang-deploy/blob/main/charts/kang/README.md).
+Kong bukan bagian dari chart, jadi Anda harus mengekspos status listener-nya sendiri — misalnya sebuah `Service` bernama `kong-status` yang menarget port `8100` pod data plane Kong. `metrics.scrapeConfig` diteruskan apa adanya ke VictoriaMetrics bawaan; secara bawaan ia tidak men-scrape apa pun. Alternatifnya set `metrics.externalUrl` (atau `metrics.existingSecret`) ke Prometheus/VictoriaMetrics yang sudah ada. Lihat [README chart](https://github.com/zaidanm16/kang/blob/main/charts/kang/README.md).
 
 ## Apa yang ditampilkan dashboard
 

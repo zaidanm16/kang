@@ -107,7 +107,7 @@ metrics:
           - targets: ["kong-status.my-kong-system.svc:8100"]
 ```
 
-Kong is not part of the chart, so you must expose its status listener yourself — for example, a `Service` named `kong-status` targeting port `8100` of the Kong data plane pods. `metrics.scrapeConfig` is passed verbatim to the bundled VictoriaMetrics; by default it scrapes nothing. Alternatively set `metrics.externalUrl` (or `metrics.existingSecret`) to an existing Prometheus/VictoriaMetrics. See the [chart README](https://github.com/zaidanm16/kang-deploy/blob/main/charts/kang/README.md).
+Kong is not part of the chart, so you must expose its status listener yourself — for example, a `Service` named `kong-status` targeting port `8100` of the Kong data plane pods. `metrics.scrapeConfig` is passed verbatim to the bundled VictoriaMetrics; by default it scrapes nothing. Alternatively set `metrics.externalUrl` (or `metrics.existingSecret`) to an existing Prometheus/VictoriaMetrics. See the [chart README](https://github.com/zaidanm16/kang/blob/main/charts/kang/README.md).
 
 ## What the dashboard shows
 

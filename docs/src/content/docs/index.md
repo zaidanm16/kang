@@ -7,11 +7,11 @@ Kang is a self-hosted workspace for managing **Kong API Gateway**. Use it to con
 
 ## Choose where to start
 
-- **New installation:** [Install with Docker](/kang-deploy/installation/docker/) or [Helm](/kang-deploy/installation/kubernetes/), then [complete setup](/kang-deploy/getting-started/setup/).
-- **Your team already runs Kang:** sign in with the account your administrator provides and read [Workspace basics](/kang-deploy/getting-started/workspace/).
-- **Publish your first API:** follow [Create a service and route](/kang-deploy/getting-started/first-api/).
-- **Manage your account:** see [Profile and security](/kang-deploy/account/profile/) and [Themes and language](/kang-deploy/account/preferences/).
-- **Need collaboration:** compare [Free and Pro](/kang-deploy/guides/plans/).
+- **New installation:** [Install with Docker]((/kang//installation/docker/) or [Helm]((/kang//installation/kubernetes/), then [complete setup]((/kang//getting-started/setup/).
+- **Your team already runs Kang:** sign in with the account your administrator provides and read [Workspace basics]((/kang//getting-started/workspace/).
+- **Publish your first API:** follow [Create a service and route]((/kang//getting-started/first-api/).
+- **Manage your account:** see [Profile and security]((/kang//account/profile/) and [Themes and language]((/kang//account/preferences/).
+- **Need collaboration:** compare [Free and Pro]((/kang//guides/plans/).
 
 ## What belongs to Kang and what belongs to Kong?
 
