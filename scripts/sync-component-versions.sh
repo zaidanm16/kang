@@ -37,7 +37,7 @@ else
   # Backend-only change: ship it as a patch bump of the current chart version.
   NEW=$(echo "$CHART" | awk -F. '{print $1"."$2"."$3+1}')
 fi
-echo "syncing: frontend $APP -> $FE, backend $BE_TAG -> $BE, chart $CHART -> $NEW"
+echo "syncing: frontend $APP -> $FE, backend $BE_TAG -> $BE, chart $CHART -> $NEW" >&2
 
 sed -i "s/^version: .*/version: $NEW/" charts/kang/Chart.yaml
 if [ "$FE_CHANGED" = yes ]; then
@@ -53,4 +53,5 @@ sed -i "s/kang-backend:v[0-9.]*/kang-backend:v$BE/; s/kang-backend:[0-9][0-9.]*/
   compose/.env.example compose/compose.yaml docs/src/content/docs/installation/docker.md docs/src/content/docs/id/installation/docker.md README.md
 
 # Align install instructions and badge with the new chart version.
-bash scripts/update-versions.sh "$NEW"
+bash scripts/update-versions.sh "$NEW" 1>&2
+echo "$NEW"
