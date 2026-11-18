@@ -364,7 +364,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 | frontend.extraEnvFrom | list | `[]` | Extra frontend envFrom references, such as a Secret with REVALIDATE_SECRET. |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | frontend.image.repository | string | `"ghcr.io/zaidanm16/kang-frontend"` | Frontend application image repository. |
-| frontend.image.tag | string | `"v3.0.0"` | Frontend application image tag. Prefer immutable release or SHA tags. |
+| frontend.image.tag | string | `"v3.1.0"` | Frontend application image tag. Prefer immutable release or SHA tags. |
 | frontend.replicaCount | int | `1` | Number of frontend replicas. |
 | frontend.resources | object | `{}` | Resource requests and limits for the frontend container. |
 | frontend.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001}` | Container-level security context for the frontend. |
