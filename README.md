@@ -8,6 +8,8 @@
 
 **Manage your Kong gateways from one place.**
 
+Try the live demo at **[zaidanm16.github.io/kang-demo](https://zaidanm16.github.io/kang-demo/)** — a static, mock-data build of the interface, no gateway or database required.
+
 Kang is a self-hosted web application for managing Kong API Gateway. It gives individual operators and teams a UI to configure services, routes, consumers, and plugins, switch between gateway environments, and review administrative activity. The interface ships in English, Bahasa Indonesia, Spanish, French, and Japanese.
 
 Use Kang to work with staging and production gateways without maintaining a separate management tool for each one. Connections are part of the URL, so you can keep different environments open in separate browser tabs. Access still depends on the signed-in user's permissions.
