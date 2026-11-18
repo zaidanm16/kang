@@ -3,7 +3,7 @@ name: kang
 description: KANG frontend and backend with optional PostgreSQL, DragonflyDB, VictoriaMetrics, Ingress, or Gateway API
 type: application
 version: 3.0.0
-appVersion: "3.0.0"
+appVersion: "3.1.0"
 keywords:
   - kang
   - kong
