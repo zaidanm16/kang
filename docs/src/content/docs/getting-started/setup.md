@@ -9,6 +9,8 @@ Have the Kang frontend URL, a reachable Kong Admin API, and its authentication d
 
 ## Complete the setup wizard
 
+![New connection form: name, proxy URL, and Admin API URL - the same details the setup wizard asks for](../assets/docs/31-connection-create.png)
+
 1. Open Kang. A new installation takes you to `/setup`.
 2. Obtain the one-time setup token from your installation's backend startup logs. For Compose, use `docker compose logs backend` from the `compose` folder. Keep the token private.
 3. Enter the token, then the first administrator's account details. Follow the password requirements shown in the form; an operator can configure the policy.
@@ -19,6 +21,8 @@ Have the Kang frontend URL, a reachable Kong Admin API, and its authentication d
 Earlier wizard steps can be reopened to correct information. Returning to the administrator step retains the connection fields.
 
 ## Sign in to an existing installation
+
+![Kang sign-in page](../assets/docs/00-login.png)
 
 Open `/login`, enter your username or email and password, then choose **Sign In**. The `admin` placeholder is an example, not a default username or password. Use your actual account. **Remember Me** changes session persistence according to the installation's authentication settings.
 
