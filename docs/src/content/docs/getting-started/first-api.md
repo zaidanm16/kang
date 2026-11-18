@@ -7,8 +7,6 @@ This example exposes an existing HTTP application through Kong. Use a test gatew
 
 ## 1. Create the service
 
-![New Route form](../assets/docs/07-route-create.png)
-
 ![New Gateway Service form](../assets/docs/04-service-create.png)
 
 1. Select your test connection and open **Gateway Services**.
@@ -17,6 +15,8 @@ This example exposes an existing HTTP application through Kong. Use a test gatew
 4. Save and inspect the service configuration. The upstream hostname must resolve from Kong, not merely from your laptop.
 
 ## 2. Create the route
+
+![New Route form](../assets/docs/07-route-create.png)
 
 1. Open **Routes** and choose its create action.
 2. Give the route a name such as `catalog-api`, select the `catalog` service, and keep the HTTP/HTTPS protocol choices appropriate for your gateway.

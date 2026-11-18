@@ -22,8 +22,6 @@ Use Kang to work with staging and production gateways without maintaining a sepa
 
 Kang manages **existing Kong gateways** through their Admin APIs. It does not replace Kong's proxy or install Kong itself. Available gateway features also depend on your Kong version and edition.
 
-This is Kang's public home for installation files and documentation.
-
 ![Kang interface tour](screenshots/kang-tour.gif)
 
 ### Screenshots
@@ -42,7 +40,7 @@ This is Kang's public home for installation files and documentation.
 
 | Consumers | Audit Logs | Create service |
 | --- | --- | --- |
-| ![Consumers](screenshots/28-consumer-created.png) | ![Audit Logs](screenshots/12-audit-logs.png) | ![Create service](screenshots/29-service-created.png) |
+| ![Consumers](screenshots/28-consumer-created.png) | ![Audit Logs](screenshots/12-audit-logs.png) | ![Create service](screenshots/30-service-create.png) |
 
 **Themes** — Nila, Kunang, Samudra, and Harimau:
 
