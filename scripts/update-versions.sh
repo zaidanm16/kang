@@ -20,13 +20,15 @@ if [ "$OLD" = "$NEW" ]; then
   exit 0
 fi
 
-FILES=(README.md compose/README.md docs/src/content/docs/installation/docker.md docs/src/content/docs/id/installation/docker.md docs/src/content/docs/installation/kubernetes.md docs/src/content/docs/id/installation/kubernetes.md)
+FILES=(README.md compose/README.md charts/kang/README.md docs/src/content/docs/installation/docker.md docs/src/content/docs/id/installation/docker.md docs/src/content/docs/installation/kubernetes.md docs/src/content/docs/id/installation/kubernetes.md)
 
 for f in "${FILES[@]}"; do
   if [ -f "$f" ]; then
     sed -i \
       -e "s/--branch v${OLD}/--branch v${NEW}/g" \
       -e "s/--version ${OLD}/--version ${NEW}/g" \
+      -e "s|badge/Version-${OLD}|badge/Version-${NEW}|g" \
+      -e "s/\[Version: ${OLD}/[Version: ${NEW}/g" \
       -e "s/release-v${OLD}/release-v${NEW}/g" \
       -e "s/Release \*\*v${OLD}\*\*/Release **v${NEW}**/g" \
       -e "s/kang-${OLD}\.tgz/kang-${NEW}.tgz/g" \

@@ -134,7 +134,7 @@ See the [chart guide](charts/kang/README.md) for external databases, storage, HT
 
 ## Releases
 
-Release **v3.1.1** includes the chart and frontend version `3.0.0`. Backend images are pinned independently; the current default is `ghcr.io/zaidanm16/kang-backend:1.1.0`.
+Release **v3.1.1** includes the chart and frontend version `3.1.0`. Backend images are pinned independently; the current default is `ghcr.io/zaidanm16/kang-backend:1.1.0`.
 
 The [release workflow](.github/workflows/release.yaml) publishes these artifacts when a matching `v*` tag is pushed:
 

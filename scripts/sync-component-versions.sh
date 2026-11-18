@@ -40,6 +40,7 @@ sed -i "/repository: ghcr.io\/zaidanm16\/kang-frontend/,+2 s/tag: v[0-9.]*/tag: 
 sed -i "s/kang-frontend:v[0-9.]*/kang-frontend:v$FE/; s/kang-frontend:[0-9][0-9.]*/kang-frontend:$FE/" \
   compose/.env.example compose/compose.yaml docs/src/content/docs/installation/docker.md docs/src/content/docs/id/installation/docker.md
 sed -i "s/frontend version \`[0-9.]*\`/frontend version \`$FE\`/" README.md
+sed -i "s/AppVersion: [0-9.]*/AppVersion: $FE/; s/badge\/AppVersion-[0-9.]*/badge\/AppVersion-$FE/" charts/kang/README.md
 sed -i "/repository: ghcr.io\/zaidanm16\/kang-backend/,+2 s/tag: v[0-9.]*/tag: v$BE/" charts/kang/values.yaml
 sed -i "s/kang-backend:v[0-9.]*/kang-backend:v$BE/; s/kang-backend:[0-9][0-9.]*/kang-backend:$BE/" \
   compose/.env.example compose/compose.yaml docs/src/content/docs/installation/docker.md docs/src/content/docs/id/installation/docker.md README.md
