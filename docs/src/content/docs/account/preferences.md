@@ -9,10 +9,10 @@ Open **Profile → Preferences** to change Analytics, Appearance, and Language. 
 
 | Theme | Appearance |
 | --- | --- |
-| Classic | Blue-gray background and panels with blue accents |
-| Gold | Deep purple/navy background with gold accents |
-| Black & Blue | Black background, near-black panels, blue accents; the application default |
-| Black & Gold | Black background, near-black panels, gold accents |
+| Nila | Blue-gray background and panels with blue accents |
+| Kunang | Deep purple/navy background with gold accents |
+| Samudra | Black background, near-black panels, blue accents; the application default |
+| Harimau | Black background, near-black panels, gold accents |
 
 In **Appearance**, hover a preview to see its name and temporarily preview that theme. Click the preview to select it. Moving away without selecting restores the saved theme. Keyboard focus can preview choices too; activate the choice to save it. The palette control in the application header also provides theme selection.
 
