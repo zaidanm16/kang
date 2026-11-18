@@ -5,6 +5,8 @@ description: "Audit logs and exports | Kang"
 
 **Audit Logs** records administrative activity in Kang. It is not an HTTP access log of every request passing through Kong. Access requires a global account with audit-read permission.
 
+![Audit logs with changes badges](../assets/docs/17-audit-logs.png)
+
 ## Find an event
 
 1. Open Audit Logs.

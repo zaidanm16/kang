@@ -5,6 +5,8 @@ description: "Upstreams and targets | Kang"
 
 An upstream is a named pool of backend targets. A service can use that name as its host so Kong balances traffic across the pool.
 
+![Upstreams list](../assets/docs/12-upstreams.png)
+
 ## Build a pool
 
 1. Open **Upstreams** and create an upstream with a distinct name.

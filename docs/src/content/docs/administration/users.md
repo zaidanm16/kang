@@ -5,6 +5,8 @@ description: "Users and roles | Kang"
 
 Kang users sign into the dashboard. Free allows **1 user per installation**. Pro allows additional users, but a license does not grant every user administrator privileges.
 
+![User management page](../assets/docs/20-users.png)
+
 ## Create a user
 
 1. Open **Users → New User** with permission to create users.

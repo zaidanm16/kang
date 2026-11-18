@@ -5,8 +5,12 @@ description: "Consumers, credentials, and groups | Kang"
 
 A consumer represents a client of your APIs. It is not a Kang login account. Manage dashboard accounts under **Users** instead.
 
+![Consumers list](../assets/docs/10-consumers.png)
+
 ## Create a consumer
 
+
+![New Consumer form](../assets/docs/11-consumer-create.png)
 1. Open **Consumers** and choose the create action.
 2. Enter **Username**, **Custom ID**, or both. At least one is required; neither field is individually mandatory when the other is supplied.
 3. Add optional tags and save.

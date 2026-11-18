@@ -5,6 +5,8 @@ description: "Upstream dan target | Kang"
 
 Upstream adalah kumpulan target backend dengan sebuah nama. Service dapat memakai nama tersebut sebagai host agar Kong membagi trafik ke target di dalamnya.
 
+![Daftar upstreams](../../assets/docs/12-upstreams.png)
+
 ## Membuat kumpulan target
 
 1. Buka **Upstreams** dan buat upstream dengan nama yang jelas.

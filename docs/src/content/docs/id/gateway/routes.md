@@ -5,8 +5,12 @@ description: "Route | Kang"
 
 Route mencocokkan request masuk dan menghubungkannya dengan service atau perilaku gateway yang didukung. Buka **Routes**, pastikan koneksi benar, lalu pilih aksi membuat route.
 
+![Daftar routes](../../assets/docs/06-routes.png)
+
 ## Mengatur pencocokan
 
+
+![New Route form](../../assets/docs/07-route-create.png)
 Beri nama yang mudah dikenali, pilih service jika meneruskan request ke upstream, lalu tentukan protokol. Untuk route HTTP sederhana, mulai dari path dan service, kemudian tambahkan pembatasan secara sengaja.
 
 | Field | Kegunaan |

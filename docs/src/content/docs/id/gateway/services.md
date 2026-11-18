@@ -5,8 +5,12 @@ description: "Gateway service | Kang"
 
 Service mendeskripsikan aplikasi upstream yang dapat menerima request dari Kong. Route menentukan request mana yang diteruskan ke service tersebut. Buka **Gateway Services** pada koneksi terpilih.
 
+![Daftar gateway services](../../assets/docs/03-services.png)
+
 ## Membuat service
 
+
+![New Gateway Service form](../../assets/docs/04-service-create.png)
 1. Pilih **New Gateway Service** dan masukkan nama deskriptif jika ingin mengenalinya berdasarkan nama.
 2. Pilih mode full URL atau field upstream terpisah.
 3. Pada full URL, masukkan protocol, hostname, port opsional, dan path dalam satu alamat. Pada field terpisah, isi **Protocol**, **Host**, dan **Port**, ditambah **Path** opsional.

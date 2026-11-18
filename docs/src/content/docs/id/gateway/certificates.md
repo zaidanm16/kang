@@ -5,6 +5,8 @@ description: "Certificate dan SNI | Kang"
 
 Gunakan **Certificates** untuk certificate server dan CA certificate, serta **SNIs** untuk menghubungkan hostname dengan certificate server. Resource ini mengatur TLS gateway, bukan certificate website Kang itu sendiri.
 
+![Daftar certificates](../../assets/docs/13-certificates.png)
+
 ## Certificate server
 
 1. Buka Certificates dan pilih aksi membuat certificate server.

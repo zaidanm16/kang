@@ -5,6 +5,8 @@ description: "Overview dan analitik | Kang"
 
 Buka **Home** setelah memilih koneksi. Jumlah resource merangkum service, route, consumer, dan plugin gateway terpilih. **About this Gateway** menampilkan informasi koneksi, versi/edisi gateway, proxy URL, dan Admin API URL.
 
+![Dasbor overview Kang](../../assets/docs/01-overview.png)
+
 ## Mengaktifkan atau mematikan analitik
 
 Gunakan kontrol analitik di Overview atau **Profile → Preferences → Analytics**. Saat dimatikan, Kang tidak meminta metrik trafik tetapi tetap menampilkan inventaris konfigurasi. Mengaktifkan analitik hanya mengubah preferensi, bukan memasang atau mengonfigurasi server metrik.

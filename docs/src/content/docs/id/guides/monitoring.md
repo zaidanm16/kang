@@ -15,6 +15,8 @@ Kong data plane ──status port :8100 /metrics──▶ Prometheus / VictoriaM
                                              Dashboard Kang (tampilan analytics)
 ```
 
+![Dasbor analitik service](../../assets/docs/23-analytics.png)
+
 ## 1. Aktifkan plugin di Kong
 
 Tambahkan plugin melalui Kong Admin API:

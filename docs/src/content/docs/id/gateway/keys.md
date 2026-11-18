@@ -5,6 +5,8 @@ description: "Key dan key set | Kang"
 
 Key dan key set adalah resource kriptografi Kong yang digunakan plugin kompatibel. Keduanya berbeda dari kredensial Key Auth consumer maupun key lisensi Kang Pro.
 
+![Halaman key sets](../../assets/docs/14-keys.png)
+
 ## Membuat key set
 
 Buka **Keys → Key Sets**, buat set, beri nama yang jelas bila diperlukan, lalu simpan. Set mengelompokkan key yang perlu ditemukan bersama oleh plugin terkait.

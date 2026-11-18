@@ -5,8 +5,12 @@ description: "Plugin dan scope | Kang"
 
 Plugin menambahkan autentikasi, kontrol trafik, transformasi, logging, dan perilaku lain. Ketersediaan serta konfigurasinya mengikuti gateway Kong terhubung, bukan hanya katalog Kang.
 
+![Daftar plugins](../../assets/docs/08-plugins.png)
+
 ## Menambah plugin
 
+
+![Plugin catalog](../../assets/docs/09-plugin-select.png)
 1. Pilih koneksi yang benar.
 2. Buka **Plugins** atau tab Plugins pada service, route, consumer, atau consumer group yang didukung.
 3. Pilih plugin yang tersedia di gateway tersebut.

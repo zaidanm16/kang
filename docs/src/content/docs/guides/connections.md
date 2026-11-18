@@ -5,6 +5,8 @@ description: "Connections and environments | Kang"
 
 A connection stores the addresses and Admin API authentication for a Kong gateway. Free allows up to **2 connections per Kang installation**, not two per user. Pro removes that plan limit; permissions still apply.
 
+![Kong connections page](../assets/docs/02-connections.png)
+
 ## Add or edit a connection
 
 1. Open **Connections → New Connection**.

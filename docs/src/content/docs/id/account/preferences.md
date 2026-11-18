@@ -5,6 +5,8 @@ description: "Tema, bahasa, dan preferensi | Kang"
 
 Buka **Profile → Preferences** untuk mengatur Analytics, Appearance, dan Language. Preferensi ini mengubah pengalaman penggunaan, bukan izin gateway pengguna lain.
 
+![Halaman preferences dengan pengaturan analytics, appearance, dan language](../../assets/docs/22-preferences.png)
+
 ## Empat tema aplikasi
 
 | Tema | Tampilan |

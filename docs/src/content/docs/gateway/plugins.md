@@ -5,8 +5,12 @@ description: "Plugins and scopes | Kang"
 
 Plugins add authentication, traffic control, transformations, logging, and other behavior. Availability and configuration are determined by the connected Kong gateway, not just by the Kang catalog.
 
+![Plugins list](../assets/docs/08-plugins.png)
+
 ## Add a plugin
 
+
+![Plugin catalog](../assets/docs/09-plugin-select.png)
 1. Select the intended connection.
 2. Open **Plugins** or the Plugins tab on a service, route, consumer, or supported consumer group.
 3. Choose a plugin available on that gateway.

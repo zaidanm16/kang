@@ -5,8 +5,12 @@ description: "Routes | Kang"
 
 Routes match incoming requests and associate them with services or supported gateway behavior. Open **Routes**, select the correct connection, and choose the create action.
 
+![Routes list](../assets/docs/06-routes.png)
+
 ## Configure matching
 
+
+![New Route form](../assets/docs/07-route-create.png)
 Give the route a recognizable name, select a service when forwarding to an upstream, and choose protocols. For a simple HTTP route, start with a path and your service, then add restrictions deliberately.
 
 | Field | Purpose |

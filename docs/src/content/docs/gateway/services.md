@@ -5,8 +5,12 @@ description: "Gateway services | Kang"
 
 A service describes an upstream application that Kong can forward requests to. A route determines which requests reach it. Open **Gateway Services** for the selected connection.
 
+![Gateway services list](../assets/docs/03-services.png)
+
 ## Create a service
 
+
+![New Gateway Service form](../assets/docs/04-service-create.png)
 1. Choose **New Gateway Service** and enter a descriptive name if you want to identify it by name.
 2. Choose full URL mode or individual upstream fields.
 3. For a full URL, provide the protocol, hostname, optional port, and path in one address. For individual fields, set **Protocol**, **Host**, and **Port**, plus an optional **Path**.

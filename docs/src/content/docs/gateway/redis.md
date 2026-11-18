@@ -5,6 +5,8 @@ description: "Redis configurations | Kang"
 
 **Redis Configurations** defines reusable Redis connection settings for compatible Kong plugins. It does not deploy a Redis server or configure the database that stores Kang users.
 
+![Redis configurations list](../assets/docs/16-redis.png)
+
 ## Create a configuration
 
 1. Select the gateway and open Redis Configurations.
