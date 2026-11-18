@@ -1,13 +1,20 @@
 #!/usr/bin/env bash
 # Syncs the chart with the latest releases of kang-frontend and kang-backend.
 # Prints the new chart version when a bump was applied; prints nothing and
-# exits 0 when everything is up to date. Reads public release info via the
-# unauthenticated GitHub API.
+# exits 0 when everything is up to date. Component repos are private, so the
+# versions are read from the public GHCR image tags (one per release).
 set -euo pipefail
 
 OWNER="${GITHUB_REPOSITORY_OWNER:-zaidanm16}"
-FE=$(curl -fsSL "https://api.github.com/repos/$OWNER/kang-frontend/releases/latest" 2>/dev/null | jq -r '.tag_name // empty' | sed 's/^v//') || FE=""
-BE=$(curl -fsSL "https://api.github.com/repos/$OWNER/kang-backend/releases/latest" 2>/dev/null | jq -r '.tag_name // empty' | sed 's/^v//') || BE=""
+latest_version() {
+  local repo="$1" token
+  token=$(curl -fsSL "https://ghcr.io/token?scope=repository:$OWNER/$repo:pull" 2>/dev/null | jq -r '.token // empty') || return 0
+  [ -n "$token" ] || return 0
+  curl -fsSL -H "Authorization: Bearer $token" "https://ghcr.io/v2/$OWNER/$repo/tags/list" 2>/dev/null |
+    jq -r '.tags[] // empty' | grep -E '^v?[0-9]+\.[0-9]+\.[0-9]+$' | sed 's/^v//' | sort -V | tail -1
+}
+FE=$(latest_version kang-frontend) || FE=""
+BE=$(latest_version kang-backend) || BE=""
 if [ -z "$FE" ] || [ -z "$BE" ]; then
   echo "could not read latest component releases; skipping sync" >&2
   exit 0
