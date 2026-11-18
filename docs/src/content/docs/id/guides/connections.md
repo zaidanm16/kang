@@ -5,6 +5,8 @@ description: "Koneksi dan environment | Kang"
 
 Connection menyimpan alamat dan autentikasi Admin API sebuah gateway Kong. Free menyediakan maksimal **2 koneksi per instalasi Kang**, bukan dua per pengguna. Pro menghapus batas paket tersebut; izin akses tetap berlaku.
 
+![Halaman koneksi Kong](../../assets/docs/02-connections.png)
+
 ## Menambah atau mengedit koneksi
 
 1. Buka **Connections → New Connection**.

@@ -5,6 +5,8 @@ description: "Profil dan keamanan | Kang"
 
 Buka menu avatar lalu **Profile**. Halaman akun memakai sidebar sendiri: Profile, Preferences, dan Security. **Back to workspace** mengembalikan konteks kerja. **Kang License** merupakan halaman System terpisah di `/license`.
 
+![Halaman My Profile](../../assets/docs/21-profile.png)
+
 ## Memperbarui identitas
 
 Gunakan ikon edit di sebelah username, email, nama depan, atau nama belakang untuk membuka editor field, masukkan nilai valid, lalu simpan. Role, organisasi, dan tim merupakan informasi akses; mintalah administrator berwenang untuk mengubahnya.

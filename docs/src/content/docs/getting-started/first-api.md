@@ -7,6 +7,10 @@ This example exposes an existing HTTP application through Kong. Use a test gatew
 
 ## 1. Create the service
 
+![New Route form](../assets/docs/07-route-create.png)
+
+![New Gateway Service form](../assets/docs/04-service-create.png)
+
 1. Select your test connection and open **Gateway Services**.
 2. Choose **New Gateway Service** and give it a recognizable name, such as `catalog`.
 3. In URL mode, enter an upstream URL such as `http://catalog.internal:8080`. Alternatively, use the protocol, host, port, and optional path fields.

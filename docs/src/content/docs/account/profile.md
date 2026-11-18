@@ -5,6 +5,8 @@ description: "Profile and security | Kang"
 
 Open your avatar menu and go to **Profile**. Account pages use their own sidebar: Profile, Preferences, and Security. **Back to workspace** returns to your working context. **Kang License** is a separate System page at `/license`.
 
+![My Profile page](../assets/docs/21-profile.png)
+
 ## Update your details
 
 Use the edit icons beside username, email, first name, or last name to open the field editor, enter a valid value, and save. Role, organization, and teams are access information; ask an authorized administrator to change them.

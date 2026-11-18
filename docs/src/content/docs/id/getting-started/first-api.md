@@ -7,12 +7,16 @@ Contoh ini mengekspos aplikasi HTTP yang sudah berjalan melalui Kong. Gunakan ga
 
 ## 1. Buat service
 
+![Formulir Gateway Service baru](../../assets/docs/04-service-create.png)
+
 1. Pilih koneksi uji dan buka **Gateway Services**.
 2. Pilih **New Gateway Service**, lalu beri nama yang mudah dikenali, misalnya `catalog`.
 3. Pada mode URL, masukkan upstream seperti `http://catalog.internal:8080`. Alternatifnya, isi protocol, host, port, dan path opsional secara terpisah.
 4. Simpan dan periksa konfigurasi service. Hostname upstream harus bisa di-resolve dari Kong, bukan hanya dari laptop Anda.
 
 ## 2. Buat route
+
+![Formulir Route baru](../../assets/docs/07-route-create.png)
 
 1. Buka **Routes** dan pilih aksi membuat route.
 2. Beri nama seperti `catalog-api`, pilih service `catalog`, lalu gunakan protokol HTTP/HTTPS yang sesuai dengan gateway.

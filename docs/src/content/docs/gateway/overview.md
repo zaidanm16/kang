@@ -5,6 +5,8 @@ description: "Overview and analytics | Kang"
 
 Open **Home** after selecting a connection. Resource counts summarize the selected gateway's services, routes, consumers, and plugins. **About this Gateway** shows connection information, gateway version/edition, proxy URL, and Admin API URL.
 
+![Kang overview dashboard](../assets/docs/01-overview.png)
+
 ## Turn analytics on or off
 
 Use the analytics control on Overview or **Profile → Preferences → Analytics**. When disabled, Kang skips traffic-metric requests but still displays configuration inventory. Enabling analytics is a preference; it does not deploy or configure a metrics server.

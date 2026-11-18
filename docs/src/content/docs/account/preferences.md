@@ -5,6 +5,8 @@ description: "Themes, language, and preferences | Kang"
 
 Open **Profile → Preferences** to change Analytics, Appearance, and Language. These preferences change your experience, not another user's gateway permissions.
 
+![Preferences page with analytics, appearance, and language settings](../assets/docs/22-preferences.png)
+
 ## The four application themes
 
 | Theme | Appearance |

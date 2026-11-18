@@ -5,6 +5,10 @@ description: "Organizations and teams | Kang"
 
 Organizations and teams are **Kang Pro** features. They organize dashboard users and gateway access, not Kong consumers or consumer groups.
 
+![Organizations page](../assets/docs/18-organizations.png)
+
+![Teams page](../assets/docs/19-teams.png)
+
 ## Set up access in order
 
 1. Open **Organizations** and create the organization identity. Review its name, slug, optional description, and available logo settings.

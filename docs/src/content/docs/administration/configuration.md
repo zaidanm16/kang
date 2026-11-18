@@ -5,6 +5,8 @@ description: "Gateway configuration and compatibility | Kang"
 
 **Configuration** displays the selected Kong node's runtime configuration. It helps inspect listeners, datastore settings, Nginx directives, and plugin settings exposed by the Admin API. It is a read-only view, not an editor for `kong.conf`.
 
+![Configuration page](../assets/docs/25-configuration.png)
+
 ## Use the page
 
 1. Confirm the selected connection.

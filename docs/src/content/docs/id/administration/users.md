@@ -5,6 +5,8 @@ description: "Pengguna dan role | Kang"
 
 User Kang masuk ke dashboard. Free menyediakan **1 pengguna per instalasi**. Pro mengizinkan pengguna tambahan, tetapi lisensi tidak otomatis memberi seluruh pengguna hak administrator.
 
+![Halaman manajemen user](../../assets/docs/20-users.png)
+
 ## Membuat pengguna
 
 1. Buka **Users → New User** dengan izin membuat pengguna.

@@ -5,6 +5,8 @@ description: "Certificates and SNIs | Kang"
 
 Use **Certificates** to manage server certificates and CA certificates, and **SNIs** to associate hostnames with server certificates. These are gateway TLS resources, not the certificate for the Kang website itself.
 
+![Certificates list](../assets/docs/13-certificates.png)
+
 ## Server certificate
 
 1. Open Certificates and choose the server-certificate create action.

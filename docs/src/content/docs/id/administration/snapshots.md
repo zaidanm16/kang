@@ -5,6 +5,8 @@ description: "Snapshot, clone, dan restore | Kang"
 
 Snapshot menangkap **konfigurasi Kong** yang didukung, bukan seluruh database Kang. Alur Pro ini memerlukan akun global dengan permission snapshot yang sesuai. Restore juga membutuhkan izin menulis resource gateway tujuan.
 
+![Halaman snapshots](../../assets/docs/24-snapshots.png)
+
 ## Mengambil snapshot
 
 1. Pilih koneksi sumber lalu buka **Snapshots → Create Snapshot**.

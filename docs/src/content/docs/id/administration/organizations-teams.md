@@ -5,6 +5,10 @@ description: "Organisasi dan tim | Kang"
 
 Organisasi dan tim merupakan fitur **Kang Pro**. Keduanya mengelompokkan pengguna dashboard dan akses gateway, bukan consumer atau consumer group Kong.
 
+![Halaman organizations](../../assets/docs/18-organizations.png)
+
+![Halaman teams](../../assets/docs/19-teams.png)
+
 ## Menyiapkan akses secara berurutan
 
 1. Buka **Organizations** dan buat identitas organisasi. Periksa nama, slug, deskripsi opsional, dan pengaturan logo yang tersedia.

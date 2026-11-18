@@ -5,6 +5,8 @@ description: "Vault | Kang"
 
 Entitas vault Kong mengatur cara Kong membaca referensi secret dari sumber eksternal. Vault tidak menjadikan Kang sebagai secret manager dan tidak otomatis mengunggah secret Anda.
 
+![Daftar vaults](../../assets/docs/15-vaults.png)
+
 ## Mengonfigurasi vault
 
 1. Buka **Vaults** pada koneksi terpilih dan buat vault.

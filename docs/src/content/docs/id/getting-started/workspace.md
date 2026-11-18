@@ -3,8 +3,12 @@ title: "Workspace, tabel, dan draft"
 description: "Workspace, tabel, dan draft | Kang"
 ---
 
+![Dasbor overview Kang](../../assets/docs/01-overview.png)
+
 ## Navigasi
 
+
+![Kong connections page](../../assets/docs/02-connections.png)
 Sidebar mengelompokkan resource **Gateway Manager** dan administrasi **System**. Pemilih koneksi menentukan gateway untuk halaman gateway. Avatar membuka navigasi akun; **Back to workspace** mengembalikan Anda dari Profile, Preferences, atau Security ke workspace.
 
 Gunakan **Search or jump to** pada header untuk mencari tujuan yang tersedia. Setiap daftar resource memiliki pencarian sendiri serta, bila didukung, filter, pengurutan, ukuran halaman, dan pengaturan kolom. Periksa filter aktif jika resource tidak ditemukan. Hasil pencarian kosong belum tentu berarti gateway kosong.

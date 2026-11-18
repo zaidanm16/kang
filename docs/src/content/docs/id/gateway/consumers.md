@@ -5,8 +5,12 @@ description: "Consumer, kredensial, dan grup | Kang"
 
 Consumer mewakili klien API Anda, bukan akun login Kang. Akun dashboard dikelola melalui **Users**.
 
+![Daftar consumers](../../assets/docs/10-consumers.png)
+
 ## Membuat consumer
 
+
+![New Consumer form](../../assets/docs/11-consumer-create.png)
 1. Buka **Consumers** dan pilih aksi membuat consumer.
 2. Isi **Username**, **Custom ID**, atau keduanya. Minimal salah satu wajib; masing-masing tidak wajib sendiri jika yang lain sudah diisi.
 3. Tambahkan tag opsional lalu simpan.

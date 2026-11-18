@@ -5,6 +5,8 @@ description: "Snapshots, clone, and restore | Kang"
 
 Snapshots capture supported **Kong configuration**, not the entire Kang database. This is a Pro workflow for global accounts with the relevant snapshot permissions. Restoring also requires authorization to write the selected gateway resources.
 
+![Snapshots page](../assets/docs/24-snapshots.png)
+
 ## Capture a snapshot
 
 1. Select the source connection and open **Snapshots → Create Snapshot**.

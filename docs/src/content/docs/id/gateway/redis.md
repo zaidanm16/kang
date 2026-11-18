@@ -5,6 +5,8 @@ description: "Konfigurasi Redis | Kang"
 
 **Redis Configurations** menyimpan pengaturan koneksi Redis yang dapat digunakan ulang oleh plugin Kong yang kompatibel. Fitur ini tidak memasang server Redis atau mengatur database penyimpanan user Kang.
 
+![Daftar konfigurasi Redis](../../assets/docs/16-redis.png)
+
 ## Membuat konfigurasi
 
 1. Pilih gateway lalu buka Redis Configurations.

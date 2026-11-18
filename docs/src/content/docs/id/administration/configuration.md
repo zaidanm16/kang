@@ -5,6 +5,8 @@ description: "Konfigurasi dan kompatibilitas gateway | Kang"
 
 **Configuration** menampilkan konfigurasi runtime node Kong terpilih. Halaman ini membantu memeriksa listener, datastore, direktif Nginx, dan pengaturan plugin yang diekspos Admin API. Ini tampilan baca-saja, bukan editor `kong.conf`.
 
+![Halaman konfigurasi](../../assets/docs/25-configuration.png)
+
 ## Menggunakan halaman
 
 1. Pastikan koneksi terpilih benar.

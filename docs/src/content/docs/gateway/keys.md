@@ -5,6 +5,8 @@ description: "Keys and key sets | Kang"
 
 Keys and key sets are Kong cryptographic resources used by compatible plugins. They are different from a consumer's Key Auth credential and from the Kang Pro license key.
 
+![Key sets page](../assets/docs/14-keys.png)
+
 ## Create a key set
 
 Open **Keys → Key Sets**, create a set, give it a meaningful name if applicable, and save. Use sets to group keys that a compatible plugin needs to discover together.

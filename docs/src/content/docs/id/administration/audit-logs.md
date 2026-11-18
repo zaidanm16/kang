@@ -5,6 +5,8 @@ description: "Audit log dan ekspor | Kang"
 
 **Audit Logs** merekam aktivitas administrasi di Kang, bukan access log HTTP seluruh request yang melewati Kong. Akses memerlukan akun global dengan izin membaca audit.
 
+![Audit logs dengan badge perubahan](../../assets/docs/17-audit-logs.png)
+
 ## Mencari kejadian
 
 1. Buka Audit Logs.

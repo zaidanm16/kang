@@ -5,6 +5,8 @@ description: "Vaults | Kang"
 
 Kong vault entities configure how Kong resolves secret references from an external secret source. They do not turn Kang into a secret manager or automatically upload your secrets.
 
+![Vaults list](../assets/docs/15-vaults.png)
+
 ## Configure a vault
 
 1. Open **Vaults** for the selected connection and create a vault.
