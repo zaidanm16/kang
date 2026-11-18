@@ -9,7 +9,7 @@ Have the Kang frontend URL, a reachable Kong Admin API, and its authentication d
 
 ## Complete the setup wizard
 
-![New connection form: name, proxy URL, and Admin API URL - the same details the setup wizard asks for](../assets/docs/31-connection-create.png)
+![Setup wizard step 1: enter the setup token from the backend startup logs](../assets/docs/32-setup-token.png)
 
 1. Open Kang. A new installation takes you to `/setup`.
 2. Obtain the one-time setup token from your installation's backend startup logs. For Compose, use `docker compose logs backend` from the `compose` folder. Keep the token private.
@@ -17,6 +17,10 @@ Have the Kang frontend URL, a reachable Kong Admin API, and its authentication d
 4. Enter a name, proxy URL, Admin API URL, and authentication for the first Kong connection.
 5. Test the connection and resolve any failure before completing setup. The backend, not your browser, must be able to reach the Admin API.
 6. Complete the wizard and sign in. Administrator creation is deferred until the final step after the connection test. If an interrupted setup already created an administrator, sign in with that account to continue.
+
+![Setup wizard step 2: create the first administrator account](../assets/docs/34-setup-admin.png)
+
+![Setup wizard step 3: connect to Kong with the connection name, Admin API URL, and Proxy URL](../assets/docs/36-setup-kong.png)
 
 Earlier wizard steps can be reopened to correct information. Returning to the administrator step retains the connection fields.
 

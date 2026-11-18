@@ -9,7 +9,7 @@ Siapkan URL frontend Kang, Admin API Kong yang dapat dijangkau, dan autentikasin
 
 ## Selesaikan wizard setup
 
-![Formulir koneksi baru: name, proxy URL, dan Admin API URL - detail yang sama diminta wizard setup](../../assets/docs/31-connection-create.png)
+![Langkah 1 wizard setup: masukkan setup token dari log startup backend](../../assets/docs/32-setup-token.png)
 
 1. Buka Kang. Instalasi baru mengarahkan Anda ke `/setup`.
 2. Ambil token setup sekali pakai dari log startup backend. Untuk Compose, jalankan `docker compose logs backend` dari folder `compose`. Jaga kerahasiaan token.
@@ -17,6 +17,10 @@ Siapkan URL frontend Kang, Admin API Kong yang dapat dijangkau, dan autentikasin
 4. Masukkan nama, proxy URL, Admin API URL, dan autentikasi koneksi Kong pertama.
 5. Uji koneksi dan selesaikan error sebelum melanjutkan. Backend Kang, bukan browser Anda, harus dapat menjangkau Admin API.
 6. Selesaikan wizard lalu masuk. Administrator dibuat pada langkah terakhir setelah koneksi berhasil diuji. Jika setup terputus setelah akun dibuat, masuk menggunakan akun tersebut untuk melanjutkan.
+
+![Langkah 2 wizard setup: buat akun administrator pertama](../../assets/docs/34-setup-admin.png)
+
+![Langkah 3 wizard setup: hubungkan Kong dengan nama koneksi, Admin API URL, dan Proxy URL](../../assets/docs/36-setup-kong.png)
 
 Langkah sebelumnya dapat dibuka kembali untuk mengoreksi data. Field koneksi tetap tersimpan ketika kembali ke langkah administrator.
 
