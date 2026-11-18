@@ -50,7 +50,7 @@ Kang is the management application for Kong API Gateway. It manages your existin
 
 ### Installing the Chart from the OCI Registry
 
-The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. The `v3.0.0` OCI tag is also published as an alias of the standard Helm tag; use `--version 3.0.0` with Helm.
+The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. Use `--version 3.0.0` with Helm.
 
 Create a namespace and the backend Secret, then install:
 
