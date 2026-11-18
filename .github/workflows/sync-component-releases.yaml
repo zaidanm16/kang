@@ -28,6 +28,7 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
           git commit -m "chore: release chart $NEW_VERSION (component release sync)"
-          git push origin HEAD:main
+          # One push for commit and tag: pushing the tag separately races
+          # against object availability on the remote.
           git tag "v$NEW_VERSION"
-          git push origin "v$NEW_VERSION"
+          git push origin HEAD:main "v$NEW_VERSION"
