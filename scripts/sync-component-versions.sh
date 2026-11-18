@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 # Syncs the chart with the latest releases of kang-frontend and kang-backend.
 # Prints the new chart version when a bump was applied; prints nothing and
-# exits 0 when everything is up to date. Requires gh and GH_TOKEN when run in
-# CI; locally the gh CLI credentials are used.
+# exits 0 when everything is up to date. Reads public release info via the
+# unauthenticated GitHub API.
 set -euo pipefail
 
 OWNER="${GITHUB_REPOSITORY_OWNER:-zaidanm16}"
-FE=$(gh api "repos/$OWNER/kang-frontend/releases/latest" --jq '.tag_name' 2>/dev/null | sed 's/^v//') || FE=""
-BE=$(gh api "repos/$OWNER/kang-backend/releases/latest" --jq '.tag_name' 2>/dev/null | sed 's/^v//') || BE=""
+FE=$(curl -fsSL "https://api.github.com/repos/$OWNER/kang-frontend/releases/latest" 2>/dev/null | jq -r '.tag_name // empty' | sed 's/^v//') || FE=""
+BE=$(curl -fsSL "https://api.github.com/repos/$OWNER/kang-backend/releases/latest" 2>/dev/null | jq -r '.tag_name // empty' | sed 's/^v//') || BE=""
 if [ -z "$FE" ] || [ -z "$BE" ]; then
   echo "could not read latest component releases; skipping sync" >&2
   exit 0
