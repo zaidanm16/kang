@@ -9,10 +9,10 @@ Buka **Profile → Preferences** untuk mengatur Analytics, Appearance, dan Langu
 
 | Tema | Tampilan |
 | --- | --- |
-| Classic | Latar dan panel abu-abu kebiruan dengan aksen biru |
-| Gold | Latar ungu/navy gelap dengan aksen emas |
-| Black & Blue | Latar hitam, panel hampir hitam, aksen biru; tema default aplikasi |
-| Black & Gold | Latar hitam, panel hampir hitam, aksen emas |
+| Nila | Latar dan panel abu-abu kebiruan dengan aksen biru |
+| Kunang | Latar ungu/navy gelap dengan aksen emas |
+| Samudra | Latar hitam, panel hampir hitam, aksen biru; tema default aplikasi |
+| Harimau | Latar hitam, panel hampir hitam, aksen emas |
 
 Pada **Appearance**, arahkan kursor ke preview untuk melihat nama dan mencoba tema sementara. Klik preview untuk memilihnya. Meninggalkan preview tanpa memilih mengembalikan tema tersimpan. Fokus keyboard juga dapat menampilkan preview; aktifkan pilihan untuk menyimpan. Kontrol palet pada header aplikasi juga menyediakan pemilihan tema.
 

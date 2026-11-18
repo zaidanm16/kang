@@ -44,11 +44,11 @@ This is Kang's public home for installation files and documentation.
 | --- | --- | --- |
 | ![Consumers](screenshots/28-consumer-created.png) | ![Audit Logs](screenshots/12-audit-logs.png) | ![Create service](screenshots/29-service-created.png) |
 
-**Themes** — Classic, Gold, Black & Blue, and Black & Gold:
+**Themes** — Nila, Kunang, Samudra, and Harimau:
 
-| Classic | Gold | Black & Blue | Black & Gold |
+| Nila | Kunang | Samudra | Harimau |
 | --- | --- | --- | --- |
-| ![Classic](screenshots/16-theme-classic.png) | ![Gold](screenshots/17-theme-gold.png) | ![Black & Blue](screenshots/18-theme-black-blue.png) | ![Black & Gold](screenshots/19-theme-black-gold.png) |
+| ![Nila](screenshots/16-theme-classic.png) | ![Kunang](screenshots/17-theme-gold.png) | ![Samudra](screenshots/18-theme-black-blue.png) | ![Harimau](screenshots/19-theme-black-gold.png) |
 
 **Languages** — the interface is fully translated; switch it any time from the header:
 
