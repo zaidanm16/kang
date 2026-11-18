@@ -1,6 +1,6 @@
 # Kang Helm Chart
 
-![Version: 3.0.0](https://img.shields.io/badge/Version-3.0.0-informational?style=flat-square)  ![AppVersion: 3.0.0](https://img.shields.io/badge/AppVersion-3.0.0-informational?style=flat-square)
+![Version: 3.1.1](https://img.shields.io/badge/Version-3.1.1-informational?style=flat-square)  ![AppVersion: 3.1.1](https://img.shields.io/badge/AppVersion-3.1.0-informational?style=flat-square)
 
 - [Kang Helm Chart](#kang-helm-chart)
   - [Introduction](#introduction)
@@ -50,7 +50,7 @@ Kang is the management application for Kong API Gateway. It manages your existin
 
 ### Installing the Chart from the OCI Registry
 
-The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. Use `--version 3.0.0` with Helm.
+The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. Use `--version 3.1.1` with Helm.
 
 Create a namespace and the backend Secret, then install:
 
@@ -63,7 +63,7 @@ kubectl -n kang create secret generic kang-backend-secrets \
   --from-file=JWT_SECRET="$secret_file"
 
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.0.0 \
+  --version 3.1.1 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
   --set backend.env.AUTH_COOKIE_SECURE=false
@@ -82,7 +82,7 @@ Use a reviewed values file for repeatable installs rather than long command-line
 
 ```shell
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.0.0 \
+  --version 3.1.1 \
   --namespace kang --create-namespace \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets
@@ -92,7 +92,7 @@ Render before applying and review the manifests for your cluster:
 
 ```shell
 helm template kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.0.0 \
+  --version 3.1.1 \
   --namespace kang \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets
@@ -103,7 +103,7 @@ helm template kang oci://ghcr.io/zaidanm16/kang \
 #### Pulling the Chart
 
 ```shell
-git clone --depth 1 --branch v3.0.0 https://github.com/zaidanm16/kang.git
+git clone --depth 1 --branch v3.1.1 https://github.com/zaidanm16/kang.git
 cd kang/charts/kang
 helm dependency build
 ```
@@ -316,7 +316,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 | backend.extraEnvFrom | list | `[]` | Extra backend envFrom references, such as an additional Secret or ConfigMap. |
 | backend.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | backend.image.repository | string | `"ghcr.io/zaidanm16/kang-backend"` | Backend application image repository. |
-| backend.image.tag | string | `"v1.0.0"` | Backend application image tag. Prefer immutable release or SHA tags. |
+| backend.image.tag | string | `"v1.1.0"` | Backend application image tag. Prefer immutable release or SHA tags. |
 | backend.persistence.accessModes | list | `["ReadWriteOnce"]` | Access modes of the created PVC. |
 | backend.persistence.annotations | object | `{}` | Annotations for the created PVC. |
 | backend.persistence.enabled | bool | `true` | Create and mount a PVC for backend-local data such as a SQLite database. Not used in external DB or CNPG modes. |
