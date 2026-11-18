@@ -6,7 +6,7 @@ Jalankan Kang menggunakan Docker Compose. Siapkan Docker, plugin Compose, Git, d
 
 ```sh
 # Clone file deployment pada rilis terkini
-git clone --depth 1 --branch v3.1.1 https://github.com/zaidanm16/kang.git
+git clone --depth 1 --branch v3.1.2 https://github.com/zaidanm16/kang.git
 cd kang/compose
 # Buat konfigurasi backend dari contoh (variabel backend seperti CORS dan sesi)
 cp backend.env.example backend.env
