@@ -35,3 +35,11 @@
 .site-title { font-weight: 800; letter-spacing: -0.035em; }
 h1, h2, h3 { letter-spacing: -0.025em; }
 :focus-visible { outline: 2px solid var(--sl-color-accent-high); outline-offset: 3px; }
+.sl-markdown-content p:has(> img[src*="/diagrams/architecture-"]) { overflow-x: auto; }
+.sl-markdown-content img[src*="/diagrams/architecture-"] { display: block; width: 100%; min-width: 880px; }
+.sl-markdown-content img[src*="/diagrams/monitoring-"] {
+  display: block;
+  width: 100%;
+  max-width: 28rem;
+  margin-inline: auto;
+}

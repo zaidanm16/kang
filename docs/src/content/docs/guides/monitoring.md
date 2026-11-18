@@ -5,15 +5,7 @@ description: Connect Kong metrics to Prometheus or VictoriaMetrics so the Kang d
 
 Kang's analytics views are powered by the **Kong prometheus plugin** feeding a **Prometheus-compatible metrics store** that the Kang backend queries. Nothing ships pre-wired: you enable the plugin on Kong, scrape its status endpoint, point the backend at the store, and turn analytics on in the app.
 
-```text
-Kong data plane ──status port :8100 /metrics──▶ Prometheus / VictoriaMetrics
-                                                        │  PROMETHEUS_URL
-                                                        ▼
-                                              Kang backend :8080
-                                                        │  /api/v1/prometheus/*
-                                                        ▼
-                                             Kang dashboard (analytics views)
-```
+![Metrics flow from the Kong data plane through Prometheus or VictoriaMetrics and the Kang backend to the dashboard.](/kang/diagrams/monitoring-en.svg)
 
 ![Service analytics dashboard](../assets/docs/23-analytics.png)
 

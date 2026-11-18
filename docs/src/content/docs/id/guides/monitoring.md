@@ -5,15 +5,7 @@ description: Hubungkan metrik Kong ke Prometheus atau VictoriaMetrics agar dashb
 
 Tampilan analytics Kang ditenagai oleh **plugin prometheus Kong** yang mengirim data ke **metrics store yang kompatibel dengan Prometheus** dan di-query oleh backend Kang. Tidak ada yang terhubung otomatis: aktifkan plugin di Kong, scrape endpoint status-nya, arahkan backend ke store, lalu nyalakan analytics di aplikasi.
 
-```text
-Kong data plane ──status port :8100 /metrics──▶ Prometheus / VictoriaMetrics
-                                                        │  PROMETHEUS_URL
-                                                        ▼
-                                              Kang backend :8080
-                                                        │  /api/v1/prometheus/*
-                                                        ▼
-                                             Dashboard Kang (tampilan analytics)
-```
+![Alur metrik dari data plane Kong melalui Prometheus atau VictoriaMetrics dan backend Kang hingga dasbor.](/kang/diagrams/monitoring-id.svg)
 
 ![Dasbor analitik service](../../assets/docs/23-analytics.png)
 
