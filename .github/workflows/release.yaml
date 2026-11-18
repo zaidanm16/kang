@@ -81,10 +81,24 @@ jobs:
           else
             helm push "dist/kang-${chart_version}.tgz" "oci://ghcr.io/${GH_OWNER,,}"
           fi
-          oras tag "${chart_ref}:${chart_version}" "$RELEASE_TAG"
-          test "$(oras resolve "${chart_ref}:${chart_version}")" = "$(oras resolve "${chart_ref}:${RELEASE_TAG}")"
           helm show chart "oci://${chart_ref}" --version "$chart_version"
-          helm show chart "oci://${chart_ref}:${RELEASE_TAG}"
+      - name: Update version references
+        env:
+          RELEASE_TAG: ${{ inputs.release_tag || github.ref_name }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          bash scripts/update-versions.sh "${RELEASE_TAG#v}"
+          if git diff --quiet; then
+            echo "No version references to update"
+          else
+            git add README.md compose/README.md docs/
+            git commit -m "chore: update release references to ${RELEASE_TAG}"
+            git push origin HEAD:main
+          fi
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -82,14 +82,21 @@ Start with Docker Compose below, or use the published Helm chart on Kubernetes. 
 The quickest way to try Kang is with **Docker Compose**. You need Docker with the Compose plugin, `git`, and `openssl`.
 
 ```sh
+# Clone the deployment files at the current release
 git clone --depth 1 --branch v3.0.0 https://github.com/zaidanm16/kang-deploy.git
 cd kang-deploy/compose
+# Create backend configuration from the example (backend-only variables like CORS and session settings)
 cp backend.env.example backend.env
+# Generate two random secrets into .env: JWT_SECRET signs login sessions, POSTGRES_PASSWORD secures the database
 (umask 077; printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 32)" > .env)
+# Start the stack in the background: PostgreSQL, backend, and frontend
 docker compose up -d
 ```
 
-The chart and application images are public and can be downloaded without registry login.
+- `.env` — Compose-level settings: image tags, published ports, and the two secrets above.
+- `backend.env` — backend process settings: `CORS_ORIGINS` (the frontend origin), rate limits, session lifetimes. See the [backend environment reference](https://github.com/zaidanm16/kang-backend/blob/main/.env.example) for everything.
+- `docker compose logs backend` — prints the one-time setup token you need on first open.
+- `docker compose down` — stops the stack but keeps your database; add `-v` to delete it.
 
 Open **http://localhost:3000**. Get the one-time setup token with `docker compose logs backend`, then follow the setup screen to create your administrator and connect an existing Kong Admin API. The Admin API must be reachable from the backend container; `localhost` inside a container refers to that container.
 
@@ -102,6 +109,7 @@ For public URLs, HTTPS, external services, and updates, see the [Compose guide](
 Use the **published Helm chart** with an existing Kubernetes cluster and a default StorageClass. The default chart also installs the CloudNativePG operator, which requires cluster-scoped permissions.
 
 ```sh
+# Create the namespace and a Secret holding the backend JWT secret
 kubectl create namespace kang
 secret_file="$(mktemp)"
 openssl rand -hex 32 > "$secret_file"
@@ -109,6 +117,7 @@ kubectl -n kang create secret generic kang-backend-secrets \
   --from-file=JWT_SECRET="$secret_file"
 rm -f "$secret_file"
 
+# Install the chart from the public OCI registry (version matches the release)
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
   --version 3.0.0 \
   --namespace kang \
@@ -116,12 +125,10 @@ helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
   --set backend.env.AUTH_COOKIE_SECURE=false
 ```
 
-For local access, run these in separate terminals, then open http://localhost:3000:
-
-```sh
-kubectl -n kang port-forward svc/kang-backend 8080:8080
-kubectl -n kang port-forward svc/kang-frontend 3000:3000
-```
+- The Secret provides the signing key the backend needs; keeping it out of the chart values keeps it out of your shell history and Helm release record.
+- `helm upgrade --install` installs the chart (or upgrades it if it already exists). It deploys the CloudNativePG operator and a PostgreSQL cluster by default, which requires cluster-scoped permissions.
+- `AUTH_COOKIE_SECURE=false` is for local HTTP testing only — keep it `true` (the default) behind HTTPS.
+- `kubectl port-forward` tunnels the backend and frontend services to your local machine for local access.
 
 See the [chart guide](charts/kang/README.md) for external databases, storage, HTTPS, Ingress, Gateway API, and custom values. A [standalone Kubernetes manifest](kubernetes/README.md) is also available.
 
@@ -134,15 +141,14 @@ The [release workflow](.github/workflows/release.yaml) publishes these artifacts
 | Artifact | Use |
 | --- | --- |
 | `oci://ghcr.io/zaidanm16/kang:3.0.0` | Install with Helm using `--version 3.0.0` |
-| `oci://ghcr.io/zaidanm16/kang:v3.0.0` | Alias for the same chart artifact |
 | `kang-3.0.0.tgz` | Packaged chart with its pinned CloudNativePG dependency |
 | `kang-compose.tar.gz` | Docker Compose stack, environment examples, and guide |
-| `kang.yaml`, `kubernetes-README.md` | Standalone Kubernetes deployment |
+| `kang.yaml`, `kubernetes-README.md` | Standalone Kubernetes deployment manifest and its guide |
 | `SHA256SUMS` | Checksums for the downloadable files |
 
-Chart `version` must match the release tag without `v`. `appVersion` records the frontend version. Application image tags retain the upstream `v` prefix. The `v3.0.0` OCI tag is an alias of the standard Helm tag `3.0.0`; Helm installation examples use `--version 3.0.0`. GitHub lists OCI Helm charts under container Packages because they use the same registry format. Registry packages must be public for anonymous downloads; private packages require registry authentication.
+Chart `version` must match the release tag without `v`. `appVersion` records the frontend version. Application image tags retain the upstream `v` prefix. GitHub lists OCI Helm charts under container Packages because they use the same registry format.
 
-Update the release badge alongside the documented release version.
+Version references in this README, the Compose guide, and the installation docs are updated automatically: after creating a GitHub Release, the workflow commits the new version with `scripts/update-versions.sh`. You can also run it manually: `scripts/update-versions.sh <version>`.
 
 ## Contributing
 

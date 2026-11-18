@@ -8,10 +8,12 @@ const homeLabel = locale === 'id' ? 'Beranda dokumentasi Kang' : 'Kang documenta
     <span class="latin">kang.</span>
     <span class="sundanese">ᮊᮀ.</span>
   </span>
+  <span class="site-suffix" translate="no">docs</span>
 </a>
 <style>
-  .kang-brand { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--sl-color-white); }
+  .kang-brand { display: inline-flex; align-items: baseline; gap: 0.75rem; text-decoration: none; color: var(--sl-color-white); }
   .kang-wordmark { display: block; position: relative; overflow: hidden; height: 2.5rem; width: 5rem; }
+  .site-suffix { font-size: 1.1rem; font-weight: 300; letter-spacing: 0.02em; color: var(--sl-color-white); opacity: 0.75; align-self: center; padding-top: 0.9rem; }
   .latin, .sundanese { position: absolute; top: 0; left: 0; line-height: 2.5rem; transition: transform 0.3s ease; }
   .latin { font-family: Lobster, cursive; font-size: 2rem; }
   .sundanese { font-family: 'Noto Sans Sundanese', sans-serif; font-size: 1.75rem; font-weight: 600; transform: translateY(110%); }
