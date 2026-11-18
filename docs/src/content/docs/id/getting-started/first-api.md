@@ -36,6 +36,6 @@ Ganti alamat dan path upstream sesuai lingkungan Anda. Jika route juga mencocokk
 
 ## 4. Tambahkan kebijakan
 
-Buka tab **Plugins** milik service atau route dan tambahkan plugin yang tersedia. Periksa **Applied To** sebelum menyimpan agar kebijakan diterapkan ke resource yang benar. Untuk autentikasi, buat [consumer dan kredensial]((/kang//id/gateway/consumers/) lalu aktifkan plugin terkait; consumer saja tidak mewajibkan autentikasi.
+Buka tab **Plugins** milik service atau route dan tambahkan plugin yang tersedia. Periksa **Applied To** sebelum menyimpan agar kebijakan diterapkan ke resource yang benar. Untuk autentikasi, buat [consumer dan kredensial](/kang/id/gateway/consumers/) lalu aktifkan plugin terkait; consumer saja tidak mewajibkan autentikasi.
 
-Jika request gagal, baca [pemecahan masalah]((/kang//id/guides/troubleshooting/) dan periksa koneksi terpilih sebelum mengubah konfigurasi lain.
+Jika request gagal, baca [pemecahan masalah](/kang/id/guides/troubleshooting/) dan periksa koneksi terpilih sebelum mengubah konfigurasi lain.
