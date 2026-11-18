@@ -18,7 +18,7 @@ backend:
     # -- Backend application image repository.
     repository: ghcr.io/zaidanm16/kang-backend
     # -- Backend application image tag. Prefer immutable release or SHA tags.
-    tag: v1.0.0
+    tag: v1.1.0
     # -- Image pull policy.
     pullPolicy: IfNotPresent
   service:
