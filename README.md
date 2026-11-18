@@ -1,6 +1,6 @@
 # Kang
 
-[![Release](https://img.shields.io/badge/release-v3.0.0-blue)](https://github.com/zaidanm16/kang-deploy/releases)
+[![Release](https://img.shields.io/badge/release-v3.1.0-blue)](https://github.com/zaidanm16/kang-deploy/releases)
 [![Release workflow](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml/badge.svg)](https://github.com/zaidanm16/kang-deploy/actions/workflows/release.yaml)
 [![Documentation](https://img.shields.io/badge/docs-kang--deploy-4A90D9?logo=markdown&logoColor=white)](https://zaidanm16.github.io/kang-deploy/)
 
@@ -83,7 +83,7 @@ The quickest way to try Kang is with **Docker Compose**. You need Docker with th
 
 ```sh
 # Clone the deployment files at the current release
-git clone --depth 1 --branch v3.0.0 https://github.com/zaidanm16/kang-deploy.git
+git clone --depth 1 --branch v3.1.0 https://github.com/zaidanm16/kang-deploy.git
 cd kang-deploy/compose
 # Create backend configuration from the example (backend-only variables like CORS and session settings)
 cp backend.env.example backend.env
@@ -119,7 +119,7 @@ rm -f "$secret_file"
 
 # Install the chart from the public OCI registry (version matches the release)
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.0.0 \
+  --version 3.1.0 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
   --set backend.env.AUTH_COOKIE_SECURE=false
@@ -134,14 +134,14 @@ See the [chart guide](charts/kang/README.md) for external databases, storage, HT
 
 ## Releases
 
-Release **v3.0.0** includes the chart and frontend version `3.0.0`. Backend images are pinned independently; the current default is `ghcr.io/zaidanm16/kang-backend:1.0.0`.
+Release **v3.1.0** includes the chart and frontend version `3.0.0`. Backend images are pinned independently; the current default is `ghcr.io/zaidanm16/kang-backend:1.0.0`.
 
 The [release workflow](.github/workflows/release.yaml) publishes these artifacts when a matching `v*` tag is pushed:
 
 | Artifact | Use |
 | --- | --- |
-| `oci://ghcr.io/zaidanm16/kang:3.0.0` | Install with Helm using `--version 3.0.0` |
-| `kang-3.0.0.tgz` | Packaged chart with its pinned CloudNativePG dependency |
+| `oci://ghcr.io/zaidanm16/kang:3.1.0` | Install with Helm using `--version 3.1.0` |
+| `kang-3.1.0.tgz` | Packaged chart with its pinned CloudNativePG dependency |
 | `kang-compose.tar.gz` | Docker Compose stack, environment examples, and guide |
 | `kang.yaml`, `kubernetes-README.md` | Standalone Kubernetes deployment manifest and its guide |
 | `SHA256SUMS` | Checksums for the downloadable files |
@@ -169,7 +169,7 @@ Update `charts/kang/Chart.yaml` and the documented release version together, com
 
 ```sh
 git tag v3.0.0
-git push origin v3.0.0
+git push origin v3.1.0
 ```
 
 Never commit credentials, signing keys, signed license keys, or local environment files. Rendering validates generated configuration; runtime deployment also depends on storage, controllers, and network reachability.
