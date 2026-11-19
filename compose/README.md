@@ -25,6 +25,8 @@ Open http://localhost:3000. The browser connects to the API at http://localhost:
 
 `.env` configures Compose image names, published ports, browser API URL and JWT secret. `backend.env` configures the backend process. Both local files are ignored by Git. Keep the JWT secret stable across restarts. See [all backend environment settings](https://github.com/zaidanm16/kang-backend/blob/main/.env.example) for additional supported settings; `SERVER_PORT`, `DATABASE_DSN`, and `JWT_SECRET` are set explicitly by Compose.
 
+For a new installation, generate a third independent random value for `KONG_CREDENTIAL_ENCRYPTION_KEY` in `backend.env`. Keep it with database backups: it decrypts saved Kong authentication credentials. If omitted, the backend uses `JWT_SECRET` as key material. Do not change the effective key on an existing database without re-encrypting its credentials. See [migration and key rotation](https://zaidanm16.github.io/kang/guides/operations/).
+
 ## Gateway analytics (optional)
 
 The dashboard can show traffic, latency, and error analytics. Kang reads metrics from a Prometheus-compatible store; Kong is external, so you wire three things together:
@@ -63,7 +65,7 @@ For HTTPS behind a reverse proxy, route frontend requests to port 3000 and API r
 
 For external PostgreSQL or MySQL, set `DB_DRIVER` in `backend.env`, replace `backend.environment.DATABASE_DSN` in `compose.yaml`, remove its PostgreSQL dependency, and remove the bundled PostgreSQL service. For Redis-backed rate limiting, set `RATE_LIMIT_STORE=redis` and `RATE_LIMIT_REDIS_URL`. Set `PROMETHEUS_URL` for an existing Prometheus-compatible query API. `localhost` inside a container refers to that container; use a reachable hostname or a service on a shared Docker network. PostgreSQL is started by this Compose file; Redis and metrics services are external. Without a metrics URL, the backend uses its own default `http://prometheus:9090`.
 
-Signed Kang licenses and public verification keys can be provided through `backend.env`, or install a license in the application's Kang License page. Never deploy a signing private key. License state and application data persist in the PostgreSQL named volume.
+To manage licenses through the UI, configure the issuer's `KANG_LICENSE_PUBLIC_KEYS` in `backend.env` and leave `KANG_LICENSE` unset. A global administrator can paste the signed license at **System → Kang License**; replacements use **Actions → Replace**. The token is stored in PostgreSQL, so it survives container replacement. Setting a nonempty `KANG_LICENSE` overrides the stored token and disables UI installation/replacement/removal. Never deploy a signing private key. See [license configuration and issuance](https://zaidanm16.github.io/kang/guides/plans/).
 
 ## Update, logs and data
 

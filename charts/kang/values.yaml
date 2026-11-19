@@ -56,7 +56,7 @@ backend:
     # -- Selector for matching statically provisioned PVs.
     selector: {}
   secret:
-    # -- Name of an existing Secret containing the backend JWT_SECRET and other backend-only secret variables. Required in production.
+    # -- Name of an existing Secret containing JWT_SECRET and other backend environment keys. Keep KONG_CREDENTIAL_ENCRYPTION_KEY stable; omit KANG_LICENSE for UI-managed licenses. Required in production.
     existingName: ""
     # -- Secret key that holds the JWT secret.
     jwtSecretKey: JWT_SECRET
