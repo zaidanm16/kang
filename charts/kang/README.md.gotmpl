@@ -152,6 +152,8 @@ networking:
 
 To create a Gateway in the release namespace instead, set `gatewayApi.createGateway: true` and provide `gatewayClassName`. For custom public API origins, set `networking.publicApiUrl` and `backend.env.CORS_ORIGINS` to the exact frontend origin(s), comma-separated.
 
+For an existing Gateway, HTTPS is inferred when `gatewayApi.tls.enabled` is true or the selected listener is named `https` or `tls`. If the HTTPS listener has another name, set `networking.publicApiUrl` and `backend.env.CORS_ORIGINS` explicitly so browser requests and CORS use the HTTPS origin.
+
 #### Database choices
 
 | Mode | Values | Notes |
@@ -259,6 +261,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 - The frontend image writes `NEXT_PUBLIC_*` runtime settings to `/app/public/runtime-env.js` at container startup. These values are browser-visible configuration, never credentials. `API_URL` is the server-to-server backend URL; `NEXT_PUBLIC_API_URL` is the browser-facing base API URL. With one public hostname and the supplied routing templates, the browser-facing URL should be that origin, while `API_URL` remains the in-cluster backend Service URL. Frontend cookie names must match the backend's `AUTH_COOKIE_NAME` and `AUTH_REFRESH_COOKIE_NAME`.
 - `storageClassName` semantics: `null` (default) omits the field and lets the cluster's default StorageClass apply; a class name requests that StorageClass; `""` explicitly requests no StorageClass, for a matching pre-created or static PV. A PVC selector constrains static PV matching only.
 - Backend SQLite, local Dragonfly, and local VictoriaMetrics are single-replica deployments; the chart uses `Recreate` for those stateful singletons. With `RATE_LIMIT_STORE=memory` (the default when Redis is off), each backend replica keeps its own in-memory rate-limit state.
+- When the in-chart CNPG database or Dragonfly service is enabled, backend pods wait for that service during initialization. If a backend pod remains in `Init`, check the CNPG Cluster or Dragonfly pod and Service.
 - The backend image workflow builds only the API binary and the frontend workflow builds the standalone Next.js app. There is no published migration-worker image; if you use the full database migration features, build and operate `Dockerfile.migration-worker` separately, then set the worker URL and token via `backend.extraEnv` and a Secret.
 - Health endpoints: backend `/health`, frontend `/api/health`. Kubernetes probes use those paths.
 - Scheduling: `nodeSelector`, `tolerations`, and `affinity` apply to application pods; `global.podAnnotations`, `global.commonLabels`, and `global.imagePullSecrets` apply chart-wide. The shared ServiceAccount does not automount Kubernetes API credentials.

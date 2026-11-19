@@ -20,10 +20,7 @@ data:
   {{- else if .Values.networking.publicApiUrl }}
   NEXT_PUBLIC_API_URL: {{ .Values.networking.publicApiUrl | quote }}
   {{- else if .Values.networking.host }}
-  {{- $scheme := "http" }}
-  {{- if and (eq .Values.networking.mode "ingress") .Values.networking.ingress.tls.enabled }}{{ $scheme = "https" }}{{ end }}
-  {{- if and (eq .Values.networking.mode "gatewayApi") .Values.networking.gatewayApi.tls.enabled }}{{ $scheme = "https" }}{{ end }}
-  NEXT_PUBLIC_API_URL: {{ printf "%s://%s" $scheme .Values.networking.host | quote }}
+  NEXT_PUBLIC_API_URL: {{ printf "%s://%s" (include "kang.publicScheme" .) .Values.networking.host | quote }}
   {{- else }}
   NEXT_PUBLIC_API_URL: "http://localhost:8080"
   {{- end }}

@@ -392,7 +392,7 @@ networking:
     gatewayName: ""
     # -- Namespace of the existing Gateway. Empty uses the release namespace.
     gatewayNamespace: ""
-    # -- Existing Gateway listener name to attach to.
+    # -- Existing Gateway listener name to attach to. Names "https" and "tls" are treated as HTTPS when URLs are derived.
     sectionName: ""
     # -- HTTP listener port when this chart creates the Gateway.
     httpPort: 80
@@ -401,7 +401,7 @@ networking:
     # -- Selector for AllowedRoutes when this chart creates the Gateway.
     allowedRoutesSelector: {}
     tls:
-      # -- Enable a TLS listener when this chart creates the Gateway.
+      # -- Enable a TLS listener when this chart creates the Gateway; also marks an existing Gateway listener as HTTPS when URLs are derived.
       enabled: false
       # -- Existing TLS Secret name for the Gateway listener.
       secretName: ""

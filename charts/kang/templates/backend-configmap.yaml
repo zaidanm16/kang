@@ -19,10 +19,7 @@ data:
   {{- if hasKey .Values.backend.env "CORS_ORIGINS" }}
   CORS_ORIGINS: {{ index .Values.backend.env "CORS_ORIGINS" | quote }}
   {{- else if .Values.networking.host }}
-  {{- $scheme := "http" }}
-  {{- if and (eq .Values.networking.mode "ingress") .Values.networking.ingress.tls.enabled }}{{ $scheme = "https" }}{{ end }}
-  {{- if and (eq .Values.networking.mode "gatewayApi") .Values.networking.gatewayApi.tls.enabled }}{{ $scheme = "https" }}{{ end }}
-  CORS_ORIGINS: {{ printf "%s://%s" $scheme .Values.networking.host | quote }}
+  CORS_ORIGINS: {{ printf "%s://%s" (include "kang.publicScheme" .) .Values.networking.host | quote }}
   {{- else }}
   CORS_ORIGINS: "http://localhost:3000"
   {{- end }}

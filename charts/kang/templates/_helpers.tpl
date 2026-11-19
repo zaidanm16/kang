@@ -18,3 +18,12 @@ app.kubernetes.io/instance: {{ .Release.Name }}
 {{- define "kang.metricsName" -}}{{ printf "%s-metrics" (include "kang.fullname" .) | trunc 63 | trimSuffix "-" }}{{- end -}}
 {{- define "kang.cnpgName" -}}{{ default (printf "%s-db" (include "kang.fullname" .)) .Values.cnpg.cluster.name | trunc 63 | trimSuffix "-" }}{{- end -}}
 {{- define "kang.serviceAccountName" -}}{{- if .Values.serviceAccount.create -}}{{ default (include "kang.fullname" .) .Values.serviceAccount.name }}{{- else -}}{{ default "default" .Values.serviceAccount.name }}{{- end -}}{{- end -}}
+{{- define "kang.publicScheme" -}}
+{{- if and (eq .Values.networking.mode "ingress") .Values.networking.ingress.tls.enabled -}}
+https
+{{- else if and (eq .Values.networking.mode "gatewayApi") (or .Values.networking.gatewayApi.tls.enabled (has (lower .Values.networking.gatewayApi.sectionName) (list "https" "tls"))) -}}
+https
+{{- else -}}
+http
+{{- end -}}
+{{- end -}}

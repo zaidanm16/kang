@@ -1,6 +1,6 @@
 # Kang Helm Chart
 
-![Version: 3.1.2](https://img.shields.io/badge/Version-3.1.2-informational?style=flat-square)  ![AppVersion: 3.1.2](https://img.shields.io/badge/AppVersion-3.1.2-informational?style=flat-square)
+![Version: 3.1.3](https://img.shields.io/badge/Version-3.1.3-informational?style=flat-square)  ![AppVersion: 3.1.2](https://img.shields.io/badge/AppVersion-3.1.2-informational?style=flat-square)
 
 - [Kang Helm Chart](#kang-helm-chart)
   - [Introduction](#introduction)
@@ -50,7 +50,7 @@ Kang is the management application for Kong API Gateway. It manages your existin
 
 ### Installing the Chart from the OCI Registry
 
-The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. Use `--version 3.1.2` with Helm.
+The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. Use `--version 3.1.3` with Helm.
 
 Create a namespace and the backend Secret, then install:
 
@@ -63,7 +63,7 @@ kubectl -n kang create secret generic kang-backend-secrets \
   --from-file=JWT_SECRET="$secret_file"
 
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.1.2 \
+  --version 3.1.3 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
   --set backend.env.AUTH_COOKIE_SECURE=false
@@ -82,7 +82,7 @@ Use a reviewed values file for repeatable installs rather than long command-line
 
 ```shell
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.1.2 \
+  --version 3.1.3 \
   --namespace kang --create-namespace \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets
@@ -92,7 +92,7 @@ Render before applying and review the manifests for your cluster:
 
 ```shell
 helm template kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.1.2 \
+  --version 3.1.3 \
   --namespace kang \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets
@@ -103,7 +103,7 @@ helm template kang oci://ghcr.io/zaidanm16/kang \
 #### Pulling the Chart
 
 ```shell
-git clone --depth 1 --branch v3.1.2 https://github.com/zaidanm16/kang.git
+git clone --depth 1 --branch v3.1.3 https://github.com/zaidanm16/kang.git
 cd kang/charts/kang
 helm dependency build
 ```
@@ -151,6 +151,8 @@ networking:
 ```
 
 To create a Gateway in the release namespace instead, set `gatewayApi.createGateway: true` and provide `gatewayClassName`. For custom public API origins, set `networking.publicApiUrl` and `backend.env.CORS_ORIGINS` to the exact frontend origin(s), comma-separated.
+
+For an existing Gateway, HTTPS is inferred when `gatewayApi.tls.enabled` is true or the selected listener is named `https` or `tls`. If the HTTPS listener has another name, set `networking.publicApiUrl` and `backend.env.CORS_ORIGINS` explicitly so browser requests and CORS use the HTTPS origin.
 
 #### Database choices
 
@@ -401,8 +403,8 @@ The following table lists the configurable parameters of the Kang chart and thei
 | networking.gatewayApi.gatewayName | string | `""` | Name of the existing Gateway to attach the HTTPRoute to. |
 | networking.gatewayApi.gatewayNamespace | string | `""` | Namespace of the existing Gateway. Empty uses the release namespace. |
 | networking.gatewayApi.httpPort | int | `80` | HTTP listener port when this chart creates the Gateway. |
-| networking.gatewayApi.sectionName | string | `""` | Existing Gateway listener name to attach to. |
-| networking.gatewayApi.tls.enabled | bool | `false` | Enable a TLS listener when this chart creates the Gateway. |
+| networking.gatewayApi.sectionName | string | `""` | Existing Gateway listener name to attach to. Names `https` and `tls` are treated as HTTPS when URLs are derived. |
+| networking.gatewayApi.tls.enabled | bool | `false` | Enable a TLS listener when this chart creates the Gateway; also marks an existing Gateway listener as HTTPS when URLs are derived. |
 | networking.gatewayApi.tls.port | int | `443` | HTTPS listener port when this chart creates the Gateway. |
 | networking.gatewayApi.tls.secretName | string | `""` | Existing TLS Secret name for the Gateway listener. |
 | networking.host | string | `""` | Public hostname used by Ingress and Gateway API modes. Also derives the default browser-facing API URL and CORS origin. |
@@ -442,6 +444,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 - The frontend image writes `NEXT_PUBLIC_*` runtime settings to `/app/public/runtime-env.js` at container startup. These values are browser-visible configuration, never credentials. `API_URL` is the server-to-server backend URL; `NEXT_PUBLIC_API_URL` is the browser-facing base API URL. With one public hostname and the supplied routing templates, the browser-facing URL should be that origin, while `API_URL` remains the in-cluster backend Service URL. Frontend cookie names must match the backend's `AUTH_COOKIE_NAME` and `AUTH_REFRESH_COOKIE_NAME`.
 - `storageClassName` semantics: `null` (default) omits the field and lets the cluster's default StorageClass apply; a class name requests that StorageClass; `""` explicitly requests no StorageClass, for a matching pre-created or static PV. A PVC selector constrains static PV matching only.
 - Backend SQLite, local Dragonfly, and local VictoriaMetrics are single-replica deployments; the chart uses `Recreate` for those stateful singletons. With `RATE_LIMIT_STORE=memory` (the default when Redis is off), each backend replica keeps its own in-memory rate-limit state.
+- When the in-chart CNPG database or Dragonfly service is enabled, backend pods wait for that service during initialization. If a backend pod remains in `Init`, check the CNPG Cluster or Dragonfly pod and Service.
 - The backend image workflow builds only the API binary and the frontend workflow builds the standalone Next.js app. There is no published migration-worker image; if you use the full database migration features, build and operate `Dockerfile.migration-worker` separately, then set the worker URL and token via `backend.extraEnv` and a Secret.
 - Health endpoints: backend `/health`, frontend `/api/health`. Kubernetes probes use those paths.
 - Scheduling: `nodeSelector`, `tolerations`, and `affinity` apply to application pods; `global.podAnnotations`, `global.commonLabels`, and `global.imagePullSecrets` apply chart-wide. The shared ServiceAccount does not automount Kubernetes API credentials.
