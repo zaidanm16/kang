@@ -37,6 +37,10 @@ For public access, create the routing resources required by your cluster and upd
 
 For an existing PostgreSQL database, update `DATABASE_DSN` and omit the bundled PostgreSQL Service and StatefulSet. Redis and a Prometheus-compatible metrics API can be configured through backend environment settings; they are not included in the manifest. Additional settings are documented in the [backend environment example](https://github.com/zaidanm16/kang-backend/blob/main/.env.example).
 
+For a new installation, add a separate stable `KONG_CREDENTIAL_ENCRYPTION_KEY` to your backend Secret and reference it with `valueFrom.secretKeyRef` in the backend container's `env` list. The standalone manifest does not automatically expose every extra Secret key. If migrating an existing database, preserve the effective source key instead of generating a replacement. See [database migration and coordinated key rotation](https://zaidanm16.github.io/kang/guides/operations/).
+
+For UI-managed licenses, add `KANG_LICENSE_PUBLIC_KEYS` to the Secret and reference it in the backend environment. Do not configure `KANG_LICENSE`; a global administrator installs the signed token through **System → Kang License**. Never deploy the issuer's private signing key. See [license management](https://zaidanm16.github.io/kang/guides/plans/).
+
 ## Data and updates
 
 PostgreSQL stores data in the `data-kang-postgres-0` PVC. Back up with `pg_dump` before upgrades or database changes. StatefulSet deletion normally retains its claims; inspect PVCs and the storage reclaim policy before deleting data. This single PostgreSQL instance has no automated failover or backup configuration.

@@ -77,6 +77,8 @@ Kang manages **existing Kong gateways** through their Admin APIs. It does not re
 
 Free requires no license key and includes Gateway Manager, up to 2 connections, 1 user, and the audit activity list. Pro adds unlimited connections and users, organizations, teams, snapshots, and audit change details. Pro requires a valid license; after expiry and a 7-day grace period, application access locks until renewal. Login and license installation remain available, and data is retained.
 
+Install or replace signed licenses through **System → Kang License** as a global administrator. Configure the issuer's `KANG_LICENSE_PUBLIC_KEYS` on the backend and leave `KANG_LICENSE` unset for UI management. The signed token is stored in the application database; the private signing key stays with the issuer. See [license setup and issuance](https://zaidanm16.github.io/kang/guides/plans/).
+
 Start with Docker Compose below, or use the published Helm chart on Kubernetes. Documentation source lives in [`docs/`](docs/README.md).
 
 ## Getting started
@@ -127,12 +129,14 @@ helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
   --set backend.env.AUTH_COOKIE_SECURE=false
 ```
 
-- The Secret provides the signing key the backend needs; keeping it out of the chart values keeps it out of your shell history and Helm release record.
+- The Secret provides `JWT_SECRET` for login-session signing, not the private key for issuing offline licenses. Keep secret values out of committed chart values and shell history.
 - `helm upgrade --install` installs the chart (or upgrades it if it already exists). It deploys the CloudNativePG operator and a PostgreSQL cluster by default, which requires cluster-scoped permissions.
 - `AUTH_COOKIE_SECURE=false` is for local HTTP testing only — keep it `true` (the default) behind HTTPS.
 - `kubectl port-forward` tunnels the backend and frontend services to your local machine for local access.
 
 See the [chart guide](charts/kang/README.md) for external databases, storage, HTTPS, Ingress, Gateway API, and custom values. A [standalone Kubernetes manifest](kubernetes/README.md) is also available.
+
+Before changing an existing Helm installation, export its current values and preserve unrelated settings. Before moving its database, preserve `KONG_CREDENTIAL_ENCRYPTION_KEY` and verify restored object ownership and authenticated API access. Changing the encryption key alone breaks saved credential decryption. Follow the [operations guide](https://zaidanm16.github.io/kang/guides/operations/) for migration, coordinated key rotation, and Secret-backed Helm updates.
 
 ## Releases
 
