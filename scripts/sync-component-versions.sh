@@ -31,10 +31,10 @@ if [ "$FE_CHANGED" = no ] && [ "$BE_CHANGED" = no ]; then
   exit 0
 fi
 
-if [ "$FE_CHANGED" = yes ]; then
+if [ "$FE_CHANGED" = yes ] && [ "$(printf '%s\n' "$CHART" "$FE" | sort -V | head -1)" != "$FE" ]; then
   NEW="$FE"
 else
-  # Backend-only change: ship it as a patch bump of the current chart version.
+  # Backend-only or lagging frontend release: never reuse a published chart version.
   NEW=$(echo "$CHART" | awk -F. '{print $1"."$2"."$3+1}')
 fi
 echo "syncing: frontend $APP -> $FE, backend $BE_TAG -> $BE, chart $CHART -> $NEW" >&2
