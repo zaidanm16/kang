@@ -16,7 +16,7 @@ Backend menyediakan `/health`, frontend menyediakan `/api/health`. Periksa alama
 
 Jangan commit `.env`, `backend.env`, kredensial database, atau token lisensi. Gunakan Kubernetes Secret atau secret manager. Konfigurasi `NEXT_PUBLIC_*` terlihat oleh browser dan tidak boleh berisi secret.
 
-`KONG_CREDENTIAL_ENCRYPTION_KEY` melindungi kredensial Admin API Kong yang tersimpan, bukan password database atau tanda tangan lisensi. Tetapkan nilai acak terpisah dan stabil sebelum menyimpan koneksi berautentikasi pertama. Jika kosong, backend menggunakan `JWT_SECRET` sebagai key material; mengganti JWT secret tersebut juga memengaruhi dekripsi kredensial. Verifikasi lisensi memakai `KANG_LICENSE_PUBLIC_KEYS` yang terpisah; lihat [pengelolaan dan penerbitan lisensi](/kang/id/guides/plans/).
+`KONG_CREDENTIAL_ENCRYPTION_KEY` melindungi kredensial Admin API Kong yang tersimpan, bukan password database atau tanda tangan lisensi. Tetapkan nilai acak terpisah dan stabil sebelum menyimpan koneksi berautentikasi pertama. Jika kosong, backend menggunakan `JWT_SECRET` sebagai key material; mengganti JWT secret tersebut juga memengaruhi dekripsi kredensial. Verifikasi lisensi memakai `KANG_LICENSE_PUBLIC_KEYS` yang terpisah; lihat [pengelolaan lisensi](/kang/id/guides/plans/).
 
 ## Memperbarui release Helm yang sudah ada
 

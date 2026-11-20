@@ -77,7 +77,7 @@ Kang manages **existing Kong gateways** through their Admin APIs. It does not re
 
 Free requires no license key and includes Gateway Manager, up to 2 connections, 1 user, and the audit activity list. Pro adds unlimited connections and users, organizations, teams, snapshots, and audit change details. Pro requires a valid license; after expiry and a 7-day grace period, application access locks until renewal. Login and license installation remain available, and data is retained.
 
-Install or replace signed licenses through **System → Kang License** as a global administrator. Configure the issuer's `KANG_LICENSE_PUBLIC_KEYS` on the backend and leave `KANG_LICENSE` unset for UI management. The signed token is stored in the application database; the private signing key stays with the issuer. See [license setup and issuance](https://zaidanm16.github.io/kang/guides/plans/).
+Install or replace signed licenses through **System → Kang License** as a global administrator. Configure the issuer's `KANG_LICENSE_PUBLIC_KEYS` on the backend and leave `KANG_LICENSE` unset for UI management. The signed token is stored in the application database; the private signing key stays with the issuer. See [license management](https://zaidanm16.github.io/kang/guides/plans/).
 
 Start with Docker Compose below, or use the published Helm chart on Kubernetes. Documentation source lives in [`docs/`](docs/README.md).
 
