@@ -1,6 +1,6 @@
 # Kang Helm Chart
 
-![Version: 3.1.3](https://img.shields.io/badge/Version-3.1.3-informational?style=flat-square)  ![AppVersion: 3.1.2](https://img.shields.io/badge/AppVersion-3.1.2-informational?style=flat-square)
+![Version: 3.1.4](https://img.shields.io/badge/Version-3.1.4-informational?style=flat-square)  ![AppVersion: 3.1.3](https://img.shields.io/badge/AppVersion-3.1.3-informational?style=flat-square)
 
 - [Kang Helm Chart](#kang-helm-chart)
   - [Introduction](#introduction)
@@ -51,7 +51,7 @@ Kang is the management application for Kong API Gateway. It manages your existin
 
 ### Installing the Chart from the OCI Registry
 
-The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. Use `--version 3.1.3` with Helm.
+The published chart is public at `oci://ghcr.io/zaidanm16/kang`; cloning this repository is not required. Use `--version 3.1.4` with Helm.
 
 Create a namespace and the backend Secret, then install:
 
@@ -64,7 +64,7 @@ kubectl -n kang create secret generic kang-backend-secrets \
   --from-file=JWT_SECRET="$secret_file"
 
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.1.3 \
+  --version 3.1.4 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
   --set backend.env.AUTH_COOKIE_SECURE=false
@@ -83,7 +83,7 @@ Use a reviewed values file for repeatable installs rather than long command-line
 
 ```shell
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.1.3 \
+  --version 3.1.4 \
   --namespace kang --create-namespace \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets
@@ -93,7 +93,7 @@ Render before applying and review the manifests for your cluster:
 
 ```shell
 helm template kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.1.3 \
+  --version 3.1.4 \
   --namespace kang \
   -f kang-values.yaml \
   --set backend.secret.existingName=kang-backend-secrets
@@ -104,7 +104,7 @@ helm template kang oci://ghcr.io/zaidanm16/kang \
 #### Pulling the Chart
 
 ```shell
-git clone --depth 1 --branch v3.1.3 https://github.com/zaidanm16/kang.git
+git clone --depth 1 --branch v3.1.4 https://github.com/zaidanm16/kang.git
 cd kang/charts/kang
 helm dependency build
 ```
@@ -356,7 +356,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 | backend.extraEnvFrom | list | `[]` | Extra backend envFrom references, such as an additional Secret or ConfigMap. |
 | backend.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | backend.image.repository | string | `"ghcr.io/zaidanm16/kang-backend"` | Backend application image repository. |
-| backend.image.tag | string | `"v1.1.0"` | Backend application image tag. Prefer immutable release or SHA tags. |
+| backend.image.tag | string | `"v1.1.1"` | Backend application image tag. Prefer immutable release or SHA tags. |
 | backend.persistence.accessModes | list | `["ReadWriteOnce"]` | Access modes of the created PVC. |
 | backend.persistence.annotations | object | `{}` | Annotations for the created PVC. |
 | backend.persistence.enabled | bool | `true` | Create and mount a PVC for backend-local data such as a SQLite database. Not used in external DB or CNPG modes. |
@@ -404,7 +404,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 | frontend.extraEnvFrom | list | `[]` | Extra frontend envFrom references, such as a Secret with REVALIDATE_SECRET. |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | frontend.image.repository | string | `"ghcr.io/zaidanm16/kang-frontend"` | Frontend application image repository. |
-| frontend.image.tag | string | `"v3.1.0"` | Frontend application image tag. Prefer immutable release or SHA tags. |
+| frontend.image.tag | string | `"v3.1.3"` | Frontend application image tag. Prefer immutable release or SHA tags. |
 | frontend.replicaCount | int | `1` | Number of frontend replicas. |
 | frontend.resources | object | `{}` | Resource requests and limits for the frontend container. |
 | frontend.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001}` | Container-level security context for the frontend. |

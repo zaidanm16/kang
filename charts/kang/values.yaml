@@ -18,7 +18,7 @@ backend:
     # -- Backend application image repository.
     repository: ghcr.io/zaidanm16/kang-backend
     # -- Backend application image tag. Prefer immutable release or SHA tags.
-    tag: v1.1.0
+    tag: v1.1.1
     # -- Image pull policy.
     pullPolicy: IfNotPresent
   service:
@@ -192,7 +192,7 @@ frontend:
     # -- Frontend application image repository.
     repository: ghcr.io/zaidanm16/kang-frontend
     # -- Frontend application image tag. Prefer immutable release or SHA tags.
-    tag: v3.1.2
+    tag: v3.1.3
     # -- Image pull policy.
     pullPolicy: IfNotPresent
   service:
