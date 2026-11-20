@@ -23,7 +23,7 @@ Choose meaningful ownership boundaries. Creating an organization alone does not 
 
 Creating and editing organizations/teams uses user-management permissions; assigning gateway instances additionally requires the relevant instance permissions. Your role controls actions within the scope you can access.
 
-Global-only tools, including audit logs, snapshots, and role administration, are not unlocked for an organization-scoped account merely because the installation is Pro. Ask a global administrator if you need one of those workflows.
+Audit logs, snapshots, and role administration are installation-wide tools. Organization-scoped non-admin accounts cannot use them; the built-in `admin` role is exempt from that organization restriction. Global non-admin accounts still need the relevant permissions. Plan restrictions still apply. Do not assign `admin` to someone who must be limited to one organization.
 
 ## Change membership
 

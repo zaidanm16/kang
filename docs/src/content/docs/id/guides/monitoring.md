@@ -114,3 +114,13 @@ Dengan analytics aktif, halaman Overview men-query window terkini (default 7 har
 | Store tidak mengembalikan apa-apa untuk query Kong | Plugin prometheus belum aktif, status listener mati, atau store tidak bisa menjangkau endpoint status. |
 | Store scraping, dashboard tetap kosong | `PROMETHEUS_URL` tidak menunjuk ke store, atau backend tidak bisa me-resolve-nya (container vs host). |
 | Metrik berhenti setelah Kong restart | Konfigurasi status listener hilang — periksa ulang `KONG_STATUS_LISTEN` / `status_listen`. |
+
+## Replika backend dan Redis
+
+Semua replika backend harus memakai database aplikasi serta konfigurasi JWT, enkripsi, dan verifikasi yang sama. Gunakan satu replika backend untuk SQLite. Rate limit dalam memori dihitung terpisah pada tiap replika. Agar berbagi batas, arahkan `RATE_LIMIT_REDIS_URL` ke Redis/Dragonfly yang sama di semua replika dan set `RATE_LIMIT_STORE=redis`. Gunakan prefix berbeda per instalasi Kang jika penyimpanannya dipakai bersama. Jika batas tidak konsisten, periksa log error Redis dan apakah backend kembali memakai memori.
+
+Dashboard, daftar rekursif, kompatibilitas gateway, dan overview memiliki pengaturan cache terpisah. Sesuaikan TTL dengan berapa lama data lama masih dapat diterima. Jika data terlihat tertinggal, periksa respons sumber dan pengaturan cache sebelum mengubah gateway. Pisahkan key cache dan rate limit dari aplikasi lain.
+
+## Trace backend dengan OpenTelemetry
+
+Siapkan collector OTLP **gRPC** yang dapat dijangkau. Tetapkan `OTEL_TRACING_ENABLED=true`, `OTEL_SERVICE_NAME=kang-backend`, dan `OTEL_EXPORTER_OTLP_ENDPOINT` ke URL collector (misalnya `https://collector.example:4317`). Di Helm, simpan variabel non-rahasia di `backend.env` dan kredensial exporter di Secret. Untuk Compose, gunakan file `backend.env` privat. Restart backend, kirim request uji, lalu cari span dengan nama layanan tadi. Jika tidak ada, periksa error ekspor, koneksi, port gRPC, dan TLS. Trace ini untuk request API Kang, bukan pengganti metrik trafik Kong.

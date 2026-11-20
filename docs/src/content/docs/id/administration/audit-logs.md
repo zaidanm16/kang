@@ -3,7 +3,7 @@ title: "Audit log dan ekspor"
 description: "Audit log dan ekspor | Kang"
 ---
 
-**Audit Logs** merekam aktivitas administrasi di Kang, bukan access log HTTP seluruh request yang melewati Kong. Akses memerlukan akun global dengan izin membaca audit.
+**Audit Logs** merekam aktivitas administrasi di Kang, bukan setiap request HTTP yang melewati Kong. Akses memerlukan izin membaca audit dan mengikuti [aturan akses platform](/kang/id/administration/organizations-teams/#permission-dan-scope).
 
 ![Audit logs dengan badge perubahan](../../assets/docs/17-audit-logs.png)
 

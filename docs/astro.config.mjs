@@ -124,9 +124,6 @@ export default defineConfig({
         "slug": "administration/snapshots"
       },
       {
-        "slug": "administration/migration"
-      },
-      {
         "slug": "administration/configuration"
       }
     ]

@@ -114,3 +114,13 @@ With analytics on, the Overview page queries recent windows (default last 7 days
 | Store returns nothing for Kong queries | The prometheus plugin is not enabled, the status listener is off, or the store cannot reach the status endpoint. |
 | Store scrapes, dashboard still empty | `PROMETHEUS_URL` does not point at the store, or the backend cannot resolve it (container vs host addressing). |
 | Metrics stop after a Kong restart | Status listener config was lost — re-check `KONG_STATUS_LISTEN` / `status_listen`. |
+
+## Backend replicas and Redis
+
+Use a shared application database and matching JWT, encryption, and verification settings across backend replicas. Keep SQLite at one replica. With the in-memory rate limit store, each replica counts requests separately. For shared limits, point `RATE_LIMIT_REDIS_URL` at the same Redis/Dragonfly instance on all replicas and use `RATE_LIMIT_STORE=redis`. Set a distinct prefix per Kang installation if the store is shared. Check logs for Redis connection failures and memory fallback before assuming limits are still shared.
+
+The dashboard, recursive lists, gateway compatibility, and overview use separate cache settings. Set their TTLs according to how long stale data is acceptable. If data looks stale, verify the upstream response and cache settings before changing the gateway. Keep the cache and rate-limit keys separate from unrelated workloads.
+
+## Backend traces with OpenTelemetry
+
+Configure a reachable OTLP **gRPC** collector. Set `OTEL_TRACING_ENABLED=true`, `OTEL_SERVICE_NAME=kang-backend`, and `OTEL_EXPORTER_OTLP_ENDPOINT` to the collector URL (for example `https://collector.example:4317`). On Helm, set non-secret variables in `backend.env` and pass any exporter credentials through a Secret. With Compose, use the private `backend.env` file. Restart the backend, make a test request, and look for a span under the configured service name. If none appears, check export errors, collector reachability, gRPC port, and TLS. This traces Kang API requests; it does not replace Kong traffic metrics.
