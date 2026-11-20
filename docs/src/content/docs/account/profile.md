@@ -15,7 +15,7 @@ Use the edit icons beside username, email, first name, or last name to open the 
 
 ## Profile photo
 
-Use the photo control to upload or replace an image, crop it, and save. Supported types are **PNG, JPEG, and WebP**, up to **5 MB**. Upload availability depends on the installation's configured media service. If upload fails, check the file format/size and contact the operator rather than putting a private image URL into unrelated fields.
+Use the photo control to upload or replace an image, crop it, and save. Supported types are **PNG, JPEG, and WebP**, up to **5 MB**. Uploads require Cloudinary configured on the backend. If upload fails, check the file format/size and ask the operator to follow the [Cloudinary setup guide](/kang/guides/operations/#enable-photo-uploads-with-cloudinary), rather than putting a private image URL into unrelated fields.
 
 A saved photo appears in the header and user list. Photo changes are self-service; the administrator user form does not offer an avatar editor. Use the photo's remove action if you no longer want it displayed.
 

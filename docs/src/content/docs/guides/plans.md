@@ -22,18 +22,18 @@ Without a license, a new installation uses Free. Connection and user limits coun
 ## Upgrade to Pro
 
 1. Obtain a signed Pro license from your Kang provider. The application installs license keys; it does not provide an in-app checkout or issue keys for you.
-2. Sign in as a **global administrator**: an admin account without an organization assignment.
+2. Sign in as an **administrator**, either global or assigned to an organization.
 3. Open Kang License and choose **Install Pro license**.
 4. Paste the complete key into the dialog and install it.
 5. Confirm the current plan, licensee, and expiry. Return to the intended feature and verify access with the appropriate permissions.
 
-Do not edit the key contents. If installation fails, check that the complete key was pasted, that it is valid for the current time, and ask your operator to verify the installation's license configuration. A non-global administrator cannot install a license just because their role is named admin within an organization.
+Do not edit the key contents. If installation fails, check that the complete key was pasted, that it is valid for the current time, and ask your operator to verify the installation's license configuration. Organization administrators can install or replace a license, but cannot remove it. A replacement affects **all organizations in this installation**, not just the administrator's organization.
 
 ## Configure UI-managed licenses
 
 The backend needs `KANG_LICENSE_PUBLIC_KEYS`, a JSON object mapping a key ID to its base64 Ed25519 public key. Obtain this object from the license issuer. A public key verifies signatures; it cannot issue licenses. Never put the signing private key in a container, Helm values, a Kubernetes Secret used by the application, or Git.
 
-Leave `KANG_LICENSE` unset or empty. The application then reads the installed token from its database, and a global administrator can install, replace, or remove it through `/license`. Restarting the backend does not remove a database-installed license.
+Leave `KANG_LICENSE` unset or empty. The application then reads the installed token from its database. Global and organization administrators can install or replace it through `/license`; only global administrators can remove it. Restarting the backend does not remove a database-installed license.
 
 For Compose, put the public-key object in `backend.env`. For Helm, store it under `KANG_LICENSE_PUBLIC_KEYS` in the Secret named by `backend.secret.existingName`; the chart exposes that Secret through `envFrom`. Use `backend.extraEnv` with `valueFrom.secretKeyRef` if you need an explicit reference. Keep actual tokens and private values out of committed values files.
 
@@ -52,6 +52,14 @@ Do not remove the license row or choose **Remove** merely to enable UI replaceme
 This page does not issue licenses. Obtain the complete signed Pro token from your license provider, then follow **Install Pro license** or **Actions → Replace** above. Keep the token private while you transfer it, and do not edit its contents or attach it to public tickets, screenshots, or issue trackers.
 
 An operator receives the token privately and installs it in the UI. It is stored in the application database, not in a browser or configuration file. Generating or signing a new token belongs to the license issuer and its protected private-key runbook, which is separate from this public documentation.
+
+## Back up and restore the license
+
+Keep a private copy of the **complete signed token** before installation or replacement. You may store it anywhere you can safely recover it: a password manager, secret vault, encrypted file, offline storage, or protected backup service. There is no required backup location. Keep an independent copy outside the application/database so accidental removal does not also remove your only copy. Do not put it in public Git, tickets, screenshots, or shared logs.
+
+Also back up the Kang database, including `license_states`, and preserve `KANG_LICENSE_PUBLIC_KEYS`. A database backup contains the installed license but cannot recover a token already removed before that backup. Label token copies with the licensee and expiry; a backup does not extend validity.
+
+If a license is accidentally removed, a global or organization administrator can open **System → Kang License → Install Pro license** and paste the backed-up token. Use **Actions → Replace** if another token is installed. The token must still be valid and trusted by the configured public keys. If it expired or the backup is missing, contact your license provider. Do not restore an entire old database just to recover a token if doing so would overwrite newer application data.
 
 ## Renew or replace
 

@@ -26,6 +26,38 @@ Keep `.env`, `backend.env`, database credentials, and license keys out of Git. U
 
 `KONG_CREDENTIAL_ENCRYPTION_KEY` protects saved Kong Admin API credentials, not database login passwords or license signatures. Set a separate stable random value before saving the first authenticated connection. If it is unset, the backend uses `JWT_SECRET` as key material, so changing that JWT secret also affects credential decryption. License verification uses the separate `KANG_LICENSE_PUBLIC_KEYS` setting; see [UI license management](/kang/guides/plans/).
 
+## Enable photo uploads with Cloudinary
+
+Profile photos and organization logos are uploaded by the backend to **Cloudinary**. To use these features, create a Cloudinary product environment and obtain all three settings from its API Keys page:
+
+```dotenv
+CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
+```
+
+For Docker Compose, add these settings to the private `backend.env` file and recreate the backend container. For Helm, use an existing Kubernetes Secret rather than `backend.env` values (those values render into a ConfigMap). For example, save the three lines with real values in `/secure/cloudinary.env`, restrict the file to its owner, then create a dedicated Secret:
+
+```sh
+kubectl -n kang create secret generic kang-cloudinary \
+  --from-env-file=/secure/cloudinary.env
+```
+
+Append this reference to the exported Helm values, preserving any existing `extraEnvFrom` entries:
+
+```yaml
+backend:
+  extraEnvFrom:
+    - secretRef:
+        name: kang-cloudinary
+```
+
+Follow the Helm update procedure below. If only the Secret contents change, restart the backend pods to load them. Never expose the API secret through `NEXT_PUBLIC_*`, commit it, or put real credentials in documentation.
+
+The backend needs outbound HTTPS access to Cloudinary; browsers need access to the returned `res.cloudinary.com` image URLs. PNG, JPEG, and WebP uploads are limited to **5 MB**. Without all three settings, uploads are unavailable. To verify, upload a test profile photo or organization logo using an authorized account and confirm it displays after refresh. If upload fails, check credentials, outbound connectivity, and Cloudinary account limits without logging secrets.
+
+Image files live in Cloudinary; the Kang database stores their URLs. Back up/manage media assets separately from the application database. These are delivered as image URLs, so do not upload confidential documents as photos.
+
 ## Update an existing Helm release
 
 Export the installed release's values before editing them. Keep the cluster context and namespace explicit so you do not change the wrong installation. The example uses `kang` in namespace `kang`; replace `destination-context` and the chart version with the installed release's values.
