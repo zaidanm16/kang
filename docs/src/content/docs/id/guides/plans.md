@@ -47,32 +47,11 @@ Untuk Compose, tempatkan objek public key di `backend.env`. Untuk Helm, simpan s
 
 Jangan menghapus row lisensi atau memilih **Remove** hanya untuk mengaktifkan penggantian melalui UI: tindakan itu mengubah paket menjadi Free.
 
-## Menerbitkan lisensi sebagai operator instalasi
+## Meminta lisensi bertanda tangan
 
-CLI penandatangan tersedia di [repository kang-backend](https://github.com/zaidanm16/kang-backend/tree/main/cmd/kang-license). Jalankan dari checkout backend dengan versi Go yang diwajibkan repository tersebut; perintah ini tidak disertakan di repository deployment atau container API. Gunakan signing key yang sudah ada untuk perpanjangan. Buat pasangan baru hanya saat menyiapkan penerbit baru:
+Halaman ini tidak menerbitkan lisensi. Dapatkan token Pro bertanda tangan lengkap dari penyedia lisensi, lalu ikuti **Install Pro license** atau **Actions → Replace** di atas. Jaga kerahasiaan token selama transfer, dan jangan mengedit isi atau melampirkannya ke tiket publik, screenshot, atau issue tracker.
 
-```sh
-umask 077
-mkdir -p "$HOME/.config/kang-issuer"
-go run ./cmd/kang-license keygen \
-  --key-id primary \
-  --private-key "$HOME/.config/kang-issuer/primary.b64" \
-  > "$HOME/.config/kang-issuer/public-keys.json"
-```
-
-Simpan `primary.b64` di secret store penerbit beserta backup yang dapat dipulihkan. Hanya isi `public-keys.json` yang dipasang sebagai `KANG_LICENSE_PUBLIC_KEYS`. Untuk penerbit yang sudah ada, gunakan private key yang sesuai, bukan membuat pasangan baru.
-
-```sh
-umask 077
-go run ./cmd/kang-license issue \
-  --key-id primary \
-  --private-key "$HOME/.config/kang-issuer/primary.b64" \
-  --licensee "Your organization" \
-  --expires "2027-01-31T23:59:59+07:00" \
-  > "$HOME/.config/kang-issuer/pro.license"
-```
-
-Ganti contoh penerima dan tanggal kedaluwarsa. `--expires` harus berupa waktu RFC3339 di masa depan dengan offset eksplisit; contoh tersebut berarti akhir 31 Januari WIB (UTC+7), bukan tengah malam pada awal hari itu. CLI menghasilkan token Pro bertanda tangan. Kirim file lengkap secara privat kepada administrator global untuk ditempel melalui UI. Menghasilkan file tidak memasang lisensi atau mengubah encryption key kredensial Kong.
+Operator menerima token secara privat dan memasangnya lewat UI. Token disimpan di database aplikasi, bukan browser atau file konfigurasi. Pembuatan dan penandatanganan token baru menjadi tanggung jawab penerbit lisensi beserta runbook private-key yang terlindungi; runbook itu tidak termasuk dokumentasi publik ini.
 
 ## Memperpanjang atau mengganti
 

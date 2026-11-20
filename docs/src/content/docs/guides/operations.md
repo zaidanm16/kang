@@ -24,7 +24,7 @@ For Kubernetes, use the chart's Ingress or Gateway API settings with an installe
 
 Keep `.env`, `backend.env`, database credentials, and license keys out of Git. Use Kubernetes Secrets or your platform's secret manager. Browser-facing `NEXT_PUBLIC_*` settings are public configuration and must never contain secrets.
 
-`KONG_CREDENTIAL_ENCRYPTION_KEY` protects saved Kong Admin API credentials, not database login passwords or license signatures. Set a separate stable random value before saving the first authenticated connection. If it is unset, the backend uses `JWT_SECRET` as key material, so changing that JWT secret also affects credential decryption. License verification uses the separate `KANG_LICENSE_PUBLIC_KEYS` setting; see [UI license management and issuance](/kang/guides/plans/).
+`KONG_CREDENTIAL_ENCRYPTION_KEY` protects saved Kong Admin API credentials, not database login passwords or license signatures. Set a separate stable random value before saving the first authenticated connection. If it is unset, the backend uses `JWT_SECRET` as key material, so changing that JWT secret also affects credential decryption. License verification uses the separate `KANG_LICENSE_PUBLIC_KEYS` setting; see [UI license management](/kang/guides/plans/).
 
 ## Update an existing Helm release
 

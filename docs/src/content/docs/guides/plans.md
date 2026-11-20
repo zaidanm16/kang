@@ -47,32 +47,11 @@ For Compose, put the public-key object in `backend.env`. For Helm, store it unde
 
 Do not remove the license row or choose **Remove** merely to enable UI replacement: that would switch the installation to Free.
 
-## Issue a license as the installation operator
+## Request a signed license
 
-The signing CLI lives in the separate [kang-backend repository](https://github.com/zaidanm16/kang-backend/tree/main/cmd/kang-license). Run it from a backend checkout using that repository's required Go version; it is not a command shipped in this deployment repository or the API container. Use the existing signing key for renewals. Generate a new pair only when provisioning a new issuer:
+This page does not issue licenses. Obtain the complete signed Pro token from your license provider, then follow **Install Pro license** or **Actions → Replace** above. Keep the token private while you transfer it, and do not edit its contents or attach it to public tickets, screenshots, or issue trackers.
 
-```sh
-umask 077
-mkdir -p "$HOME/.config/kang-issuer"
-go run ./cmd/kang-license keygen \
-  --key-id primary \
-  --private-key "$HOME/.config/kang-issuer/primary.b64" \
-  > "$HOME/.config/kang-issuer/public-keys.json"
-```
-
-Keep `primary.b64` in the issuer's secret store with a recoverable backup. Configure only the contents of `public-keys.json` as `KANG_LICENSE_PUBLIC_KEYS`. For an existing issuer, use its matching private key instead of regenerating it.
-
-```sh
-umask 077
-go run ./cmd/kang-license issue \
-  --key-id primary \
-  --private-key "$HOME/.config/kang-issuer/primary.b64" \
-  --licensee "Your organization" \
-  --expires "2027-01-31T23:59:59+07:00" \
-  > "$HOME/.config/kang-issuer/pro.license"
-```
-
-Replace the example licensee and expiry. `--expires` must be a future RFC3339 timestamp with an explicit offset; the example is the end of 31 January in WIB (UTC+7), not midnight at its start. The CLI emits the signed Pro token. Deliver the complete file privately to the global administrator to paste into the UI. Generating the file does not install it or change the encryption key used for Kong credentials.
+An operator receives the token privately and installs it in the UI. It is stored in the application database, not in a browser or configuration file. Generating or signing a new token belongs to the license issuer and its protected private-key runbook, which is separate from this public documentation.
 
 ## Renew or replace
 
