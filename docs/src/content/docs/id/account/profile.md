@@ -15,7 +15,7 @@ Gunakan ikon edit di sebelah username, email, nama depan, atau nama belakang unt
 
 ## Foto profil
 
-Gunakan kontrol foto untuk mengunggah atau mengganti gambar, crop, lalu simpan. Format yang didukung: **PNG, JPEG, dan WebP**, maksimal **5 MB**. Upload bergantung pada konfigurasi layanan media instalasi. Jika gagal, periksa format/ukuran dan hubungi operator, bukan menempel URL gambar privat ke field lain.
+Gunakan kontrol foto untuk mengunggah atau mengganti gambar, crop, lalu simpan. Format yang didukung: **PNG, JPEG, dan WebP**, maksimal **5 MB**. Upload memerlukan konfigurasi Cloudinary di backend. Jika gagal, periksa format/ukuran dan minta operator mengikuti [panduan Cloudinary](/kang/id/guides/operations/#mengaktifkan-upload-foto-dengan-cloudinary), bukan menempel URL gambar privat ke field lain.
 
 Foto tersimpan ditampilkan pada header dan daftar pengguna. Perubahan foto dilakukan sendiri oleh pemilik akun; form pengguna administrator tidak menyediakan editor avatar. Gunakan aksi hapus foto jika tidak ingin menampilkannya lagi.
 

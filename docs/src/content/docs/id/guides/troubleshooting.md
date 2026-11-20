@@ -19,6 +19,6 @@ Field sensitif dikecualikan dari draft. Draft menggunakan sesi tab saat ini dan 
 Periksa preferensi Analytics, rentang waktu, trafik sebenarnya, serta integrasi metrik instalasi.
 
 ## Lisensi gagal dipasang
-Minta administrator global memeriksa key lengkap dan masa berlaku. Lisensi yang dikelola environment memerlukan operator instalasi. Baca [perpanjangan lisensi](/kang/id/guides/plans/).
+Minta administrator global atau organisasi memeriksa key lengkap dan masa berlaku. Hanya administrator global yang boleh menghapus lisensi. Lisensi yang dikelola environment memerlukan operator instalasi. Baca [perpanjangan dan backup lisensi](/kang/id/guides/plans/).
 
 Saat melaporkan masalah, sertakan aksi, versi gateway, waktu, serta error yang sudah disamarkan. Jangan menyertakan password, token, private key, atau key lisensi.

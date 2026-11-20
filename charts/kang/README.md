@@ -15,6 +15,7 @@
       - [Exposing the application](#exposing-the-application)
       - [Database choices](#database-choices)
       - [Optional cache and metrics services](#optional-cache-and-metrics-services)
+      - [Photo uploads with Cloudinary](#photo-uploads-with-cloudinary)
   - [Upgrading the Chart](#upgrading-the-chart)
   - [Uninstalling the Chart](#uninstalling-the-chart)
   - [Configuration](#configuration)
@@ -159,9 +160,22 @@ For an existing Gateway, HTTPS is inferred when `gatewayApi.tls.enabled` is true
 | Mode | Values | Notes |
 | --- | --- | --- |
 | CNPG managed PostgreSQL (default) | `cnpg.cluster.enabled: true`, `cnpg.operator.enabled: true` | CNPG creates its own PVCs and `<cluster>-app` Secret; the backend reads the `uri` key. Configure storage on `cnpg.cluster.storage`. |
+| CNPG with an existing operator | `cnpg.cluster.enabled: true`, `cnpg.operator.enabled: false` | Creates only Kang's database cluster. The existing operator must watch the release namespace. |
 | External PostgreSQL | `backend.database.driver: postgres`, `backend.database.dsnSecret.name/key` | Disable both `cnpg.cluster.enabled` and `cnpg.operator.enabled`. |
 | External MySQL | `backend.database.driver: mysql`, `backend.database.dsnSecret.name/key` | Same Secret approach; DSN syntax is defined by the backend's MySQL driver. |
 | SQLite (optional) | `backend.database.driver: sqlite`, `backend.database.dsn: /data/data.db`, CNPG disabled | Keep the backend at one replica. The backend PVC holds the database file. |
+
+**Already have a CloudNativePG operator?** Disable only the operator dependency and leave cluster creation enabled:
+
+```yaml
+cnpg:
+  operator:
+    enabled: false
+  cluster:
+    enabled: true
+```
+
+Use this in your reviewed values file with `-f kang-values.yaml`. Confirm the existing operator is healthy, `clusters.postgresql.cnpg.io` is installed, and its watch scope includes the Kang namespace. Do not install another operator for each application. This creates a new PostgreSQL cluster, not a connection to an existing database. For an existing database, disable cluster creation too and supply its DSN below. Changing an existing release to stop managing an operator requires an ownership/dependency review first; other databases may depend on it.
 
 External DSN Secret:
 
@@ -218,6 +232,30 @@ metrics:
 ```
 
 Full walkthrough, the Docker Compose variant, and troubleshooting: [Monitoring and analytics](https://zaidanm16.github.io/kang/guides/monitoring/).
+
+#### Photo uploads with Cloudinary
+
+Profile photo and organization logo uploads require a Cloudinary product environment and all three backend variables: `CLOUDINARY_CLOUD_NAME`, `CLOUDINARY_API_KEY`, and `CLOUDINARY_API_SECRET`. Without them, uploads are unavailable. Keep credentials in a Kubernetes Secret, not `backend.env` (a ConfigMap) or committed Helm values.
+
+Create a dedicated Secret from a protected file containing those three variables with your real values:
+
+```shell
+kubectl -n kang create secret generic kang-cloudinary \
+  --from-env-file=/secure/cloudinary.env
+```
+
+Append its reference to your exported values without removing other `extraEnvFrom` entries:
+
+```yaml
+backend:
+  extraEnvFrom:
+    - secretRef:
+        name: kang-cloudinary
+```
+
+Apply using Helm. Secret contents are not copied into the chart values; updating only an external Secret requires a backend restart. Preserve the separate backend Secret's JWT, encryption, and license-verification keys.
+
+Allow backend outbound HTTPS to Cloudinary and browser access to `res.cloudinary.com`. Uploads support PNG/JPEG/WebP up to 5 MB. The database stores image URLs, not the images, so manage media backups separately. See [Cloudinary setup and verification](https://zaidanm16.github.io/kang/guides/operations/#enable-photo-uploads-with-cloudinary).
 
 ## Upgrading the Chart
 
@@ -442,6 +480,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 
 - `backend.secret.existingName` references the backend Secret. Its `JWT_SECRET` key (overridable via `backend.secret.jwtSecretKey`) is required in production. The same Secret may contain other backend-only secret variables such as `KANG_LICENSE`, `KANG_LICENSE_PUBLIC_KEYS`, `CLOUDINARY_API_SECRET`, `KONG_CREDENTIAL_ENCRYPTION_KEY`, `MIGRATION_WORKER_TOKEN`, or OTLP credentials; Secret keys are exposed as environment variables through `envFrom`. Create it through your platform's secret manager, External Secrets, Sealed Secrets, or `kubectl create secret`. Do not put secret values in a committed values file; Helm values are stored with the release.
 - To install and replace licenses through **System → Kang License**, set `KANG_LICENSE_PUBLIC_KEYS` to the issuer's public verification keys and omit `KANG_LICENSE` from values, Secrets, and other environment sources. A nonempty `KANG_LICENSE` overrides the database license and disables UI changes. Never deploy the signing private key. See [license management](https://zaidanm16.github.io/kang/guides/plans/).
+- Global and organization administrators may install/replace the installation-wide license; only global administrators may remove it. Keep an independent private backup of the complete signed token anywhere safely recoverable (vault, password manager, encrypted file, or protected backup storage). Include `license_states` in database backups and preserve verification public keys. Reinstall a still-valid backed-up token through the UI after accidental removal; a backup does not extend its expiry.
 - Preserve `KONG_CREDENTIAL_ENCRYPTION_KEY` when moving the application database. Changing it alone prevents saved Kong credentials from decrypting. Without an explicit key, `JWT_SECRET` supplies the key material. See [database migration, key rotation, and Helm updates](https://zaidanm16.github.io/kang/guides/operations/).
 - The frontend image writes `NEXT_PUBLIC_*` runtime settings to `/app/public/runtime-env.js` at container startup. These values are browser-visible configuration, never credentials. `API_URL` is the server-to-server backend URL; `NEXT_PUBLIC_API_URL` is the browser-facing base API URL. With one public hostname and the supplied routing templates, the browser-facing URL should be that origin, while `API_URL` remains the in-cluster backend Service URL. Frontend cookie names must match the backend's `AUTH_COOKIE_NAME` and `AUTH_REFRESH_COOKIE_NAME`.
 - `storageClassName` semantics: `null` (default) omits the field and lets the cluster's default StorageClass apply; a class name requests that StorageClass; `""` explicitly requests no StorageClass, for a matching pre-created or static PV. A PVC selector constrains static PV matching only.
@@ -462,6 +501,8 @@ The following table lists the configurable parameters of the Kang chart and thei
 | Login cookie is not stored | Match cookie names; set `AUTH_COOKIE_SECURE=true` only when requests use HTTPS, and confirm proxy TLS termination behavior. |
 | HTTPRoute not accepted | Inspect `kubectl describe httproute -n kang` and Gateway listener `allowedRoutes`; confirm API/controller support and parent listener section. |
 | CNPG Cluster not ready | Confirm operator is running, `Cluster` CRD exists, PVCs bind, and the selected PostgreSQL image is supported by that operator. |
+| CNPG operator already installed | Set `cnpg.operator.enabled=false` and keep `cnpg.cluster.enabled=true`; confirm the existing operator watches the Kang namespace. |
+| Photo/logo upload unavailable | Configure all three Cloudinary variables in a backend Secret, restart backend pods, and check HTTPS connectivity and account limits. |
 | Dashboard has no metrics | Confirm backend `PROMETHEUS_URL` points to a reachable Prometheus-compatible query API and the metrics service has data. |
 | Dragonfly not used | Confirm `RATE_LIMIT_STORE=redis`, Redis URL Secret/value, and Dragonfly Service readiness. |
 

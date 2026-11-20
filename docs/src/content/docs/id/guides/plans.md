@@ -22,18 +22,18 @@ Tanpa lisensi, instalasi baru menggunakan Free. Batas koneksi dan pengguna mengh
 ## Upgrade ke Pro
 
 1. Dapatkan lisensi Pro bertanda tangan dari penyedia Kang Anda. Aplikasi memasang key; aplikasi tidak menyediakan checkout pembelian atau menerbitkan key untuk Anda.
-2. Masuk sebagai **administrator global**: akun admin tanpa penugasan organisasi.
+2. Masuk sebagai **administrator**, baik global maupun yang ditugaskan ke organisasi.
 3. Buka Kang License lalu pilih **Install Pro license**.
 4. Tempel key lengkap pada dialog lalu instal.
 5. Pastikan paket, penerima lisensi, dan tanggal kedaluwarsa benar. Kembali ke fitur yang dituju dan periksa akses sesuai permission akun.
 
-Jangan mengedit isi key. Jika instalasi gagal, periksa kelengkapan key, waktu berlakunya, dan minta operator memeriksa konfigurasi lisensi instalasi. Administrator organisasi tidak dapat memasang lisensi hanya karena role-nya bernama admin.
+Jangan mengedit isi key. Jika instalasi gagal, periksa kelengkapan key, waktu berlakunya, dan minta operator memeriksa konfigurasi lisensi instalasi. Administrator organisasi boleh memasang atau mengganti lisensi, tetapi tidak boleh menghapusnya. Penggantian berlaku untuk **semua organisasi dalam instalasi ini**, bukan hanya organisasi administrator tersebut.
 
 ## Konfigurasi lisensi melalui UI
 
 Backend memerlukan `KANG_LICENSE_PUBLIC_KEYS`, yaitu objek JSON yang memetakan ID key ke public key Ed25519 berformat base64. Dapatkan objek ini dari penerbit lisensi. Public key memverifikasi tanda tangan, bukan menerbitkan lisensi. Jangan memasukkan private signing key ke container, Helm values, Kubernetes Secret yang dipakai aplikasi, atau Git.
 
-Biarkan `KANG_LICENSE` tidak terpasang atau kosong. Aplikasi akan membaca token yang tersimpan di database; administrator global dapat memasang, mengganti, atau menghapusnya melalui `/license`. Restart backend tidak menghapus lisensi yang dipasang melalui database.
+Biarkan `KANG_LICENSE` tidak terpasang atau kosong. Aplikasi membaca token yang tersimpan di database. Administrator global dan organisasi boleh memasang atau menggantinya melalui `/license`; hanya administrator global yang boleh menghapusnya. Restart backend tidak menghapus lisensi yang dipasang melalui database.
 
 Untuk Compose, tempatkan objek public key di `backend.env`. Untuk Helm, simpan sebagai `KANG_LICENSE_PUBLIC_KEYS` di Secret yang dirujuk `backend.secret.existingName`; chart meneruskan Secret tersebut melalui `envFrom`. Gunakan `backend.extraEnv` dengan `valueFrom.secretKeyRef` jika memerlukan referensi eksplisit. Jangan commit token atau nilai rahasia ke values file.
 
@@ -52,6 +52,14 @@ Jangan menghapus row lisensi atau memilih **Remove** hanya untuk mengaktifkan pe
 Halaman ini tidak menerbitkan lisensi. Dapatkan token Pro bertanda tangan lengkap dari penyedia lisensi, lalu ikuti **Install Pro license** atau **Actions → Replace** di atas. Jaga kerahasiaan token selama transfer, dan jangan mengedit isi atau melampirkannya ke tiket publik, screenshot, atau issue tracker.
 
 Operator menerima token secara privat dan memasangnya lewat UI. Token disimpan di database aplikasi, bukan browser atau file konfigurasi. Pembuatan dan penandatanganan token baru menjadi tanggung jawab penerbit lisensi beserta runbook private-key yang terlindungi; runbook itu tidak termasuk dokumentasi publik ini.
+
+## Backup dan pemulihan lisensi
+
+Simpan salinan privat **token bertanda tangan lengkap** sebelum memasang atau mengganti lisensi. Lokasinya bebas selama aman dan bisa dipulihkan: password manager, secret vault, file terenkripsi, penyimpanan offline, atau layanan backup terlindungi. Tidak ada lokasi backup wajib. Simpan salinan terpisah di luar aplikasi/database agar penghapusan tidak ikut menghilangkan satu-satunya salinan. Jangan taruh token di Git publik, tiket, screenshot, atau log bersama.
+
+Backup juga database Kang termasuk `license_states`, dan pertahankan `KANG_LICENSE_PUBLIC_KEYS`. Backup database menyertakan lisensi yang terpasang, tetapi tidak dapat memulihkan token yang sudah dihapus sebelum backup dibuat. Beri label penerima lisensi dan tanggal kedaluwarsa pada salinan token; backup tidak memperpanjang masa berlaku.
+
+Jika lisensi tidak sengaja terhapus, administrator global atau organisasi dapat membuka **System → Kang License → Install Pro license** lalu menempelkan token dari backup. Gunakan **Actions → Replace** jika token lain sudah terpasang. Token harus masih berlaku dan dipercaya oleh public key yang dikonfigurasi. Jika kedaluwarsa atau backup hilang, hubungi penyedia lisensi. Jangan memulihkan seluruh database lama hanya untuk mengambil token jika tindakan itu menimpa data aplikasi yang lebih baru.
 
 ## Memperpanjang atau mengganti
 

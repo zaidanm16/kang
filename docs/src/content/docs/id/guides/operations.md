@@ -18,6 +18,38 @@ Jangan commit `.env`, `backend.env`, kredensial database, atau token lisensi. Gu
 
 `KONG_CREDENTIAL_ENCRYPTION_KEY` melindungi kredensial Admin API Kong yang tersimpan, bukan password database atau tanda tangan lisensi. Tetapkan nilai acak terpisah dan stabil sebelum menyimpan koneksi berautentikasi pertama. Jika kosong, backend menggunakan `JWT_SECRET` sebagai key material; mengganti JWT secret tersebut juga memengaruhi dekripsi kredensial. Verifikasi lisensi memakai `KANG_LICENSE_PUBLIC_KEYS` yang terpisah; lihat [pengelolaan lisensi](/kang/id/guides/plans/).
 
+## Mengaktifkan upload foto dengan Cloudinary
+
+Foto profil dan logo organisasi diunggah oleh backend ke **Cloudinary**. Untuk memakai fitur ini, buat product environment Cloudinary dan ambil ketiga pengaturan berikut dari halaman API Keys:
+
+```dotenv
+CLOUDINARY_CLOUD_NAME=nama-cloud-anda
+CLOUDINARY_API_KEY=api-key-anda
+CLOUDINARY_API_SECRET=api-secret-anda
+```
+
+Untuk Docker Compose, tambahkan pengaturan ini ke file privat `backend.env`, lalu buat ulang container backend. Untuk Helm, gunakan Kubernetes Secret, bukan values `backend.env` (values tersebut dirender menjadi ConfigMap). Contohnya, simpan tiga baris dengan nilai asli di `/secure/cloudinary.env`, batasi akses file hanya untuk pemiliknya, lalu buat Secret terpisah:
+
+```sh
+kubectl -n kang create secret generic kang-cloudinary \
+  --from-env-file=/secure/cloudinary.env
+```
+
+Tambahkan referensi ini ke Helm values hasil ekspor tanpa menghapus entri `extraEnvFrom` yang sudah ada:
+
+```yaml
+backend:
+  extraEnvFrom:
+    - secretRef:
+        name: kang-cloudinary
+```
+
+Ikuti prosedur pembaruan Helm di bawah. Jika hanya isi Secret yang berubah, restart pod backend agar nilai baru terbaca. Jangan mengekspos API secret melalui `NEXT_PUBLIC_*`, melakukan commit, atau menulis kredensial asli di dokumentasi.
+
+Backend memerlukan akses HTTPS keluar ke Cloudinary; browser memerlukan akses ke URL gambar `res.cloudinary.com` yang dikembalikan. Upload mendukung PNG, JPEG, dan WebP dengan batas **5 MB**. Tanpa ketiga pengaturan tersebut, upload tidak tersedia. Untuk verifikasi, unggah foto profil atau logo organisasi uji melalui akun berizin, lalu pastikan gambar tetap tampil setelah refresh. Jika gagal, periksa kredensial, koneksi keluar, dan batas akun Cloudinary tanpa mencatat secret.
+
+File gambar disimpan di Cloudinary; database Kang menyimpan URL-nya. Backup/kelola aset media secara terpisah dari database aplikasi. Gambar dikirim melalui URL, jadi jangan mengunggah dokumen rahasia sebagai foto.
+
 ## Memperbarui release Helm yang sudah ada
 
 Ekspor values release yang terpasang sebelum mengeditnya. Sebutkan context dan namespace agar tidak mengubah instalasi yang salah. Contoh memakai release `kang` di namespace `kang`; ganti `destination-context` dan versi chart sesuai instalasi Anda.
