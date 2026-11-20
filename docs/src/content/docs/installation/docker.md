@@ -8,7 +8,7 @@ The quickest way to try Kang is with **Docker Compose**. You need Docker with th
 
 ```sh
 # Clone the deployment files at the current release
-git clone --depth 1 --branch v3.1.3 https://github.com/zaidanm16/kang.git
+git clone --depth 1 --branch v3.1.4 https://github.com/zaidanm16/kang.git
 cd kang/compose
 # Create backend configuration from the example (backend-only variables like CORS and session settings)
 cp backend.env.example backend.env
