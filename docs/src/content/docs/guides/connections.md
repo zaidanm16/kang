@@ -29,6 +29,10 @@ The sidebar selector supports search, arrow-key navigation, and opening a connec
 
 Each tab has an explicit `instance` in its URL. Open staging and production in different tabs for side-by-side work. Switching while filling a form asks whether to discard it; use the new-tab icon to retain the current form instead.
 
+## Default connection order
+
+The sidebar and Connections table show the active connection first, then sort the other connections by how often you open them. Ties and connections with no history use alphabetical order. The history belongs to your account and follows you across devices. It counts deliberate switches and the **Open in new tab** action, not page refreshes, cancelled switches, or gateway traffic. Table column sorting still overrides the default order for the other connections.
+
 ## Share a resource link
 
 Share the deployed application URL including `?instance=...`. The recipient must sign in and have access to that connection and resource type. The URL does not grant permission. `localhost` links refer to the recipient's own computer and are unsuitable for a shared remote installation.

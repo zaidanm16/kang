@@ -29,4 +29,8 @@ Foto profil yang tersedia ditampilkan sebelum username di daftar; akun tanpa fot
 
 Buka **Manage Role** dari User Management. Matriks permission menampilkan aksi per resource dan role. Dengan izin memperbarui konfigurasi, edit permission, periksa pengguna yang terdampak, lalu simpan. Pembuatan custom role memerlukan kode dan nama role. Permission role `admin` tidak diedit seperti role biasa.
 
-Permission mengontrol aksi; keanggotaan organisasi/tim mengontrol scope. Keduanya harus mengizinkan operasi. Administrasi role memerlukan akun global dengan izin konfigurasi yang sesuai. Jika pengguna dapat melihat resource tetapi tidak menyimpan, periksa izin update/create sebelum mengganti organisasinya.
+Izin menentukan aksi; keanggotaan organisasi dan tim dapat membatasi cakupannya. Administrasi role memerlukan izin konfigurasi dan mengikuti [aturan akses platform](/kang/id/administration/organizations-teams/#permission-dan-scope). Jika pengguna dapat melihat resource tetapi tidak menyimpan, periksa izin update/create sebelum mengganti organisasinya.
+
+## Pulihkan akses administrator
+
+Jika administrator lain masih bisa masuk, minta dia memeriksa status akun, membuka kunci atau mengaktifkan akun jika perlu, dan mereset password bila diperlukan. Jika tidak ada admin yang bisa masuk, ikuti prosedur pemulihan privat milik operator. Backup database terlebih dahulu, pastikan targetnya database Kang, lalu verifikasi login dan cabut sesi yang tidak diinginkan setelah pemulihan. Token setup awal bukan mekanisme reset password.

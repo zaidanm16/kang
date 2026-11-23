@@ -3,7 +3,7 @@ title: "Snapshot, clone, dan restore"
 description: "Snapshot, clone, dan restore | Kang"
 ---
 
-Snapshot menangkap **konfigurasi Kong** yang didukung, bukan seluruh database Kang. Alur Pro ini memerlukan akun global dengan permission snapshot yang sesuai. Restore juga membutuhkan izin menulis resource gateway tujuan.
+Snapshot menangkap **konfigurasi Kong** yang didukung, bukan seluruh database Kang. Alur Pro ini memerlukan izin snapshot dan mengikuti [aturan akses platform](/kang/id/administration/organizations-teams/#permission-dan-scope). Restore juga membutuhkan izin menulis resource gateway tujuan.
 
 ![Halaman snapshots](../../assets/docs/24-snapshots.png)
 
@@ -36,4 +36,4 @@ Resource diproses berdasarkan urutan dependensi. ID dan timestamp asli tidak dij
 
 Cancel menghentikan pekerjaan berikutnya tetapi tidak otomatis membatalkan operasi yang sudah berhasil. Jika **Undo Restore** tersedia dalam sesi restore saat ini, fitur tersebut menghapus resource yang dibuat dan mengembalikan nilai lama resource yang diperbarui dengan urutan dependensi terbalik. Periksa hasil undo: rollback dapat gagal dan bukan transaksi database atomik. Jangan menutup atau me-refresh dialog dengan mengharapkan status undo tetap tersimpan.
 
-Backup target sebelum perubahan penting dan verifikasi perilaku gateway setelahnya. [Full Migration](/kang/id/administration/migration/) adalah alur maintenance opsional yang terpisah.
+Backup target sebelum perubahan penting dan verifikasi perilaku gateway setelahnya.

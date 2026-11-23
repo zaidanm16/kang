@@ -23,7 +23,7 @@ Pilih batas kepemilikan yang jelas. Membuat organisasi saja tidak otomatis membe
 
 Pembuatan/pengeditan organisasi dan tim memakai izin pengelolaan pengguna; pemetaan gateway juga memerlukan izin instance yang sesuai. Role mengontrol aksi dalam scope yang bisa diakses.
 
-Fitur khusus akun global, termasuk audit log, snapshot, dan administrasi role, tidak terbuka bagi akun berscope organisasi hanya karena instalasi memakai Pro. Hubungi administrator global jika memerlukan alur tersebut.
+Audit log, snapshot, dan administrasi role berlaku untuk seluruh instalasi. Akun non-admin yang terikat organisasi tidak bisa mengaksesnya; role bawaan `admin` dikecualikan dari batas organisasi ini. Akun global non-admin tetap perlu izin yang relevan. Batas paket tetap berlaku. Jangan berikan role `admin` kepada pengguna yang aksesnya harus terbatas pada satu organisasi.
 
 ## Mengubah keanggotaan
 

@@ -97,9 +97,15 @@ Untuk perubahan konfigurasi saja, pertahankan versi chart yang sedang terpasang;
 
 Hindari `kubectl set env` untuk konfigurasi Helm permanen. Perubahan manual sebelumnya dapat memicu conflict kepemilikan field pada Helm 4 server-side apply. Periksa field yang dilaporkan; gunakan `--force-conflicts` hanya setelah memastikan Helm memang harus mengambil alih perubahan tersebut. Opsi itu berbeda dari `--force-replace`. Simpan values dan Secret sebelumnya untuk rollback, lalu periksa request API terautentikasi setelah rollout, bukan hanya kesiapan pod.
 
+## Backup dan pemulihan CNPG
+
+Memasang atau memakai operator CloudNativePG yang sudah ada tidak otomatis mengatur backup. Di produksi, siapkan penyimpanan backup di luar cluster dan jadwalkan backup dengan `ScheduledBackup` yang menunjuk `Cluster` database Kang. Pilih metode yang didukung versi operator dan plugin yang terpasang. Untuk pemulihan ke titik waktu tertentu (PITR), arsipkan WAL dan backup dasar, lalu pastikan keduanya sampai ke penyimpanan. Lihat [panduan backup CloudNativePG](https://cloudnative-pg.io/documentation/current/backup/).
+
+Simpan salinan terpisah dan terlindungi untuk Helm values, Secret aplikasi, token lisensi, dan backup media. Uji pemulihan di **cluster database baru**. Periksa versi PostgreSQL, titik pemulihan, role aplikasi, serta kepemilikan objek, lalu hubungkan backend Kang uji dengan encryption key yang cocok. Periksa login, akses koneksi gateway tersimpan, dan status lisensi sebelum mengalihkan trafik. Job backup yang sukses belum membuktikan restore berhasil.
+
 ## Memindahkan database aplikasi Kang
 
-Database Kang menyimpan akun, hash password, organisasi, tim, permission, koneksi, preferensi sesi, audit log, snapshot, dan riwayat migrasi. Versi baru juga menyimpan status setup dan lisensi. Database ini **tidak** menyimpan service/route/plugin/consumer aktif milik Kong Gateway. Jika gateway tetap sama, jangan mengubah database Kong. Fitur **Full Migration** di UI untuk pemindahan database Kong, bukan pemindahan aplikasi ini.
+Database Kang menyimpan akun, hash password, organisasi, tim, izin, koneksi, preferensi sesi, audit log, snapshot, dan riwayat migrasi. Versi baru juga menyimpan status setup dan lisensi. Database ini **tidak** menyimpan service, route, plugin, atau consumer aktif milik Kong Gateway. Jika gateway tetap sama, jangan mengubah database Kong.
 
 1. Catat versi backend/PostgreSQL sumber dan tujuan. Gunakan dump client yang kompatibel dengan server sumber dan tujuan yang didukung backend baru. Jangan membuang riwayat migrasi untuk memaksakan downgrade skema Kang.
 2. Backup kedua database beserta secret yang relevan. Pertahankan `KONG_CREDENTIAL_ENCRYPTION_KEY` efektif sumber; jika menggunakan fallback JWT, simpan key material tersebut secara eksplisit. Backup upload filesystem atau object storage secara terpisah. Password/role database dikelola terpisah dari dump.

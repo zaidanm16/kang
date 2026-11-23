@@ -34,7 +34,6 @@ Bundle Compose menjalankan frontend, backend, dan PostgreSQL dengan penyimpanan 
 ## Layanan latar belakang dan opsional
 
 - **Prometheus atau VictoriaMetrics**: saat `PROMETHEUS_URL` diatur dan analytics aktif, backend mengambil metrik lalu lintas untuk dashboard Overview. Cache Redis/DragonflyDB opsional mempercepat query dashboard berulang.
-- **Database migration worker**: proses terpisah opsional yang dipakai administrator untuk migrasi penuh database Kang, lengkap dengan pemeriksaan awal dan backup.
 - **OpenTelemetry**: ekspor tracing OTLP opsional.
 
 ## Kompatibilitas Kong

@@ -29,6 +29,10 @@ Pemilih koneksi di sidebar mendukung pencarian, tombol panah, dan membuka koneks
 
 Setiap tab memiliki `instance` eksplisit di URL. Buka staging dan production di tab berbeda untuk bekerja berdampingan. Jika mengganti koneksi saat mengisi form, muncul konfirmasi membuang form; gunakan ikon tab baru untuk mempertahankan form saat ini.
 
+## Urutan koneksi bawaan
+
+Sidebar dan tabel Connections menempatkan koneksi aktif di atas, lalu mengurutkan koneksi lain dari yang paling sering Anda buka. Jika jumlahnya sama atau belum ada riwayat, urutannya alfabetis. Riwayat melekat pada akun dan tersedia lintas perangkat. Yang dihitung adalah perpindahan yang Anda pilih dan aksi **Open in new tab**, bukan refresh, perpindahan yang dibatalkan, atau trafik gateway. Sortir kolom tabel tetap bisa mengubah urutan koneksi lainnya.
+
 ## Membagikan tautan resource
 
 Bagikan URL aplikasi yang sudah dideploy beserta `?instance=...`. Penerima harus masuk dan memiliki akses ke koneksi serta jenis resource tersebut. URL tidak memberikan izin baru. Tautan `localhost` menunjuk komputer penerima sendiri sehingga tidak cocok untuk instalasi bersama.

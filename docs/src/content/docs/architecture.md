@@ -34,7 +34,6 @@ The Compose bundle ships the frontend, backend, and PostgreSQL with persistent s
 ## Background and optional services
 
 - **Prometheus or VictoriaMetrics**: when `PROMETHEUS_URL` is configured and analytics is enabled, the backend queries traffic metrics and serves the Overview dashboard. Optional Redis/DragonflyDB caches speed up repeated dashboard queries.
-- **Database migration worker**: an optional separate process used by administrators for full Kang database migrations, with preflight checks and backups.
 - **OpenTelemetry**: optional OTLP tracing export.
 
 ## Kong compatibility

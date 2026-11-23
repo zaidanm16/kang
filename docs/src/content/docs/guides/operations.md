@@ -105,9 +105,15 @@ Keep the currently installed chart version for a configuration-only change; do n
 
 Avoid `kubectl set env` for lasting Helm configuration. Previous manual edits can cause Helm 4 server-side ownership conflicts. Inspect the reported fields first; `--force-conflicts` is appropriate only after confirming that Helm should take over those specific changes. It is not the same as `--force-replace`. Preserve the previous values and Secret for rollback, then verify authenticated API requests after the rollout, not just pod readiness.
 
+## Back up and recover CNPG
+
+Installing or reusing the CloudNativePG operator does not configure backups. For production, configure a backup destination outside the cluster and schedule backups with a CNPG `ScheduledBackup` that targets the Kang database `Cluster`. Use the backup method supported by your installed operator and plugins. For point-in-time recovery, archive WAL as well as base backups and verify both reach the destination. See [CloudNativePG backup and recovery](https://cloudnative-pg.io/documentation/current/backup/).
+
+Keep a separate protected copy of Helm values, application Secrets, the signed license, and any media backups. Test recovery into a **new** database cluster: verify the PostgreSQL version, recovery point, application role and object ownership, then connect a test Kang backend with the matching encryption key. Check login, saved gateway access and license status before switching traffic. A healthy backup job is not a tested restore.
+
 ## Move the Kang application database
 
-The Kang database contains accounts, password hashes, organizations, teams, permissions, connection records, session preferences, audit logs, snapshots, and migration history. Newer versions also contain setup and license state. It does **not** contain the live services/routes/plugins/consumers stored by Kong Gateway. If the gateways stay the same, leave their databases alone. The UI's **Full Migration** feature concerns Kong database transfer, not this application move.
+The Kang database contains accounts, password hashes, organizations, teams, permissions, connection records, session preferences, audit logs, snapshots, and migration history. Newer versions also contain setup and license state. It does **not** contain the live services/routes/plugins/consumers stored by Kong Gateway. If the gateways stay the same, leave their databases alone.
 
 1. Record source and destination backend/PostgreSQL versions. Use a dump client compatible with the source server and a destination supported by the target backend. Do not migrate to an older Kang schema by discarding migration history.
 2. Back up both databases and their relevant secrets. Preserve the source's effective `KONG_CREDENTIAL_ENCRYPTION_KEY`; if it used the JWT fallback, preserve that key material explicitly. Include any filesystem uploads or external object storage separately. Database passwords/roles are managed separately from the dump.

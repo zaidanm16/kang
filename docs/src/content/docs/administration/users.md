@@ -29,4 +29,8 @@ Existing profile photos appear before usernames in the list; accounts without a 
 
 Open **Manage Role** from User Management. The permission matrix shows actions by resource and role. With configuration-update permission, edit role permissions, review affected users, and save. Custom role creation requires a role code and name. The `admin` role's permissions are not edited like ordinary roles.
 
-Permissions control actions; organization/team membership controls scope. Both must allow the operation. Role administration requires a global account with the appropriate configuration permissions. If a user can see a resource but cannot save, check their update/create permission before changing their organization.
+Permissions control actions; organization and team membership can limit scope. Role administration requires configuration permissions and follows the [platform access rules](/kang/administration/organizations-teams/#permissions-and-scope). If a user can see a resource but cannot save, check their update/create permission before changing their organization.
+
+## Recover administrator access
+
+If another administrator can sign in, have them check the account status, unlock or reactivate the account as appropriate, and reset the password if needed. If no administrator can sign in, use your deployment operator's private recovery procedure. Take a database backup first, verify that you are working on the Kang database, and verify login and revoke unwanted sessions after recovery. The first-run setup token is not a password reset mechanism.

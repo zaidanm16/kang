@@ -21,4 +21,13 @@ Periksa preferensi Analytics, rentang waktu, trafik sebenarnya, serta integrasi 
 ## Lisensi gagal dipasang
 Minta administrator global atau organisasi memeriksa key lengkap dan masa berlaku. Hanya administrator global yang boleh menghapus lisensi. Lisensi yang dikelola environment memerlukan operator instalasi. Baca [perpanjangan dan backup lisensi](/kang/id/guides/plans/).
 
+## Masalah login atau sesi
+
+| Gejala | Pemeriksaan awal |
+| --- | --- |
+| Login kembali ke halaman masuk | Pastikan `/auth` mengarah ke backend dan browser menerima cookie sesi dan refresh. Periksa HTTPS, cakupan cookie, kesamaan nama cookie frontend/backend, serta origin frontend dan API. |
+| Data terbaca, tetapi perubahan mendapat CSRF 403 | Pastikan browser mengirim cookie CSRF dan header pasangannya ke backend. Periksa CORS dan routing proxy; jangan menonaktifkan CSRF sebagai solusi. |
+| Sesi kedaluwarsa atau dicabut | Masuk kembali. Jika login diblokir, minta admin memeriksa status dan penguncian akun. |
+| Request mendapat 429 | Hentikan percobaan berulang sampai jendela pembatasan berakhir. Periksa percobaan login berulang atau klien yang berbagi IP. Operator perlu memeriksa batas dan penyimpanan rate limit. |
+
 Saat melaporkan masalah, sertakan aksi, versi gateway, waktu, serta error yang sudah disamarkan. Jangan menyertakan password, token, private key, atau key lisensi.

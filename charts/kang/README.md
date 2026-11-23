@@ -486,7 +486,6 @@ The following table lists the configurable parameters of the Kang chart and thei
 - `storageClassName` semantics: `null` (default) omits the field and lets the cluster's default StorageClass apply; a class name requests that StorageClass; `""` explicitly requests no StorageClass, for a matching pre-created or static PV. A PVC selector constrains static PV matching only.
 - Backend SQLite, local Dragonfly, and local VictoriaMetrics are single-replica deployments; the chart uses `Recreate` for those stateful singletons. With `RATE_LIMIT_STORE=memory` (the default when Redis is off), each backend replica keeps its own in-memory rate-limit state.
 - When the in-chart CNPG database or Dragonfly service is enabled, backend pods wait for that service during initialization. If a backend pod remains in `Init`, check the CNPG Cluster or Dragonfly pod and Service.
-- The backend image workflow builds only the API binary and the frontend workflow builds the standalone Next.js app. There is no published migration-worker image; if you use the full database migration features, build and operate `Dockerfile.migration-worker` separately, then set the worker URL and token via `backend.extraEnv` and a Secret.
 - Health endpoints: backend `/health`, frontend `/api/health`. Kubernetes probes use those paths.
 - Scheduling: `nodeSelector`, `tolerations`, and `affinity` apply to application pods; `global.podAnnotations`, `global.commonLabels`, and `global.imagePullSecrets` apply chart-wide. The shared ServiceAccount does not automount Kubernetes API credentials.
 
