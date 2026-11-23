@@ -34,6 +34,7 @@ for f in "${FILES[@]}"; do
       -e "s/kang-${OLD}\.tgz/kang-${NEW}.tgz/g" \
       -e "s|oci://ghcr.io/zaidanm16/kang:${OLD}|oci://ghcr.io/zaidanm16/kang:${NEW}|g" \
       -e "s/\`git tag v${OLD}\`/\`git tag v${NEW}\`/g" \
+      -e "s/^git tag v${OLD}$/git tag v${NEW}/g" \
       -e "s/git push origin v${OLD}/git push origin v${NEW}/g" \
       "$f"
     echo "updated $f"

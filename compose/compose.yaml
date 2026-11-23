@@ -33,7 +33,7 @@ services:
       - no-new-privileges:true
 
   frontend:
-    image: ${FRONTEND_IMAGE:-ghcr.io/zaidanm16/kang-frontend:v3.2.0}
+    image: ${FRONTEND_IMAGE:-ghcr.io/zaidanm16/kang-frontend:v3.2.1}
     restart: unless-stopped
     depends_on:
       - backend

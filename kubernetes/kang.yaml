@@ -173,7 +173,7 @@ spec:
       automountServiceAccountToken: false
       containers:
         - name: frontend
-          image: ghcr.io/zaidanm16/kang-frontend:v3.0.0
+          image: ghcr.io/zaidanm16/kang-frontend:v3.2.1
           imagePullPolicy: IfNotPresent
           ports:
             - name: http

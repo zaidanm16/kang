@@ -21,8 +21,10 @@ class SyncComponentVersionsTest(unittest.TestCase):
                     "backend:\n  image:\n    repository: ghcr.io/zaidanm16/kang-backend\n    tag: v1.1.0\n"
                     "frontend:\n  image:\n    repository: ghcr.io/zaidanm16/kang-frontend\n    tag: v3.1.2\n"
                 ),
-                "charts/kang/README.md": "",
-                "README.md": "release-v3.1.3\n",
+                "charts/kang/README.md": '| frontend.image.tag | string | `"v3.1.2"` | Frontend image tag. |\n',
+                "kubernetes/kang.yaml": "image: ghcr.io/zaidanm16/kang-frontend:v3.0.0\n",
+                "kubernetes/README.md": "`ghcr.io/zaidanm16/kang-frontend:v3.0.0`\n",
+                "README.md": "release-v3.1.3\ngit tag v3.1.3\ngit push origin v3.1.3\n",
                 "compose/.env.example": "",
                 "compose/compose.yaml": "",
                 "docs/src/content/docs/installation/docker.md": "",
@@ -48,6 +50,10 @@ class SyncComponentVersionsTest(unittest.TestCase):
                 env={**os.environ, "PATH": str(binary) + os.pathsep + os.environ["PATH"]},
                 capture_output=True, text=True, check=True,
             )
+            self.assertIn(f"git tag v{result.stdout.strip()}\n", (root / "README.md").read_text())
+            for path in ("kubernetes/kang.yaml", "kubernetes/README.md"):
+                self.assertIn(f"kang-frontend:v{frontend}", (root / path).read_text())
+            self.assertIn(f'`"v{frontend}"`', (root / "charts/kang/README.md").read_text())
             return result.stdout.strip(), (root / "charts/kang/Chart.yaml").read_text(), (root / "charts/kang/values.yaml").read_text()
 
     def test_frontend_release_does_not_reuse_existing_chart_version(self):
