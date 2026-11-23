@@ -356,7 +356,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 | backend.extraEnvFrom | list | `[]` | Extra backend envFrom references, such as an additional Secret or ConfigMap. |
 | backend.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | backend.image.repository | string | `"ghcr.io/zaidanm16/kang-backend"` | Backend application image repository. |
-| backend.image.tag | string | `"v1.1.1"` | Backend application image tag. Prefer immutable release or SHA tags. |
+| backend.image.tag | string | `"v1.2.0"` | Backend application image tag. Prefer immutable release or SHA tags. |
 | backend.persistence.accessModes | list | `["ReadWriteOnce"]` | Access modes of the created PVC. |
 | backend.persistence.annotations | object | `{}` | Annotations for the created PVC. |
 | backend.persistence.enabled | bool | `true` | Create and mount a PVC for backend-local data such as a SQLite database. Not used in external DB or CNPG modes. |
@@ -404,7 +404,7 @@ The following table lists the configurable parameters of the Kang chart and thei
 | frontend.extraEnvFrom | list | `[]` | Extra frontend envFrom references, such as a Secret with REVALIDATE_SECRET. |
 | frontend.image.pullPolicy | string | `"IfNotPresent"` | Image pull policy. |
 | frontend.image.repository | string | `"ghcr.io/zaidanm16/kang-frontend"` | Frontend application image repository. |
-| frontend.image.tag | string | `"v3.1.3"` | Frontend application image tag. Prefer immutable release or SHA tags. |
+| frontend.image.tag | string | `"v3.2.0"` | Frontend application image tag. Prefer immutable release or SHA tags. |
 | frontend.replicaCount | int | `1` | Number of frontend replicas. |
 | frontend.resources | object | `{}` | Resource requests and limits for the frontend container. |
 | frontend.securityContext | object | `{"allowPrivilegeEscalation":false,"capabilities":{"drop":["ALL"]},"runAsGroup":1001,"runAsNonRoot":true,"runAsUser":1001}` | Container-level security context for the frontend. |

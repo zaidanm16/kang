@@ -177,7 +177,7 @@ JWT_SECRET=validation-only POSTGRES_PASSWORD=validation-only \
 Update `charts/kang/Chart.yaml` and the documented release version together, commit and push, then create the matching tag. The workflow packages the artifacts, pushes the OCI chart, and creates the GitHub Release:
 
 ```sh
-git tag v3.1.4
+git tag v3.2.0
 git push origin v3.2.0
 ```
 
