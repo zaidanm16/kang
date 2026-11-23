@@ -192,7 +192,7 @@ frontend:
     # -- Frontend application image repository.
     repository: ghcr.io/zaidanm16/kang-frontend
     # -- Frontend application image tag. Prefer immutable release or SHA tags.
-    tag: v3.2.0
+    tag: v3.2.1
     # -- Image pull policy.
     pullPolicy: IfNotPresent
   service:
