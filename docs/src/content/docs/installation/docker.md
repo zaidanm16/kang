@@ -8,11 +8,11 @@ The quickest way to try Kang is with **Docker Compose**. You need Docker with th
 
 ```sh
 # Clone the deployment files at the current release
-git clone --depth 1 --branch v3.1.4 https://github.com/zaidanm16/kang.git
+git clone --depth 1 --branch v3.2.0 https://github.com/zaidanm16/kang.git
 cd kang/compose
 # Create backend configuration from the example (backend-only variables like CORS and session settings)
 cp backend.env.example backend.env
-export BACKEND_IMAGE=ghcr.io/zaidanm16/kang-backend:v1.1.1
+export BACKEND_IMAGE=ghcr.io/zaidanm16/kang-backend:v1.2.0
 # Generate two random secrets into .env: JWT_SECRET signs login sessions, POSTGRES_PASSWORD secures the database
 (umask 077; printf 'JWT_SECRET=%s\nPOSTGRES_PASSWORD=%s\n' "$(openssl rand -hex 32)" "$(openssl rand -hex 32)" > .env)
 # Start the stack in the background: PostgreSQL, backend, and frontend

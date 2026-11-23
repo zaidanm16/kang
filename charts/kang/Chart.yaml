@@ -2,8 +2,8 @@ apiVersion: v2
 name: kang
 description: KANG frontend and backend with optional PostgreSQL, DragonflyDB, VictoriaMetrics, Ingress, or Gateway API
 type: application
-version: 3.1.4
-appVersion: "3.1.3"
+version: 3.2.0
+appVersion: "3.2.0"
 keywords:
   - kang
   - kong
