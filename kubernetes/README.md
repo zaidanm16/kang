@@ -4,7 +4,7 @@
 
 ## Requirements
 
-Use a Kubernetes cluster with a default StorageClass, or set `storageClassName` in the PostgreSQL `volumeClaimTemplates` to an available class. The manifest uses the published images `ghcr.io/zaidanm16/kang-frontend:v3.2.1` and `ghcr.io/zaidanm16/kang-backend:v1.0.0`.
+Use a Kubernetes cluster with a default StorageClass, or set `storageClassName` in the PostgreSQL `volumeClaimTemplates` to an available class. The manifest uses the published images `ghcr.io/zaidanm16/kang-frontend:v3.2.2` and `ghcr.io/zaidanm16/kang-backend:v1.0.0`.
 
 ## Configure and apply
 

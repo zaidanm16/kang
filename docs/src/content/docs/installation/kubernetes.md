@@ -19,7 +19,7 @@ rm -f "$secret_file"
 
 # Install the chart from the public OCI registry (version matches the release)
 helm upgrade --install kang oci://ghcr.io/zaidanm16/kang \
-  --version 3.2.1 \
+  --version 3.2.2 \
   --namespace kang \
   --set backend.secret.existingName=kang-backend-secrets \
   --set backend.env.AUTH_COOKIE_SECURE=false
